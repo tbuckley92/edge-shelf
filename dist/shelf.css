@@ -179,23 +179,40 @@ button,select,input,.shelf-menu label,#saveStatus,#saveShelf,#loadStatus,.movebo
 
 /* One continuous carved material wraps over the top and down the fascia.
    Keep the existing contact plane so sculptures and weather remain grounded. */
-.wall .row:is([data-finish="magma"],[data-finish="ice"],[data-finish="jungle"]) .ledge{
+.wall .row:is([data-finish="magma"],[data-finish="ice"],[data-finish="jungle"],[data-finish="edge"],[data-finish="oak"],[data-finish="pine"],[data-finish="metal"]) .ledge{
  background-color:var(--tone);
  background-image:var(--texture);
  background-size:420px 140px;
  background-position:center bottom;
  box-shadow:0 4px 5px #0004;
- clip-path:polygon(5px 0,calc(100% - 5px) 0,100% var(--surface),100% 92%,97% 100%,91% 94%,83% 100%,76% 95%,67% 100%,58% 93%,49% 100%,40% 96%,31% 100%,22% 94%,13% 100%,5% 94%,0 100%,0 var(--surface));
+ clip-path:polygon(5px 0,calc(100% - 5px) 0,100% var(--surface),100% 100%,0 100%,0 var(--surface));
 }
-.wall .row:is([data-finish="magma"],[data-finish="ice"],[data-finish="jungle"]) .ledge .top{
+.wall .row:is([data-finish="magma"],[data-finish="ice"],[data-finish="jungle"],[data-finish="edge"],[data-finish="oak"],[data-finish="pine"],[data-finish="metal"]) .ledge .top{
  background:linear-gradient(180deg,#0005,transparent 35%,#ffffff18);
  box-shadow:inset 0 2px 5px #0005;
 }
-.wall .row:is([data-finish="magma"],[data-finish="ice"],[data-finish="jungle"]) .ledge .front{
+.wall .row:is([data-finish="magma"],[data-finish="ice"],[data-finish="jungle"],[data-finish="edge"],[data-finish="oak"],[data-finish="pine"],[data-finish="metal"]) .ledge .front{
  background:linear-gradient(180deg,#0002,#0007);
  box-shadow:inset 0 1px 0 #ffffff45;
 }
 .wall .row[data-finish="ice"] .ledge .front{
  background:linear-gradient(180deg,#19526918,#143b5466);
  box-shadow:inset 0 1px 0 #e5fcff99;
+}
+
+/* Natural materials retain long horizontal grain and a level lower edge. */
+.wall .row:is([data-finish="edge"],[data-finish="oak"],[data-finish="pine"],[data-finish="metal"]) .ledge{
+ background-size:640px 180px;
+}
+.wall .row:is([data-finish="oak"],[data-finish="pine"]) .ledge .front{
+ background:linear-gradient(180deg,#0000000d,#00000038);
+ box-shadow:inset 0 1px 0 #fff5;
+}
+.wall .row[data-finish="metal"] .ledge .top{
+ background:linear-gradient(180deg,#0003,#ffffff24 65%,#ffffff40);
+ box-shadow:inset 0 1px 2px #0003;
+}
+.wall .row[data-finish="metal"] .ledge .front{
+ background:linear-gradient(180deg,#ffffff35,#0003 25%,#0005);
+ box-shadow:inset 0 1px 0 #ffffff9c,inset 0 -1px 0 #0005;
 }

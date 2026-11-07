@@ -1,1 +1,1 @@
-export const materialKeys=["oak","ice","magma","jungle","temple"];
+export const materialKeys=["edge","oak","pine","metal","ice","magma","jungle","temple"];
