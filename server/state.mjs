@@ -34,17 +34,18 @@ export async function writeState(sql,owner,state,products,packShelves){
  if(!changed.length)throw new HttpError(409,'This collection changed on another device. Reload before saving.');
  await sql`delete from shelf.placements where layout_id=${state.layoutId} and owner_id=${owner}`;
  // Ownership checks also cover attempted reuse of another collector's IDs.
- for(const item of state.items){
-  const row=await sql`insert into shelf.owned_items(id,owner_id,product_id) values(${item.id},${owner},${item.productId}) on conflict(id) do update set product_id=excluded.product_id where shelf.owned_items.owner_id=${owner} returning id`;
-  if(!row.length)throw new HttpError(403,'Item is unavailable.');
- }
+ const itemRows=await sql`insert into shelf.owned_items(id,owner_id,product_id)
+ select x.id,${owner}::uuid,x.product_id from jsonb_to_recordset(${sql.json(state.items.map(i=>({id:i.id,product_id:i.productId})))}::jsonb) as x(id uuid,product_id text)
+ on conflict(id) do update set product_id=excluded.product_id where shelf.owned_items.owner_id=${owner} returning id`;
+ if(itemRows.length!==state.items.length)throw new HttpError(403,'Item is unavailable.');
  const retained=state.items.map(i=>i.id);
  if(retained.length)await sql`delete from shelf.owned_items where owner_id=${owner} and id not in ${sql(retained)}`;
  else await sql`delete from shelf.owned_items where owner_id=${owner}`;
- for(const [position,shelf] of state.shelves.entries()){
-  const row=await sql`insert into shelf.shelves(id,owner_id,layout_id,position,settings) values(${shelf.id},${owner},${state.layoutId},${position},${sql.json(shelf.settings)}) on conflict(id) do update set position=excluded.position,settings=excluded.settings where shelf.shelves.owner_id=${owner} and shelf.shelves.layout_id=${state.layoutId} returning id`;
-  if(!row.length)throw new HttpError(403,'Shelf is unavailable.');
- }
+ const shelfRows=await sql`insert into shelf.shelves(id,owner_id,layout_id,position,settings)
+ select x.id,${owner}::uuid,${state.layoutId}::uuid,x.position,x.settings
+ from jsonb_to_recordset(${sql.json(state.shelves.map((s,position)=>({id:s.id,position,settings:s.settings})))}::jsonb) as x(id uuid,position integer,settings jsonb)
+ on conflict(id) do update set position=excluded.position,settings=excluded.settings where shelf.shelves.owner_id=${owner} and shelf.shelves.layout_id=${state.layoutId} returning id`;
+ if(shelfRows.length!==state.shelves.length)throw new HttpError(403,'Shelf is unavailable.');
  const shelfIds=state.shelves.map(s=>s.id);
  if(shelfIds.length)await sql`delete from shelf.shelves where owner_id=${owner} and layout_id=${state.layoutId} and id not in ${sql(shelfIds)}`;
  else await sql`delete from shelf.shelves where owner_id=${owner} and layout_id=${state.layoutId}`;
@@ -52,7 +53,9 @@ export async function writeState(sql,owner,state,products,packShelves){
  const rows=packShelves(state.order,itemCatalog),placement=new Map();
  if(rows.length>state.shelves.length)throw new HttpError(400,'Missing shelves.');
  rows.forEach((row,index)=>row.items.forEach(item=>placement.set(item.id,state.shelves[index].id)));
- for(const [position,id] of state.order.entries())await sql`insert into shelf.placements(owner_id,layout_id,item_id,shelf_id,position) values(${owner},${state.layoutId},${id},${placement.get(id)||null},${position})`;
+ await sql`insert into shelf.placements(owner_id,layout_id,item_id,shelf_id,position)
+ select ${owner}::uuid,${state.layoutId}::uuid,x.item_id,x.shelf_id,x.position
+ from jsonb_to_recordset(${sql.json(state.order.map((id,position)=>({item_id:id,shelf_id:placement.get(id)||null,position})))}::jsonb) as x(item_id uuid,shelf_id uuid,position integer)`;
  if(state.marketingPreference!==undefined)await sql`update shelf.profiles set marketing_preference=${state.marketingPreference},marketing_updated_at=now() where id=${owner} and marketing_preference is distinct from ${state.marketingPreference}`;
  return {revision:changed[0].revision};
 }

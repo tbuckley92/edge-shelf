@@ -3,9 +3,9 @@ import {readState,writeState,validateState} from '../server/state.mjs';import {p
 // Execute the production repository queries on PostgreSQL WASM; no mocked SQL responses.
 function adapter(db){const tag=(strings,...values)=>{
  if(!Array.isArray(strings)||!strings.raw)return {list:strings};
- let query='',params=[];for(let i=0;i<strings.length;i++){query+=strings[i];if(i<values.length){const value=values[i];if(value?.list){query+='('+value.list.map(v=>{params.push(v);return '$'+params.length}).join(',')+')'}else{params.push(value?.json?JSON.stringify(value.json):value);query+='$'+params.length}}}
+ tag.calls++;let query='',params=[];for(let i=0;i<strings.length;i++){query+=strings[i];if(i<values.length){const value=values[i];if(value?.list){query+='('+value.list.map(v=>{params.push(v);return '$'+params.length}).join(',')+')'}else{params.push(value?.json?JSON.stringify(value.json):value);query+='$'+params.length}}}
  return db.query(query,params).then(r=>r.rows);
- };tag.json=json=>({json});return tag;}
+ };tag.calls=0;tag.json=json=>({json});return tag;}
 test('production save/read queries restore duplicates, order, settings and reject stale/foreign writes',async()=>{
  const db=new PGlite(),sql=adapter(db);try{
  await db.exec(await fs.readFile('migrations/001_edge_shelf.sql','utf8'));
@@ -22,5 +22,20 @@ test('production save/read queries restore duplicates, order, settings and rejec
  state={...state,revision:1,order:[...state.order].reverse()};await as(a,()=>writeState(sql,a,state,products,packShelves));assert.deepEqual((await as(a,()=>readState(sql,a))).order,state.order);
  const theft={...state,layoutId:randomUUID(),revision:0};await assert.rejects(as(b,()=>writeState(sql,b,theft,products,packShelves)));
  assert.equal((await as(a,()=>readState(sql,a))).revision,2);
+ // A large collection must not add one database round trip per piece/shelf.
+ const bulkItems=Array.from({length:300},()=>({id:randomUUID(),productId:'cow'}));
+ const bulkShelves=bulkItems.map(()=>({id:randomUUID(),settings:{...shelves[0].settings}}));
+ const bulk={...state,revision:2,items:bulkItems,order:bulkItems.map(i=>i.id),shelves:bulkShelves};
+ const before=sql.calls;await as(a,()=>writeState(sql,a,validateState(bulk,products),products,packShelves));
+ assert.equal(sql.calls-before,9,'300 pieces save with nine bulk queries');
+ const bulkRead=await as(a,()=>readState(sql,a));assert.equal(bulkRead.items.length,300);assert.deepEqual(bulkRead.order,bulk.order);
+ bulk.shelves[0].settings.brightness=25;bulk.revision=3;
+ await as(a,()=>writeState(sql,a,validateState(bulk,products),products,packShelves));
+ assert.equal((await as(a,()=>readState(sql,a))).shelves[0].settings.brightness,25);
+ const bad={...bulk,revision:4,shelves:[]};await assert.rejects(as(a,()=>writeState(sql,a,bad,products,packShelves)));
+ assert.equal((await as(a,()=>readState(sql,a))).items.length,300,'failed bulk writes roll back');
+ await as(a,()=>writeState(sql,a,{...bulk,revision:4,items:[],order:[],shelves:[]},products,packShelves));
+ const empty=await as(a,()=>readState(sql,a));assert.equal(empty.items.length,0);assert.equal(empty.shelves.length,0);
+ console.log('Bulk save: 300 pieces / 300 shelves = 9 database queries (previously 906).');
  }finally{await db.close()}
 });
