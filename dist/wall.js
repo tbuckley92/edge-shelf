@@ -218,7 +218,7 @@ function render(){
  syncRainbow();
  const missing=order.map(id=>byId.get(id)).filter(p=>!(p.w>0&&p.h>0)||p.w>100),pending=document.querySelector('#pending');
  pending.hidden=!missing.length;pending.replaceChildren();
- if(missing.length){const heading=document.createElement('strong');heading.textContent='Awaiting dimensions or a wider shelf';pending.append(heading);for(const p of missing){const line=document.createElement('button');line.textContent=p.name;line.onclick=()=>openDetails(order.indexOf(p.id));pending.append(line)}}
+ if(missing.length){const heading=document.createElement('strong');heading.textContent='Awaiting dimensions or a wider shelf';pending.append(heading);for(const p of missing){const line=document.createElement('button');line.dataset.id=p.id;line.textContent=p.name;line.onclick=()=>openDetails(order.indexOf(p.id));pending.append(line)}}
  document.querySelector('#emptyCollection').hidden=order.length>0||!signedIn;
  performance.clearMeasures('edge-render');performance.measure('edge-render',{start:started,end:performance.now()});
 }
@@ -337,6 +337,15 @@ document.querySelector('#undoRemoval').onclick=async()=>{
  try{await persist()}catch(error){report(error.message)}
 };
 const catalogueDrawer=document.querySelector('#catalogueDrawer');
+const pendingCatalogueAdds=new Map();
+function showAddedPiece(id){
+ // Shelves outside the viewport are virtualized, so mount the destination first.
+ const index=layouts.findIndex(layout=>layout.items.some(item=>item.id===id));
+ let target;
+ if(index>=0){const row=wall.querySelector('[data-row="'+index+'"]');mountShelf(row,index);target=row.querySelector('[data-id="'+id+'"]')}
+ else target=document.querySelector('#pending [data-id="'+id+'"]');
+ target?.scrollIntoView({block:'center',inline:'nearest'});target?.focus({preventScroll:true});
+}
 document.querySelector('#addPiece').onclick=()=>{catalogueDrawer.showModal();searchCatalog()};
 document.querySelector('#closeCatalogue').onclick=()=>catalogueDrawer.close();
 document.querySelector('#catalogueSearch').oninput=searchCatalog;
@@ -352,10 +361,15 @@ function searchCatalog(){
   const img=new Image();img.alt='';img.loading='lazy';img.src=assets[p.id]?.src||p.img;row.append(img);
   const label=document.createElement('span');label.textContent=p.name;row.append(label);
   if(p.releaseDate){const date=document.createElement('small');date.textContent=p.releaseDate;row.append(date)}
-  const button=document.createElement('button');button.className='edge-button';button.textContent='Add owned copy';button.onclick=async()=>{
-   button.disabled=true;const item={id:crypto.randomUUID(),productId:p.id};ownedItems.push(item);order.push(item.id);rebuildItems();renderInPlace();
-   try{await persist();catalogueDrawer.close()}catch(error){report(error.message)}finally{button.disabled=false}
-  };row.append(button);results.append(row);
+  const button=document.createElement('button');button.className='edge-button';button.textContent=pendingCatalogueAdds.has(p.id)?'Retry saving':'Add owned copy';
+  const errorMessage=document.createElement('span');errorMessage.setAttribute('role','alert');
+  let item=pendingCatalogueAdds.get(p.id)||null;if(item)errorMessage.textContent='This copy has not been confirmed saved. Retry saving.';button.onclick=async()=>{
+   button.disabled=true;errorMessage.textContent='';
+   if(!item){item={id:crypto.randomUUID(),productId:p.id};pendingCatalogueAdds.set(p.id,item);ownedItems.push(item);order.push(item.id);rebuildItems();renderInPlace()}
+   try{await persist();pendingCatalogueAdds.delete(p.id);catalogueDrawer.close();requestAnimationFrame(()=>showAddedPiece(item.id))}
+   catch(error){errorMessage.textContent='Could not save this copy: '+error.message;button.textContent='Retry saving';report(error.message)}
+   finally{button.disabled=false}
+  };row.append(button,errorMessage);results.append(row);
  }
 }
 document.querySelector('#marketingPreference').onchange=e=>{marketingPreference=e.target.checked;queueSave()};
