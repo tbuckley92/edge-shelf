@@ -260,3 +260,9 @@ button,select,input,.shelf-menu label,#saveStatus,#saveShelf,#loadStatus,.movebo
 @media(prefers-reduced-motion:reduce){.shelf-mist::before,.shelf-mist::after{animation:none}}
 
 .shelf-menu input[type=color]{width:64px;height:36px;padding:2px;border:1px solid #ccc;border-radius:6px;cursor:pointer}
+
+.shelf-move{position:absolute;left:8px;top:6px;z-index:7;border:1px solid #ffffff55;border-radius:15px;background:#202825c9;color:#fff;padding:6px 10px;font:12px system-ui;cursor:grab;touch-action:none}
+.shelf-selected{outline:2px solid #b5dbd0;outline-offset:-2px;opacity:.65}
+.shelf-drop-before{box-shadow:inset 0 4px #b5dbd0}
+.shelf-drop-after{box-shadow:inset 0 -4px #b5dbd0}
+.shelf-reordering,.shelf-reordering *{cursor:grabbing!important;user-select:none}

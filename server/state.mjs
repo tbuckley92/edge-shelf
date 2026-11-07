@@ -16,7 +16,9 @@ export function validateState(body,products){
   if(!Number.isFinite(fog)||fog<0||fog>100)fail();
   const fogSpeed=s.fogSpeed===undefined?1:s.fogSpeed,fogColour=s.fogColour===undefined?'#edf7ff':s.fogColour,lightColour=s.lightColour===undefined?'#ffe5b3':s.lightColour;
   if(!Number.isFinite(fogSpeed)||fogSpeed<.25||fogSpeed>3||!/^#[0-9a-f]{6}$/i.test(fogColour)||!/^#[0-9a-f]{6}$/i.test(lightColour))fail();
-  return {id:shelf.id,settings:{fogSpeed,fogColour,lightColour,fog,weather:s.weather,fixture:s.fixture,colour:s.colour,brightness:s.brightness,speed:s.speed,finish:s.finish}};
+  const pieceIds=s.pieceIds===undefined?[]:s.pieceIds;
+  if(!Array.isArray(pieceIds)||pieceIds.length>3000||new Set(pieceIds).size!==pieceIds.length||pieceIds.some(id=>!ids.has(id)))fail();
+  return {id:shelf.id,settings:{pieceIds,fogSpeed,fogColour,lightColour,fog,weather:s.weather,fixture:s.fixture,colour:s.colour,brightness:s.brightness,speed:s.speed,finish:s.finish}};
  });
  if(!Array.isArray(body.order)||body.order.length!==items.length||new Set(body.order).size!==items.length||body.order.some(id=>!ids.has(id)))fail();
  if(body.marketingPreference!==undefined&&body.marketingPreference!==null&&typeof body.marketingPreference!=='boolean')fail();
@@ -54,7 +56,7 @@ export async function writeState(sql,owner,state,products,packShelves){
  if(shelfIds.length)await sql`delete from shelf.shelves where owner_id=${owner} and layout_id=${state.layoutId} and id not in ${sql(shelfIds)}`;
  else await sql`delete from shelf.shelves where owner_id=${owner} and layout_id=${state.layoutId}`;
  const itemCatalog=new Map(state.items.map(i=>[i.id,products.get(i.productId)]));
- const rows=packShelves(state.order,itemCatalog),placement=new Map();
+ const rows=packShelves(state.order,itemCatalog,state.shelves.map(s=>s.settings.pieceIds)),placement=new Map();
  if(rows.length>state.shelves.length)throw new HttpError(400,'Missing shelves.');
  rows.forEach((row,index)=>row.items.forEach(item=>placement.set(item.id,state.shelves[index].id)));
  await sql`insert into shelf.placements(owner_id,layout_id,item_id,shelf_id,position)

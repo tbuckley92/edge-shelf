@@ -1,5 +1,10 @@
 // All measurements are centimetres. Fit each consecutive piece without shrinking it.
-function packShelves(ids, catalog) {
+function packShelves(ids, catalog, groups = []) {
+  if(groups.some(g=>g?.length)){
+    const available=new Set(ids),used=new Set(),rows=[];
+    for(const group of groups){const members=(group||[]).filter(id=>available.has(id)&&!used.has(id));members.forEach(id=>used.add(id));rows.push(...packShelves(members,catalog));}
+    rows.push(...packShelves(ids.filter(id=>!used.has(id)),catalog));return rows;
+  }
   const rows = [];
   let row = { items: [], width: 0, height: 0 };
   for (const id of ids) {

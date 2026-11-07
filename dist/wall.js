@@ -19,7 +19,7 @@ if(!rowSettings||typeof rowSettings!=='object')rowSettings={};
 const legacy={fixture:read('edge-wall-fixture','spot'),colour:read('edge-wall-led','warm'),brightness:read('edge-wall-brightness',70),speed:read('edge-wall-cycle-seconds',15)};
 function settings(n){
  const value={...legacy,...rowSettings[shelfIds[n]]};
- return {fogSpeed:Number.isFinite(value.fogSpeed)?Math.max(.25,Math.min(3,value.fogSpeed)):1,
+ return {pieceIds:(value.pieceIds||[]).filter(id=>byId.has(id)),fogSpeed:Number.isFinite(value.fogSpeed)?Math.max(.25,Math.min(3,value.fogSpeed)):1,
  fogColour:/^#[0-9a-f]{6}$/i.test(value.fogColour)?value.fogColour:'#edf7ff',
  lightColour:/^#[0-9a-f]{6}$/i.test(value.lightColour)?value.lightColour:'#ffe5b3',
  weather:['rain','snow'].includes(value.weather)?value.weather:'none',
@@ -80,7 +80,7 @@ shelfMenu.addEventListener('input',event=>{
  if(event.target.name==='lightColour')shelfMenu.querySelector('[name=colour]').value='custom';
  if(editingRow===null)return;const n=editingRow,row=wall.querySelector('[data-row="'+n+'"]');
  const finish=shelfMenu.querySelector('[name=finish]').value;paint(row,finish);row.dataset.finish=finish;
- rowSettings[shelfIds[n]]={finish,fogSpeed:+shelfMenu.querySelector('[name=fogSpeed]').value,fogColour:shelfMenu.querySelector('[name=fogColour]').value,lightColour:shelfMenu.querySelector('[name=lightColour]').value,fog:+shelfMenu.querySelector('[name=fog]').value,weather:shelfMenu.querySelector('[name=weather]').value,fixture:shelfMenu.querySelector('[name=fixture]').value,colour:shelfMenu.querySelector('[name=colour]').value,brightness:+shelfMenu.querySelector('[name=brightness]').value,speed:+shelfMenu.querySelector('[name=speed]').value};
+ rowSettings[shelfIds[n]]={pieceIds:settings(n).pieceIds,finish,fogSpeed:+shelfMenu.querySelector('[name=fogSpeed]').value,fogColour:shelfMenu.querySelector('[name=fogColour]').value,lightColour:shelfMenu.querySelector('[name=lightColour]').value,fog:+shelfMenu.querySelector('[name=fog]').value,weather:shelfMenu.querySelector('[name=weather]').value,fixture:shelfMenu.querySelector('[name=fixture]').value,colour:shelfMenu.querySelector('[name=colour]').value,brightness:+shelfMenu.querySelector('[name=brightness]').value,speed:+shelfMenu.querySelector('[name=speed]').value};
  applyLighting(row);menuLabels();syncRainbow();document.querySelector('#saveStatus').textContent='Unsaved changes';
 });
 document.querySelector('#saveShelf').onclick=()=>{
@@ -148,7 +148,9 @@ function renderInPlace(focusId=null){
 }
 function reorder(from,to){
  if(from<0||to<0||from>=order.length||to>=order.length||from===to)return;
- const moved=order[from];[order[from],order[to]]=[order[to],order[from]];
+ const moved=order[from],other=order[to];
+ for(const s of Object.values(rowSettings))if(s.pieceIds)s.pieceIds=s.pieceIds.map(id=>id===moved?other:id===other?moved:id);
+ [order[from],order[to]]=[order[to],order[from]];
  renderInPlace(moved);queueSave();
 }
 function openDetails(index){
@@ -184,7 +186,7 @@ const effectObserver=new IntersectionObserver(entries=>{
 const shelfObserver=new IntersectionObserver(entries=>{
  for(const entry of entries){const row=entry.target,n=Number(row.dataset.row);
   if(entry.isIntersecting)mountShelf(row,n);
-  else if(editingRow!==n&&(!drag||!row.contains(drag.btn))){
+  else if(!row.classList.contains('shelf-selected')&&editingRow!==n&&(!drag||!row.contains(drag.btn))){
    row.querySelectorAll('.weather').forEach(layer=>weatherObserver.unobserve(layer));
    row.replaceChildren();delete row.dataset.mounted;
   }
@@ -202,7 +204,7 @@ function paint(row,key){const m=materials[key];row.style.setProperty('--texture'
 }
 function mountShelf(row,n){
  if(row.dataset.mounted)return;row.dataset.mounted='true';const layout=layouts[n];
- row.innerHTML='<div class="display"><div class="lighting" aria-hidden="true"><i class="strip"></i></div><div class="ledge"><span class="top"></span><span class="front"></span><span class="fantasy-body" aria-hidden="true"></span><span class="fantasy-fringe" aria-hidden="true"></span></div><div class="slots"></div><span class="shelf-foreground" aria-hidden="true"></span><span class="shelf-mist mist-back" aria-hidden="true"></span><span class="shelf-mist mist-front" aria-hidden="true"></span><button type="button" class="shelf-gear" aria-label="Settings for shelf '+(n+1)+'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 3-.6 2.3-2 .9-2.2-.6-2 3.4 1.7 1.7v2.5L2.2 15l2 3.4 2.2-.6 2 .9L9 21h4l.6-2.3 2-.9 2.2.6 2-3.4-1.7-1.8v-2.5L19.8 9l-2-3.4-2.2.6-2-.9L13 3Z"/><circle cx="11" cy="12" r="3"/></svg></button></div>';
+ row.innerHTML='<div class="display"><button type="button" class="shelf-move" aria-label="Move shelf '+(n+1)+'" title="Drag shelf; use arrow keys to move">⠿ Move shelf</button><div class="lighting" aria-hidden="true"><i class="strip"></i></div><div class="ledge"><span class="top"></span><span class="front"></span><span class="fantasy-body" aria-hidden="true"></span><span class="fantasy-fringe" aria-hidden="true"></span></div><div class="slots"></div><span class="shelf-foreground" aria-hidden="true"></span><span class="shelf-mist mist-back" aria-hidden="true"></span><span class="shelf-mist mist-front" aria-hidden="true"></span><button type="button" class="shelf-gear" aria-label="Settings for shelf '+(n+1)+'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 3-.6 2.3-2 .9-2.2-.6-2 3.4 1.7 1.7v2.5L2.2 15l2 3.4 2.2-.6 2 .9L9 21h4l.6-2.3 2-.9 2.2.6 2-3.4-1.7-1.8v-2.5L19.8 9l-2-3.4-2.2.6-2-.9L13 3Z"/><circle cx="11" cy="12" r="3"/></svg></button></div>';
  row.dataset.finish=Object.hasOwn(materials,rowSettings[shelfIds[n]]?.finish)?rowSettings[shelfIds[n]].finish:Object.hasOwn(materials,finishes[n])?finishes[n]:['ice','jungle','oak','temple','magma'][n%5];
  paint(row,row.dataset.finish);applyLighting(row);
  row.querySelector('.shelf-gear').onclick=()=>openShelf(n);
@@ -216,7 +218,7 @@ function mountShelf(row,n){
 }
 function render(){
  const started=performance.now();shelfObserver.disconnect();effectObserver.disconnect();weatherObserver.disconnect();
- wall.replaceChildren();layouts=packShelves(order,byId);ensureShelves(layouts.length);
+ wall.replaceChildren();layouts=packShelves(order,byId,shelfIds.map(id=>rowSettings[id]?.pieceIds));ensureShelves(layouts.length);
  const fragment=document.createDocumentFragment();
  layouts.forEach((layout,n)=>{
   const row=document.createElement('section');row.className='row';row.dataset.row=n;row.dataset.shelfId=shelfIds[n];row.style.zIndex=layouts.length-n;
@@ -317,7 +319,7 @@ async function api(path,options={}){
  let data;try{data=await response.json()}catch{throw new Error('The collection service is unavailable.')}
  if(!response.ok){const error=new Error(data.error||'Could not save.');error.status=response.status;throw error}return data;
 }
-function snapshot(includePreview=false){return {layoutId,revision,items:ownedItems,order:[...order],shelves:shelfIds.map(id=>({id,settings:{...defaultSettings,...(!includePreview&&editingRow!==null&&id===shelfIds[editingRow]?originalSettings:rowSettings[id])}})),marketingPreference}}
+function snapshot(includePreview=false){for(const s of Object.values(rowSettings))if(s.pieceIds)s.pieceIds=s.pieceIds.filter(id=>byId.has(id));return {layoutId,revision,items:ownedItems,order:[...order],shelves:shelfIds.map(id=>({id,settings:{...defaultSettings,...(!includePreview&&editingRow!==null&&id===shelfIds[editingRow]?originalSettings:rowSettings[id])}})),marketingPreference}}
 let saveChain=Promise.resolve(),saveTimer=null,conflict=false,pendingSaves=0;
 function persist(includePreview=false){
  clearTimeout(saveTimer);saveTimer=null;const data=snapshot(includePreview);
@@ -396,3 +398,40 @@ async function start(){
  }catch(error){if(error.status!==401)report(error.message)}
 }
 start().catch(()=>report('Could not load the catalogue. Reload to try again.'));
+
+let shelfDrag=null;
+function moveShelf(from,to){
+ if(from===to||to<0||to>=layouts.length)return;
+ const groups=layouts.map((layout,n)=>({id:shelfIds[n],pieces:layout.items.map(p=>p.id)}));
+ const [moved]=groups.splice(from,1);groups.splice(to,0,moved);
+ const placed=new Set(groups.flatMap(g=>g.pieces));
+ order=[...groups.flatMap(g=>g.pieces),...order.filter(id=>!placed.has(id))];
+ const spare=shelfIds.slice(layouts.length);shelfIds=[...groups.map(g=>g.id),...spare];
+ for(const g of groups)rowSettings[g.id]={...rowSettings[g.id],pieceIds:g.pieces};
+ renderInPlace();wall.querySelector('[data-shelf-id="'+moved.id+'"] .shelf-move')?.focus({preventScroll:true});queueSave();
+}
+function shelfDragFrame(){
+ if(!shelfDrag)return;const d=shelfDrag;
+ const speed=d.y<100?-Math.ceil((100-d.y)/5):d.y>innerHeight-80?Math.ceil((d.y-innerHeight+80)/5):0;
+ if(speed)window.scrollBy(0,speed);
+ const rows=[...wall.children];let insertion=rows.filter(r=>Number(r.dataset.row)!==d.from&&d.y>r.getBoundingClientRect().top+r.getBoundingClientRect().height/2).length;
+ d.to=insertion;rows.forEach(r=>r.classList.remove('shelf-drop-before','shelf-drop-after'));
+ const others=rows.filter(r=>Number(r.dataset.row)!==d.from);
+ if(others[insertion])others[insertion].classList.add('shelf-drop-before');else others.at(-1)?.classList.add('shelf-drop-after');
+ d.frame=requestAnimationFrame(shelfDragFrame);
+}
+function endShelfDrag(commit){
+ if(!shelfDrag)return;const d=shelfDrag;shelfDrag=null;cancelAnimationFrame(d.frame);
+ wall.querySelectorAll('.shelf-selected,.shelf-drop-before,.shelf-drop-after').forEach(r=>r.classList.remove('shelf-selected','shelf-drop-before','shelf-drop-after'));
+ document.body.classList.remove('shelf-reordering');if(commit)moveShelf(d.from,d.to);
+}
+wall.addEventListener('pointerdown',e=>{
+ const handle=e.target.closest('.shelf-move');if(!handle||e.button!==0||drag||shelfDrag)return;
+ e.preventDefault();const row=handle.closest('.row');handle.setPointerCapture(e.pointerId);
+ shelfDrag={from:Number(row.dataset.row),to:Number(row.dataset.row),pointer:e.pointerId,y:e.clientY};row.classList.add('shelf-selected');document.body.classList.add('shelf-reordering');shelfDragFrame();
+});
+window.addEventListener('pointermove',e=>{if(shelfDrag?.pointer===e.pointerId){e.preventDefault();shelfDrag.y=e.clientY}});
+window.addEventListener('pointerup',e=>{if(shelfDrag?.pointer===e.pointerId)endShelfDrag(true)});
+window.addEventListener('pointercancel',()=>endShelfDrag(false));window.addEventListener('blur',()=>endShelfDrag(false));
+window.addEventListener('keydown',e=>{if(e.key==='Escape')endShelfDrag(false)});
+wall.addEventListener('keydown',e=>{const handle=e.target.closest('.shelf-move');if(!handle||!['ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();const from=Number(handle.closest('.row').dataset.row);moveShelf(from,from+(e.key==='ArrowUp'?-1:1))});
