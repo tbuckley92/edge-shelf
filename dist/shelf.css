@@ -216,3 +216,30 @@ button,select,input,.shelf-menu label,#saveStatus,#saveShelf,#loadStatus,.movebo
  background:linear-gradient(180deg,#ffffff35,#0003 25%,#0005);
  box-shadow:inset 0 1px 0 #ffffff9c,inset 0 -1px 0 #0005;
 }
+
+/* Fantasy sprites carry their own top/fascia shading. Overhangs are transparent,
+   above the following row's pieces, and never intercept pointer/touch input. */
+.fantasy-body,.fantasy-fringe{display:none;pointer-events:none}
+.wall .row[data-fantasy="true"] .ledge{
+ background:none;box-shadow:none;clip-path:none;overflow:visible;
+}
+.wall .row[data-fantasy="true"] .ledge>.top,
+.wall .row[data-fantasy="true"] .ledge>.front{display:none}
+.wall .row[data-fantasy="true"] .fantasy-body{
+ display:block;position:absolute;inset:0;background:var(--fantasy-body) center/100% 100% no-repeat;
+}
+.wall .row[data-fantasy="true"] .fantasy-fringe{
+ display:block;position:absolute;top:calc(100% - 1px);left:0;width:100%;aspect-ratio:var(--fringe-ratio);
+ background:var(--fantasy-fringe) center/100% 100% no-repeat;
+}
+.wall .row[data-fantasy="true"] .display{overflow:visible}
+.wall .row[data-finish="magma"][data-fantasy="true"] .fantasy-fringe:after{
+ content:'';position:absolute;left:24.5%;top:90%;width:5px;height:9px;border-radius:45% 45% 55% 55%;
+ background:radial-gradient(ellipse at 50% 65%,#fff4a0,#ffae00 45%,#f54900 80%);box-shadow:0 0 5px #ff7300;
+ animation:lavaDrop 3.2s ease-in infinite;pointer-events:none;
+}
+@keyframes lavaDrop{0%,55%{opacity:0;transform:translateY(-3px) scale(.6)}60%{opacity:1;transform:translateY(0) scale(.8)}95%{opacity:.8}100%{opacity:0;transform:translateY(45px) scale(.5,1.3)}}
+.row:not(.effects-visible) .fantasy-fringe:after{animation-play-state:paused!important}
+@media(prefers-reduced-motion:reduce){.fantasy-fringe:after{display:none}}
+/* Keep shelf-to-shelf foreground order inside the cabinet, below app controls. */
+.wall{position:relative;isolation:isolate;z-index:0}

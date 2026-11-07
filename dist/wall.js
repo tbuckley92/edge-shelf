@@ -76,14 +76,13 @@ shelfMenu.addEventListener('input',()=>{
  rowSettings[shelfIds[n]]={finish,weather:shelfMenu.querySelector('[name=weather]').value,fixture:shelfMenu.querySelector('[name=fixture]').value,colour:shelfMenu.querySelector('[name=colour]').value,brightness:+shelfMenu.querySelector('[name=brightness]').value,speed:+shelfMenu.querySelector('[name=speed]').value};
  applyLighting(row);menuLabels();syncRainbow();document.querySelector('#saveStatus').textContent='Unsaved changes';
 });
-document.querySelector('#saveShelf').onclick=async()=>{
+document.querySelector('#saveShelf').onclick=()=>{
  if(editingRow===null)return;
- const button=document.querySelector('#saveShelf');button.disabled=true;savingShelf=true;for(const control of shelfMenu.querySelectorAll('input,select,button'))control.disabled=true;
  const n=editingRow,row=wall.querySelector('[data-row="'+n+'"]');
  rowSettings[shelfIds[n]]={...settings(n),finish:row.dataset.finish};
- try{await persist(true);originalSettings={...rowSettings[shelfIds[n]]};originalFinish=row.dataset.finish;savingShelf=false;closeTray()}
- catch(error){document.querySelector('#saveStatus').textContent=error.message}
- finally{savingShelf=false;for(const control of shelfMenu.querySelectorAll('input,select,button'))control.disabled=false}
+ // Commit the preview locally before closing; the queued snapshot retains it.
+ originalSettings={...rowSettings[shelfIds[n]]};originalFinish=row.dataset.finish;
+ persist(true).catch(()=>{});closeTray();
 };
 let closingTimer=null;
 function closeTray(){
@@ -189,10 +188,13 @@ function pruneShelves(){
  for(const row of wall.querySelectorAll('.row[data-mounted]')){const r=row.getBoundingClientRect();if((r.bottom < -650 || r.top > innerHeight+650)&&Number(row.dataset.row)!==editingRow){row.querySelectorAll('.weather').forEach(layer=>weatherObserver.unobserve(layer));row.replaceChildren();delete row.dataset.mounted}}
 }
 function ensureShelves(count){while(shelfIds.length<count){const id=crypto.randomUUID();shelfIds.push(id);rowSettings[id]={...defaultSettings,finish:['ice','jungle','oak','temple','magma'][shelfIds.length%5]}}}
-function paint(row,key){const m=materials[key];row.style.setProperty('--texture',m.texture);row.style.setProperty('--tone',m.tone);row.style.setProperty('--top',m.top)}
+function paint(row,key){const m=materials[key];row.style.setProperty('--texture',m.texture);row.style.setProperty('--tone',m.tone);row.style.setProperty('--top',m.top);
+ row.dataset.fantasy=m.fringe?'true':'false';
+ row.style.setProperty('--fantasy-body',m.body||'none');row.style.setProperty('--fantasy-fringe',m.fringe||'none');row.style.setProperty('--fringe-ratio',m.fringeRatio||6);
+}
 function mountShelf(row,n){
  if(row.dataset.mounted)return;row.dataset.mounted='true';const layout=layouts[n];
- row.innerHTML='<div class="display"><div class="lighting" aria-hidden="true"><i class="strip"></i></div><div class="ledge"><span class="top"></span><span class="front"></span></div><div class="slots"></div><button type="button" class="shelf-gear" aria-label="Settings for shelf '+(n+1)+'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 3-.6 2.3-2 .9-2.2-.6-2 3.4 1.7 1.7v2.5L2.2 15l2 3.4 2.2-.6 2 .9L9 21h4l.6-2.3 2-.9 2.2.6 2-3.4-1.7-1.8v-2.5L19.8 9l-2-3.4-2.2.6-2-.9L13 3Z"/><circle cx="11" cy="12" r="3"/></svg></button></div>';
+ row.innerHTML='<div class="display"><div class="lighting" aria-hidden="true"><i class="strip"></i></div><div class="ledge"><span class="top"></span><span class="front"></span><span class="fantasy-body" aria-hidden="true"></span><span class="fantasy-fringe" aria-hidden="true"></span></div><div class="slots"></div><button type="button" class="shelf-gear" aria-label="Settings for shelf '+(n+1)+'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 3-.6 2.3-2 .9-2.2-.6-2 3.4 1.7 1.7v2.5L2.2 15l2 3.4 2.2-.6 2 .9L9 21h4l.6-2.3 2-.9 2.2.6 2-3.4-1.7-1.8v-2.5L19.8 9l-2-3.4-2.2.6-2-.9L13 3Z"/><circle cx="11" cy="12" r="3"/></svg></button></div>';
  row.dataset.finish=Object.hasOwn(materials,rowSettings[shelfIds[n]]?.finish)?rowSettings[shelfIds[n]].finish:Object.hasOwn(materials,finishes[n])?finishes[n]:['ice','jungle','oak','temple','magma'][n%5];
  paint(row,row.dataset.finish);applyLighting(row);
  row.querySelector('.shelf-gear').onclick=()=>openShelf(n);
@@ -209,7 +211,7 @@ function render(){
  wall.replaceChildren();layouts=packShelves(order,byId);ensureShelves(layouts.length);
  const fragment=document.createDocumentFragment();
  layouts.forEach((layout,n)=>{
-  const row=document.createElement('section');row.className='row';row.dataset.row=n;row.dataset.shelfId=shelfIds[n];
+  const row=document.createElement('section');row.className='row';row.dataset.row=n;row.dataset.shelfId=shelfIds[n];row.style.zIndex=layouts.length-n;
   row.style.setProperty('--clearance',layout.clearance);
   row.style.setProperty('--shelf-depth',Math.max(6,...layout.items.map(item=>(byId.get(item.id).d||30)*.16)));
   fragment.append(row);
@@ -314,7 +316,7 @@ function persist(includePreview=false){
  pendingSaves++;const work=saveChain.catch(()=>{}).then(async()=>{
   if(conflict)throw new Error('Collection changed elsewhere. Reload before saving.');
   data.revision=revision;report('Saving…');
-  try{const result=await api('collection',{method:'PUT',body:JSON.stringify(data)});revision=result.revision;report('Saved');}
+  try{const result=await api('collection',{method:'PUT',body:JSON.stringify(data)});revision=result.revision;report(pendingSaves>1?'Saving…':'Saved');document.querySelector('#retrySave').hidden=true;}
   catch(error){if(error.status===409)conflict=true;report(error.message);document.querySelector('#retrySave').hidden=false;throw error}
  }).finally(()=>pendingSaves--);saveChain=work;return work;
 }
