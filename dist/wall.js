@@ -19,14 +19,18 @@ if(!rowSettings||typeof rowSettings!=='object')rowSettings={};
 const legacy={fixture:read('edge-wall-fixture','spot'),colour:read('edge-wall-led','warm'),brightness:read('edge-wall-brightness',70),speed:read('edge-wall-cycle-seconds',15)};
 function settings(n){
  const value={...legacy,...rowSettings[shelfIds[n]]};
- return {weather:['rain','snow'].includes(value.weather)?value.weather:'none',
+ return {fogSpeed:Number.isFinite(value.fogSpeed)?Math.max(.25,Math.min(3,value.fogSpeed)):1,
+ fogColour:/^#[0-9a-f]{6}$/i.test(value.fogColour)?value.fogColour:'#edf7ff',
+ lightColour:/^#[0-9a-f]{6}$/i.test(value.lightColour)?value.lightColour:'#ffe5b3',
+ weather:['rain','snow'].includes(value.weather)?value.weather:'none',
  fixture:['none','spot','strip'].includes(value.fixture)?value.fixture:'spot',
- colour:[...Object.keys(lights),'rainbow'].includes(value.colour)?value.colour:'warm',
+ colour:[...Object.keys(lights),'rainbow','custom'].includes(value.colour)?value.colour:'warm',
  fog:Number.isFinite(value.fog)?Math.max(0,Math.min(100,value.fog)):(['ice','snow'].includes(value.finish||'ice')?30:0),
  brightness:Number.isFinite(+value.brightness)?Math.max(0,Math.min(100,+value.brightness)):70,
  speed:Number.isFinite(+value.speed)?Math.max(3,Math.min(60,+value.speed)):15};
 }
 wall.classList.add('cabinet');wall.style.setProperty('--backwall','linear-gradient(100deg,#222827,#39413e 50%,#252c29)');wall.style.setProperty('--caption','#eceee5');
+function colourRGB(hex){return hex.slice(1).match(/../g).map(v=>parseInt(v,16)).join(',')}
 function rainbowRGB(hue){
  const sector=hue/60,x=1-Math.abs(sector%2-1);
  return [[1,x,0],[x,1,0],[0,1,x],[0,x,1],[x,0,1],[1,0,x]][Math.floor(sector)%6].map(v=>Math.round((.3+.7*v)*255)).join(',');
@@ -44,7 +48,8 @@ function syncRainbow(){cancelAnimationFrame(rainbowFrame);if(!document.hidden&&!
 document.addEventListener('visibilitychange',syncRainbow);
 function applyLighting(row){
  const s=settings(row.dataset.row);row.dataset.fixture=s.fixture;applyWeather(row,s.weather);row.style.setProperty('--fog-strength',s.fog/100);
- row.style.setProperty('--light',s.colour==='rainbow'?rainbowRGB(0):lights[s.colour]);
+ row.style.setProperty('--fog-duration',(10/s.fogSpeed)+'s');row.style.setProperty('--fog-colour',colourRGB(s.fogColour));
+ row.style.setProperty('--light',s.colour==='rainbow'?rainbowRGB(0):s.colour==='custom'?colourRGB(s.lightColour):lights[s.colour]);
  row.style.setProperty('--power',s.fixture==='none'||s.colour==='off'?0:s.brightness/100);
  row.style.setProperty('--rim',s.fixture==='none'||s.colour==='off'?0:s.brightness/300);
 }
@@ -55,7 +60,7 @@ function openShelf(n){
  const row=wall.querySelector('[data-row="'+n+'"]'),s=settings(n);
  originalFinish=row.dataset.finish;shelfMenu.querySelector('[name=finish]').value=originalFinish;
  document.querySelector('#saveStatus').textContent='';
- for(const key of ['fixture','colour','brightness','speed','weather','fog'])shelfMenu.querySelector('[name='+key+']').value=s[key];
+ for(const key of ['fixture','colour','brightness','speed','weather','fog','fogSpeed','fogColour','lightColour'])shelfMenu.querySelector('[name='+key+']').value=s[key];
  menuLabels();shelfMenu.classList.remove('closing');shelfMenu.showModal();
  requestAnimationFrame(()=>{
   const room=window.innerHeight-shelfMenu.getBoundingClientRect().height-76;
@@ -67,14 +72,15 @@ function openShelf(n){
 function menuLabels(){
  const colour=shelfMenu.querySelector('[name=colour]').value;
  const noLights=shelfMenu.querySelector('[name=fixture]').value==='none';
- for(const key of ['colour','brightness'])shelfMenu.querySelector('[name='+key+']').closest('label').hidden=noLights;
+ for(const key of ['colour','brightness','lightColour'])shelfMenu.querySelector('[name='+key+']').closest('label').hidden=noLights;
  shelfMenu.querySelector('.speed-setting').hidden=noLights||colour!=='rainbow';
- for(const key of ['brightness','speed','fog'])shelfMenu.querySelector('[data-output='+key+']').textContent=shelfMenu.querySelector('[name='+key+']').value+(key==='speed'?'s':'%');
+ for(const key of ['brightness','speed','fog','fogSpeed'])shelfMenu.querySelector('[data-output='+key+']').textContent=shelfMenu.querySelector('[name='+key+']').value+(key==='speed'?'s':key==='fogSpeed'?'×':'%');
 }
-shelfMenu.addEventListener('input',()=>{
+shelfMenu.addEventListener('input',event=>{
+ if(event.target.name==='lightColour')shelfMenu.querySelector('[name=colour]').value='custom';
  if(editingRow===null)return;const n=editingRow,row=wall.querySelector('[data-row="'+n+'"]');
  const finish=shelfMenu.querySelector('[name=finish]').value;paint(row,finish);row.dataset.finish=finish;
- rowSettings[shelfIds[n]]={finish,fog:+shelfMenu.querySelector('[name=fog]').value,weather:shelfMenu.querySelector('[name=weather]').value,fixture:shelfMenu.querySelector('[name=fixture]').value,colour:shelfMenu.querySelector('[name=colour]').value,brightness:+shelfMenu.querySelector('[name=brightness]').value,speed:+shelfMenu.querySelector('[name=speed]').value};
+ rowSettings[shelfIds[n]]={finish,fogSpeed:+shelfMenu.querySelector('[name=fogSpeed]').value,fogColour:shelfMenu.querySelector('[name=fogColour]').value,lightColour:shelfMenu.querySelector('[name=lightColour]').value,fog:+shelfMenu.querySelector('[name=fog]').value,weather:shelfMenu.querySelector('[name=weather]').value,fixture:shelfMenu.querySelector('[name=fixture]').value,colour:shelfMenu.querySelector('[name=colour]').value,brightness:+shelfMenu.querySelector('[name=brightness]').value,speed:+shelfMenu.querySelector('[name=speed]').value};
  applyLighting(row);menuLabels();syncRainbow();document.querySelector('#saveStatus').textContent='Unsaved changes';
 });
 document.querySelector('#saveShelf').onclick=()=>{
