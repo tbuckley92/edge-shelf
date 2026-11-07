@@ -25,6 +25,7 @@ export default async function handler(request){
  }catch(error){
   // Do not log query parameters, tokens, SQL parameters or private collection data.
   const status=error.status||500;
+  if(status>=500)console.error('Edge Shelf request failed', {type:error.name,code:/^[A-Z0-9_]{2,64}$/.test(error.code||'')?error.code:'UNCLASSIFIED'});
   return json({error:status<500||status===503?error.message:'Could not complete this request. Please try again.'},status);
  }
 }
