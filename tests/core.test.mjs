@@ -1,3 +1,5 @@
+import vm from 'node:vm';
+import {materialKeys} from '../server/material-keys.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import {randomUUID} from 'node:crypto';
 import {packShelves} from '../dist/packing.mjs';
 import {randomToken,hash,equal,cookie,assertOrigin,assertIdentity,sessionCookie} from '../server/security.mjs';
@@ -15,3 +17,16 @@ test('CSRF rejects missing and foreign origins',()=>{assert.throws(()=>assertOri
 test('unauthenticated collection requests never enter database',async()=>{const response=await handler(new Request('https://shelf/api/collection'));assert.equal(response.status,401);assert.equal(response.headers.get('cache-control'),'no-store')});
 test('write endpoint rejects cross-origin calls before database access',async()=>{const response=await handler(new Request('https://shelf/api/collection',{method:'PUT',headers:{origin:'https://evil'},body:'{}'}));assert.equal(response.status,403)});
 test('all available artwork is preprocessed and has bottom contact metadata',()=>{const catalog=JSON.parse(fs.readFileSync('dist/catalog.json')),assets=JSON.parse(fs.readFileSync('dist/assets.json'));for(const p of catalog.filter(p=>p.img)){assert.ok(fs.existsSync('dist/'+assets[p.id].src));assert.equal(assets[p.id].contact.y,1)}console.log('Catalogue:',catalog.length,'dimensioned:',catalog.filter(p=>p.h>0&&p.w>0).length)});
+
+test('every selectable shelf finish is accepted by collection saves and has local textures',()=>{
+ const ui=vm.runInNewContext(fs.readFileSync('dist/materials.js','utf8')+';materials');
+ assert.deepEqual(Object.keys(ui).sort(),[...materialKeys].sort());
+ const catalog=new Map(products);catalog.finishes=new Set(materialKeys);
+ for(const finish of Object.keys(ui)){
+  const state=fixture();state.shelves[0].settings.finish=finish;
+  assert.equal(validateState(state,catalog).shelves[0].settings.finish,finish);
+  for(const field of ['top','texture'])for(const match of ui[finish][field].matchAll(/url\(([^)]+)\)/g))assert.ok(fs.existsSync('dist/'+match[1]),finish+' '+field+' asset');
+ }
+ const invalid=fixture();invalid.shelves[0].settings.finish='unknown-finish';
+ assert.throws(()=>validateState(invalid,catalog));
+});
