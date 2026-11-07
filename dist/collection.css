@@ -10,3 +10,14 @@
 .wall.cabinet .row{height:calc(var(--clearance)*var(--cm,3px) + 16px + var(--surface) + 3px)}
 .row:not(.effects-visible) .weather *{animation-play-state:paused!important}
 @media(prefers-reduced-motion:reduce){.weather *{animation:none!important}}
+
+/* Swap previews never alter hit targets or the saved collection. */
+.wall .piece.swap-displaced img,.wall .piece.swap-displaced .surface-light{visibility:hidden}
+.swap-preview{position:fixed;z-index:19;pointer-events:none;object-fit:contain;object-position:center bottom;transform:translate(-50%,-100%);filter:drop-shadow(0 0 2px #d5f5ee99)}
+.wall{overflow-anchor:none}.piece{user-select:none;-webkit-user-select:none}
+.remove-piece,#undoRemoval{display:block;margin:16px 0;padding:12px;border:1px solid #bbb;border-radius:4px;background:transparent;font:inherit;cursor:pointer}
+#undoRemoval{margin:12px 22px}#catalogueDrawer{width:min(100%,960px);max-height:90svh}
+#catalogueResults{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:14px}
+.catalogue-result{display:flex;flex-direction:column;justify-content:flex-end;text-align:center;padding:16px 10px;border:0;border-bottom:8px solid #444b47;background:linear-gradient(#303734,#222827);color:#fff;content-visibility:auto;contain-intrinsic-size:auto 260px}
+.catalogue-result img{width:100%;height:150px;object-fit:contain}.catalogue-result span{flex:0;min-height:34px}.catalogue-result small{font-size:10px}.catalogue-result .edge-button{width:100%}
+#catalogueSort{margin:8px;padding:8px;font:inherit}#catalogueNote{font-size:11px;color:#626762}
