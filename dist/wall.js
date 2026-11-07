@@ -246,12 +246,40 @@ function hit(x,y){
  const pieces=[...row.querySelectorAll('.piece')];if(!pieces.length)return null;
  return pieces.reduce((best,p)=>{const r=p.getBoundingClientRect(),b=best.getBoundingClientRect();return Math.abs(x-r.left-r.width/2)<Math.abs(x-b.left-b.width/2)?p:best});
 }
+function clearInsertPreview(){
+ if(!drag?.insertion)return;
+ const row=drag.insertion.row,n=Number(row.dataset.row);
+ for(const item of layouts[n].items)row.querySelector('[data-id="'+item.id+'"]')?.style.setProperty('--x',item.x);
+ row.classList.remove('insert-preview');drag.insertion=null;
+}
+function insertionAt(x,y){
+ const row=document.elementFromPoint(x,y)?.closest('.row');if(!row)return null;
+ const n=Number(row.dataset.row),bounds=row.getBoundingClientRect(),position=(x-bounds.left)/bounds.width*100,id=drag.btn.dataset.id;
+ const members=layouts[n].items.filter(item=>item.id!==id);
+ const index=members.filter(item=>position>item.x+byId.get(item.id).w/2).length;
+ const groups=insertOnShelf(layouts.map(r=>r.items.map(i=>i.id)),id,n,index,byId);
+ return groups?{row,n,groups}:null;
+}
+function commitInsertion(groups,id){
+ const entries=groups.map((pieces,n)=>({pieces,id:shelfIds[n]})),occupied=entries.filter(e=>e.pieces.length),empty=entries.filter(e=>!e.pieces.length);
+ const placed=new Set(groups.flat());order=[...occupied.flatMap(e=>e.pieces),...order.filter(id=>!placed.has(id))];
+ shelfIds=[...occupied.map(e=>e.id),...empty.map(e=>e.id),...shelfIds.slice(groups.length)];
+ for(const e of entries)rowSettings[e.id]={...rowSettings[e.id],pieceIds:e.pieces};
+ renderInPlace(id);queueSave();
+}
 function clearSwapPreview(){
  if(!drag)return;drag.target?.classList.remove('swap-displaced');drag.preview?.remove();drag.preview=null;
 }
 function moveGhost(){
  if(!drag?.ghost)return;
  drag.ghost.style.left=drag.x+'px';drag.ghost.style.top=drag.y+'px';
+ const insertion=insertionAt(drag.x,drag.y);clearInsertPreview();
+ if(insertion){
+  clearSwapPreview();drag.target=null;drag.insertion=insertion;insertion.row.classList.add('insert-preview');
+  const preview=packShelves(insertion.groups[insertion.n],byId)[0];
+  for(const item of preview.items)if(item.id!==drag.btn.dataset.id)insertion.row.querySelector('[data-id="'+item.id+'"]')?.style.setProperty('--x',item.x);
+  return;
+ }
  const candidate=hit(drag.x,drag.y),target=candidate===drag.btn?null:candidate;
  if(target!==drag.target){
   clearSwapPreview();drag.target=target;
@@ -274,10 +302,10 @@ function begin(){
  autoscroll();
 }
 function end(drop){
- if(!drag)return;const d=drag;clearSwapPreview();drag=null;clearTimeout(d.timer);cancelAnimationFrame(d.frame);
+ if(!drag)return;const d=drag,insertion=d.insertion;clearInsertPreview();clearSwapPreview();drag=null;clearTimeout(d.timer);cancelAnimationFrame(d.frame);
  d.btn.classList.remove('dragging');d.btn.removeAttribute('aria-pressed');d.target?.classList.remove('target');d.ghost?.remove();
  pruneShelves();
- if(d.ghost){ignoreUntil=Date.now()+600;if(drop&&d.target)reorder(Number(d.btn.dataset.index),Number(d.target.dataset.index))}
+ if(d.ghost){ignoreUntil=Date.now()+600;if(drop&&insertion)commitInsertion(insertion.groups,d.btn.dataset.id);else if(drop&&d.target)reorder(Number(d.btn.dataset.index),Number(d.target.dataset.index))}
 }
 function press(btn,x,y,extra={}){
  drag={btn,x,y,startX:x,startY:y,...extra};

@@ -1,7 +1,7 @@
 import vm from 'node:vm';
 import {materialKeys} from '../server/material-keys.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs';import {randomUUID} from 'node:crypto';
-import {packShelves} from '../dist/packing.mjs';
+import {packShelves,insertOnShelf} from '../dist/packing.mjs';
 import {randomToken,hash,equal,cookie,assertOrigin,assertIdentity,sessionCookie} from '../server/security.mjs';
 import {validateState} from '../server/state.mjs';
 import handler from '../netlify/functions/api.mjs';
@@ -39,3 +39,5 @@ test('explicit shelf groups keep a short shelf together when moved before a full
 
 test('background references and positioning are validated',()=>{const f=fixture(),s=f.shelves[0].settings;s.background=randomUUID();s.bgX=20;s.bgY=75;s.bgDim=40;const saved=validateState(f,products).shelves[0].settings;assert.equal(saved.background,s.background);assert.equal(saved.bgY,75);for(const [key,value] of [['background','https://evil.test/photo'],['background','../other'],['bgX',-1],['bgY',101],['bgDim','25']])assert.throws(()=>validateState({...f,shelves:[{...f.shelves[0],settings:{...s,[key]:value}}]},products));});
 test('photo endpoints reject missing sessions and foreign upload origins',async()=>{assert.equal((await handler(new Request('https://shelf/api/background?shelf=test'))).status,401);assert.equal((await handler(new Request('https://shelf/api/background',{method:'POST',headers:{origin:'https://evil'},body:'photo'}))).status,403)});
+
+test('drop inserts into available shelf space without swapping or changing the original groups',()=>{const c=new Map([['a',{w:20,h:20}],['b',{w:30,h:30}],['c',{w:30,h:30}]]),groups=[['a'],['b','c']];const result=insertOnShelf(groups,'a',1,1,c);assert.deepEqual(result,[[],['b','a','c']]);assert.deepEqual(groups,[['a'],['b','c']]);assert.equal(packShelves(result.flat(),c,result).length,1);assert.equal(insertOnShelf(groups,'a',1,1,new Map([...c,['a',{w:35,h:20}]])),null);assert.deepEqual(insertOnShelf([['b','a','c']],'a',0,0,c),[['a','b','c']]);});

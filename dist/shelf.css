@@ -278,3 +278,7 @@ button,select,input,.shelf-menu label,#saveStatus,#saveShelf,#loadStatus,.movebo
 .row-background{display:none}
 .row[data-photo="true"] .row-background{display:block;position:absolute;inset:0;z-index:0;background-image:linear-gradient(rgba(0,0,0,var(--bg-dim,.25)),rgba(0,0,0,var(--bg-dim,.25))),var(--row-photo);background-size:cover;background-position:var(--bg-x,50%) var(--bg-y,50%);pointer-events:none}
 .background-settings{margin:12px 0;padding:10px;border:1px solid #ddd;border-radius:6px}.background-settings legend{font-weight:600}.background-settings p{font-size:12px}.photo-upload input{max-width:210px}#removeBackground{padding:8px;border:1px solid #ccc;background:white;border-radius:4px}
+
+.insert-preview{outline:2px solid #b5dbd0;outline-offset:-2px}
+.insert-preview .piece:not(.dragging){transition:left .12s ease}
+@media(prefers-reduced-motion:reduce){.insert-preview .piece{transition:none}}
