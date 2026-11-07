@@ -22,6 +22,7 @@ function settings(n){
  return {weather:['rain','snow'].includes(value.weather)?value.weather:'none',
  fixture:['none','spot','strip'].includes(value.fixture)?value.fixture:'spot',
  colour:[...Object.keys(lights),'rainbow'].includes(value.colour)?value.colour:'warm',
+ fog:Number.isFinite(value.fog)?Math.max(0,Math.min(100,value.fog)):(['ice','snow'].includes(value.finish||'ice')?65:0),
  brightness:Number.isFinite(+value.brightness)?Math.max(0,Math.min(100,+value.brightness)):70,
  speed:Number.isFinite(+value.speed)?Math.max(3,Math.min(60,+value.speed)):15};
 }
@@ -42,7 +43,7 @@ function animateRainbow(time){
 function syncRainbow(){cancelAnimationFrame(rainbowFrame);if(!document.hidden&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&[...wall.querySelectorAll('.row[data-mounted].effects-visible')].some(r=>settings(r.dataset.row).colour==='rainbow'))rainbowFrame=requestAnimationFrame(animateRainbow)}
 document.addEventListener('visibilitychange',syncRainbow);
 function applyLighting(row){
- const s=settings(row.dataset.row);row.dataset.fixture=s.fixture;applyWeather(row,s.weather);
+ const s=settings(row.dataset.row);row.dataset.fixture=s.fixture;applyWeather(row,s.weather);row.style.setProperty('--fog-strength',s.fog/100);
  row.style.setProperty('--light',s.colour==='rainbow'?rainbowRGB(0):lights[s.colour]);
  row.style.setProperty('--power',s.fixture==='none'||s.colour==='off'?0:s.brightness/100);
  row.style.setProperty('--rim',s.fixture==='none'||s.colour==='off'?0:s.brightness/300);
@@ -54,7 +55,7 @@ function openShelf(n){
  const row=wall.querySelector('[data-row="'+n+'"]'),s=settings(n);
  originalFinish=row.dataset.finish;shelfMenu.querySelector('[name=finish]').value=originalFinish;
  document.querySelector('#saveStatus').textContent='';
- for(const key of ['fixture','colour','brightness','speed','weather'])shelfMenu.querySelector('[name='+key+']').value=s[key];
+ for(const key of ['fixture','colour','brightness','speed','weather','fog'])shelfMenu.querySelector('[name='+key+']').value=s[key];
  menuLabels();shelfMenu.classList.remove('closing');shelfMenu.showModal();
  requestAnimationFrame(()=>{
   const room=window.innerHeight-shelfMenu.getBoundingClientRect().height-76;
@@ -68,12 +69,12 @@ function menuLabels(){
  const noLights=shelfMenu.querySelector('[name=fixture]').value==='none';
  for(const key of ['colour','brightness'])shelfMenu.querySelector('[name='+key+']').closest('label').hidden=noLights;
  shelfMenu.querySelector('.speed-setting').hidden=noLights||colour!=='rainbow';
- for(const key of ['brightness','speed'])shelfMenu.querySelector('[data-output='+key+']').textContent=shelfMenu.querySelector('[name='+key+']').value+(key==='speed'?'s':'%');
+ for(const key of ['brightness','speed','fog'])shelfMenu.querySelector('[data-output='+key+']').textContent=shelfMenu.querySelector('[name='+key+']').value+(key==='speed'?'s':'%');
 }
 shelfMenu.addEventListener('input',()=>{
  if(editingRow===null)return;const n=editingRow,row=wall.querySelector('[data-row="'+n+'"]');
  const finish=shelfMenu.querySelector('[name=finish]').value;paint(row,finish);row.dataset.finish=finish;
- rowSettings[shelfIds[n]]={finish,weather:shelfMenu.querySelector('[name=weather]').value,fixture:shelfMenu.querySelector('[name=fixture]').value,colour:shelfMenu.querySelector('[name=colour]').value,brightness:+shelfMenu.querySelector('[name=brightness]').value,speed:+shelfMenu.querySelector('[name=speed]').value};
+ rowSettings[shelfIds[n]]={finish,fog:+shelfMenu.querySelector('[name=fog]').value,weather:shelfMenu.querySelector('[name=weather]').value,fixture:shelfMenu.querySelector('[name=fixture]').value,colour:shelfMenu.querySelector('[name=colour]').value,brightness:+shelfMenu.querySelector('[name=brightness]').value,speed:+shelfMenu.querySelector('[name=speed]').value};
  applyLighting(row);menuLabels();syncRainbow();document.querySelector('#saveStatus').textContent='Unsaved changes';
 });
 document.querySelector('#saveShelf').onclick=()=>{
@@ -195,7 +196,7 @@ function paint(row,key){const m=materials[key];row.style.setProperty('--texture'
 }
 function mountShelf(row,n){
  if(row.dataset.mounted)return;row.dataset.mounted='true';const layout=layouts[n];
- row.innerHTML='<div class="display"><div class="lighting" aria-hidden="true"><i class="strip"></i></div><div class="ledge"><span class="top"></span><span class="front"></span><span class="fantasy-body" aria-hidden="true"></span><span class="fantasy-fringe" aria-hidden="true"></span></div><div class="slots"></div><span class="shelf-foreground" aria-hidden="true"></span><span class="shelf-mist" aria-hidden="true"></span><button type="button" class="shelf-gear" aria-label="Settings for shelf '+(n+1)+'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 3-.6 2.3-2 .9-2.2-.6-2 3.4 1.7 1.7v2.5L2.2 15l2 3.4 2.2-.6 2 .9L9 21h4l.6-2.3 2-.9 2.2.6 2-3.4-1.7-1.8v-2.5L19.8 9l-2-3.4-2.2.6-2-.9L13 3Z"/><circle cx="11" cy="12" r="3"/></svg></button></div>';
+ row.innerHTML='<div class="display"><div class="lighting" aria-hidden="true"><i class="strip"></i></div><div class="ledge"><span class="top"></span><span class="front"></span><span class="fantasy-body" aria-hidden="true"></span><span class="fantasy-fringe" aria-hidden="true"></span></div><div class="slots"></div><span class="shelf-foreground" aria-hidden="true"></span><span class="shelf-mist mist-back" aria-hidden="true"></span><span class="shelf-mist mist-front" aria-hidden="true"></span><button type="button" class="shelf-gear" aria-label="Settings for shelf '+(n+1)+'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 3-.6 2.3-2 .9-2.2-.6-2 3.4 1.7 1.7v2.5L2.2 15l2 3.4 2.2-.6 2 .9L9 21h4l.6-2.3 2-.9 2.2.6 2-3.4-1.7-1.8v-2.5L19.8 9l-2-3.4-2.2.6-2-.9L13 3Z"/><circle cx="11" cy="12" r="3"/></svg></button></div>';
  row.dataset.finish=Object.hasOwn(materials,rowSettings[shelfIds[n]]?.finish)?rowSettings[shelfIds[n]].finish:Object.hasOwn(materials,finishes[n])?finishes[n]:['ice','jungle','oak','temple','magma'][n%5];
  paint(row,row.dataset.finish);applyLighting(row);
  row.querySelector('.shelf-gear').onclick=()=>openShelf(n);

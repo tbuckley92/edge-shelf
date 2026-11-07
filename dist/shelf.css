@@ -246,20 +246,15 @@ button,select,input,.shelf-menu label,#saveStatus,#saveShelf,#loadStatus,.movebo
  z-index:4;pointer-events:none;
 }
 
-/* Low drifting mist sits in front of the foreground without intercepting input. */
-.shelf-mist{display:none;pointer-events:none}
-.row:is([data-finish="ice"],[data-finish="snow"]) .shelf-mist{
- display:block;position:absolute;left:0;right:0;
- bottom:calc(16px + var(--surface)*.18);height:calc(var(--cm,3px)*9);
- z-index:5;overflow:hidden;pointer-events:none;
- mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
-}
-.shelf-mist::before,.shelf-mist::after{
- content:"";position:absolute;inset:0 -35%;
- background:radial-gradient(ellipse at 18% 75%,#e5f5ff70,transparent 35%),radial-gradient(ellipse at 57% 65%,#eefaff55,transparent 38%),radial-gradient(ellipse at 88% 85%,#d9efff60,transparent 32%);
- filter:blur(3px);opacity:.65;animation:shelf-mist-drift 24s ease-in-out infinite alternate;animation-play-state:paused;
-}
-.shelf-mist::after{animation-duration:33s;animation-delay:-12s;animation-direction:alternate-reverse;opacity:.4;bottom:-15%}
+/* Four translucent banks: two behind the pieces, two in front. */
+.shelf-mist{position:absolute;display:block;left:0;right:0;bottom:calc(16px + var(--surface)*.18);height:calc(var(--cm,3px)*20);pointer-events:none;overflow:hidden;opacity:var(--fog-strength,0);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.mist-back{z-index:2;height:calc(var(--cm,3px)*32);bottom:var(--contact)}
+.mist-front{z-index:5}
+.shelf-mist::before,.shelf-mist::after{content:"";position:absolute;inset:-15% -45%;background:radial-gradient(ellipse at 20% 70%,#dfedf5c9,transparent 42%),radial-gradient(ellipse at 53% 80%,#f3faffad,transparent 38%),radial-gradient(ellipse at 82% 60%,#d9eaf4b8,transparent 43%);filter:blur(7px);animation:fog-flow 18s ease-in-out infinite alternate;animation-play-state:paused}
+.shelf-mist::after{animation-name:fog-roll;animation-duration:25s;animation-delay:-13s;opacity:.65}
+.mist-back::before{animation-duration:29s;animation-delay:-9s;opacity:.7}
+.mist-back::after{animation-duration:21s;animation-delay:-17s;opacity:.55}
 .effects-visible .shelf-mist::before,.effects-visible .shelf-mist::after{animation-play-state:running}
-@keyframes shelf-mist-drift{from{transform:translateX(-12%)}to{transform:translateX(12%)}}
+@keyframes fog-flow{0%{transform:translate(-16%,8%) scaleY(.85)}50%{transform:translate(0,-5%) scaleY(1.12)}100%{transform:translate(16%,3%) scaleY(.95)}}
+@keyframes fog-roll{0%{transform:translate(17%,4%) scaleY(1.1)}50%{transform:translate(0,12%) scaleY(.9)}100%{transform:translate(-17%,-5%) scaleY(1.15)}}
 @media(prefers-reduced-motion:reduce){.shelf-mist::before,.shelf-mist::after{animation:none}}

@@ -11,7 +11,7 @@ test('production save/read queries restore duplicates, order, settings and rejec
  await db.exec(await fs.readFile('migrations/001_edge_shelf.sql','utf8'));
  const a=randomUUID(),b=randomUUID();await db.query("insert into shelf.profiles(id,issuer,subject,shopify_customer_id) values($1,'iss','a','ca'),($2,'iss','b','cb')",[a,b]);await db.exec("insert into shelf.products(id) values('cow')");await db.exec('set role shelf_backend');
  const products=new Map([['cow',{w:60,h:50,d:30}]]);products.finishes=new Set(['ice']);
- const items=[{id:randomUUID(),productId:'cow'},{id:randomUUID(),productId:'cow'}],shelves=items.map(()=>({id:randomUUID(),settings:{finish:'ice',fixture:'strip',weather:'rain',colour:'blue',brightness:80,speed:12}}));
+ const items=[{id:randomUUID(),productId:'cow'},{id:randomUUID(),productId:'cow'}],shelves=items.map(()=>({id:randomUUID(),settings:{finish:'ice',fixture:'strip',weather:'rain',colour:'blue',brightness:80,speed:12,fog:45}}));
  let state={layoutId:randomUUID(),revision:0,items,order:items.map(i=>i.id),shelves,marketingPreference:false};
  async function as(owner,fn){await db.exec('begin');try{await db.query("select set_config('shelf.owner',$1,true)",[owner]);const result=await fn();await db.exec('commit');return result}catch(error){await db.exec('rollback');throw error}}
  const saved=await as(a,()=>writeState(sql,a,validateState(state,products),products,packShelves));assert.equal(saved.revision,1);
