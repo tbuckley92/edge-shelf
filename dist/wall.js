@@ -22,7 +22,7 @@ function settings(n){
  return {weather:['rain','snow'].includes(value.weather)?value.weather:'none',
  fixture:['none','spot','strip'].includes(value.fixture)?value.fixture:'spot',
  colour:[...Object.keys(lights),'rainbow'].includes(value.colour)?value.colour:'warm',
- fog:Number.isFinite(value.fog)?Math.max(0,Math.min(100,value.fog)):(['ice','snow'].includes(value.finish||'ice')?65:0),
+ fog:Number.isFinite(value.fog)?Math.max(0,Math.min(100,value.fog)):(['ice','snow'].includes(value.finish||'ice')?30:0),
  brightness:Number.isFinite(+value.brightness)?Math.max(0,Math.min(100,+value.brightness)):70,
  speed:Number.isFinite(+value.speed)?Math.max(3,Math.min(60,+value.speed)):15};
 }

@@ -250,11 +250,11 @@ button,select,input,.shelf-menu label,#saveStatus,#saveShelf,#loadStatus,.movebo
 .shelf-mist{position:absolute;display:block;left:0;right:0;bottom:calc(16px + var(--surface)*.18);height:calc(var(--cm,3px)*20);pointer-events:none;overflow:hidden;opacity:var(--fog-strength,0);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
 .mist-back{z-index:2;height:calc(var(--cm,3px)*32);bottom:var(--contact)}
 .mist-front{z-index:5}
-.shelf-mist::before,.shelf-mist::after{content:"";position:absolute;inset:-15% -45%;background:radial-gradient(ellipse at 20% 70%,#dfedf5c9,transparent 42%),radial-gradient(ellipse at 53% 80%,#f3faffad,transparent 38%),radial-gradient(ellipse at 82% 60%,#d9eaf4b8,transparent 43%);filter:blur(7px);animation:fog-flow 18s ease-in-out infinite alternate;animation-play-state:paused}
-.shelf-mist::after{animation-name:fog-roll;animation-duration:25s;animation-delay:-13s;opacity:.65}
-.mist-back::before{animation-duration:29s;animation-delay:-9s;opacity:.7}
-.mist-back::after{animation-duration:21s;animation-delay:-17s;opacity:.55}
+/* Distinct wisps traverse the whole shelf at constant speed, fading at the ends. */
+.shelf-mist::before,.shelf-mist::after{content:"";position:absolute;inset:-10% 0;width:100%;background:radial-gradient(ellipse at 22% 60%,#edf7fff0,transparent 25%),radial-gradient(ellipse at 58% 75%,#e3f1ffd9,transparent 31%),radial-gradient(ellipse at 85% 45%,#f4fbffed,transparent 22%);filter:blur(5px);animation:fog-cross 10s linear infinite;animation-delay:-3s;animation-play-state:paused}
+.shelf-mist::after{animation-duration:14s;animation-delay:-9s;animation-direction:reverse;top:10%;bottom:-10%}
+.mist-back::before{animation-duration:17s;animation-delay:-11s;animation-direction:reverse}
+.mist-back::after{animation-duration:12s;animation-delay:-5s}
 .effects-visible .shelf-mist::before,.effects-visible .shelf-mist::after{animation-play-state:running}
-@keyframes fog-flow{0%{transform:translate(-16%,8%) scaleY(.85)}50%{transform:translate(0,-5%) scaleY(1.12)}100%{transform:translate(16%,3%) scaleY(.95)}}
-@keyframes fog-roll{0%{transform:translate(17%,4%) scaleY(1.1)}50%{transform:translate(0,12%) scaleY(.9)}100%{transform:translate(-17%,-5%) scaleY(1.15)}}
+@keyframes fog-cross{0%{transform:translateX(-85%) translateY(5%);opacity:0}15%{opacity:1}50%{transform:translateX(0) translateY(-8%);opacity:1}85%{opacity:1}100%{transform:translateX(85%) translateY(5%);opacity:0}}
 @media(prefers-reduced-motion:reduce){.shelf-mist::before,.shelf-mist::after{animation:none}}
