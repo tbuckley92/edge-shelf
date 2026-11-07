@@ -28,3 +28,12 @@ function packShelves(ids, catalog, groups = []) {
   }
   return rows;
 }
+
+function insertOnShelf(groups, id, target, index, catalog){
+ if(target<0||target>=groups.length||!groups.some(g=>g.includes(id)))return null;
+ const result=groups.map(g=>g.filter(item=>item!==id)),row=result[target];
+ row.splice(Math.max(0,Math.min(index,row.length)),0,id);
+ const width=row.reduce((sum,item)=>sum+(catalog.get(item)?.w||Infinity),0)+Math.max(0,row.length-1)*3;
+ if(width>100)return null;
+ return result;
+}
