@@ -25,7 +25,7 @@ test('every selectable shelf finish is accepted by collection saves and has loca
  for(const finish of Object.keys(ui)){
   const state=fixture();state.shelves[0].settings.finish=finish;
   assert.equal(validateState(state,catalog).shelves[0].settings.finish,finish);
-  for(const field of ['top','texture','body','fringe'])for(const match of (ui[finish][field]||'').matchAll(/url\(([^)]+)\)/g))assert.ok(fs.existsSync('dist/'+match[1]),finish+' '+field+' asset');
+  for(const field of ['top','texture','body','fringe','foreground'])for(const match of (ui[finish][field]||'').matchAll(/url\(([^)]+)\)/g))assert.ok(fs.existsSync('dist/'+match[1]),finish+' '+field+' asset');
  }
  const invalid=fixture();invalid.shelves[0].settings.finish='unknown-finish';
  assert.throws(()=>validateState(invalid,catalog));
