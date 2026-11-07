@@ -176,3 +176,26 @@ button,select,input,.shelf-menu label,#saveStatus,#saveShelf,#loadStatus,.movebo
 .product-link{display:block;background:#111;text-align:center;padding:13px;border-radius:4px;text-decoration:none;font-weight:600;font-size:14px}
 .product-link span{background:linear-gradient(110deg,#b3e5e1,#d7b9ef,#fff1bc,#a5d9f0,#edbbdf);background-clip:text;-webkit-background-clip:text;color:transparent}
 @media(prefers-reduced-motion:reduce){.product-drawer[open],.product-drawer.closing{animation:none}}
+
+/* One continuous carved material wraps over the top and down the fascia.
+   Keep the existing contact plane so sculptures and weather remain grounded. */
+.wall .row:is([data-finish="magma"],[data-finish="ice"],[data-finish="jungle"]) .ledge{
+ background-color:var(--tone);
+ background-image:var(--texture);
+ background-size:420px 140px;
+ background-position:center bottom;
+ box-shadow:0 4px 5px #0004;
+ clip-path:polygon(5px 0,calc(100% - 5px) 0,100% var(--surface),100% 92%,97% 100%,91% 94%,83% 100%,76% 95%,67% 100%,58% 93%,49% 100%,40% 96%,31% 100%,22% 94%,13% 100%,5% 94%,0 100%,0 var(--surface));
+}
+.wall .row:is([data-finish="magma"],[data-finish="ice"],[data-finish="jungle"]) .ledge .top{
+ background:linear-gradient(180deg,#0005,transparent 35%,#ffffff18);
+ box-shadow:inset 0 2px 5px #0005;
+}
+.wall .row:is([data-finish="magma"],[data-finish="ice"],[data-finish="jungle"]) .ledge .front{
+ background:linear-gradient(180deg,#0002,#0007);
+ box-shadow:inset 0 1px 0 #ffffff45;
+}
+.wall .row[data-finish="ice"] .ledge .front{
+ background:linear-gradient(180deg,#19526918,#143b5466);
+ box-shadow:inset 0 1px 0 #e5fcff99;
+}
