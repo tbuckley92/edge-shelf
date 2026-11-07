@@ -247,14 +247,16 @@ button,select,input,.shelf-menu label,#saveStatus,#saveShelf,#loadStatus,.movebo
 }
 
 /* Four translucent banks: two behind the pieces, two in front. */
-.shelf-mist{position:absolute;display:block;left:0;right:0;bottom:calc(16px + var(--surface)*.18);height:calc(var(--cm,3px)*20);pointer-events:none;overflow:hidden;opacity:var(--fog-strength,0);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.shelf-mist{position:absolute;display:block;left:0;right:0;bottom:calc(16px + var(--surface)*.18);height:calc(var(--cm,3px)*20);pointer-events:none;overflow:hidden;opacity:var(--fog-strength,0);mask-image:radial-gradient(ellipse at 50% 55%,#000 15%,#000b 45%,transparent 72%)}
 .mist-back{z-index:2;height:calc(var(--cm,3px)*32);bottom:var(--contact)}
 .mist-front{z-index:5}
 /* Distinct wisps traverse the whole shelf at constant speed, fading at the ends. */
-.shelf-mist::before,.shelf-mist::after{content:"";position:absolute;inset:-10% 0;width:100%;background:radial-gradient(ellipse at 22% 60%,#edf7fff0,transparent 25%),radial-gradient(ellipse at 58% 75%,#e3f1ffd9,transparent 31%),radial-gradient(ellipse at 85% 45%,#f4fbffed,transparent 22%);filter:blur(5px);animation:fog-cross 10s linear infinite;animation-delay:-3s;animation-play-state:paused}
-.shelf-mist::after{animation-duration:14s;animation-delay:-9s;animation-direction:reverse;top:10%;bottom:-10%}
-.mist-back::before{animation-duration:17s;animation-delay:-11s;animation-direction:reverse}
-.mist-back::after{animation-duration:12s;animation-delay:-5s}
+.shelf-mist::before,.shelf-mist::after{content:"";position:absolute;inset:-10% 0;width:100%;background:radial-gradient(ellipse at 22% 60%,rgba(var(--fog-colour,237,247,255),.94),transparent 25%),radial-gradient(ellipse at 58% 75%,rgba(var(--fog-colour,237,247,255),.85),transparent 31%),radial-gradient(ellipse at 85% 45%,rgba(var(--fog-colour,237,247,255),.93),transparent 22%);filter:blur(5px);animation:fog-cross var(--fog-duration,10s) linear infinite;animation-delay:-3s;animation-play-state:paused}
+.shelf-mist::after{animation-duration:calc(var(--fog-duration,10s)*1.4);animation-delay:-9s;animation-direction:reverse;top:10%;bottom:-10%}
+.mist-back::before{animation-duration:calc(var(--fog-duration,10s)*1.7);animation-delay:-11s;animation-direction:reverse}
+.mist-back::after{animation-duration:calc(var(--fog-duration,10s)*1.2);animation-delay:-5s}
 .effects-visible .shelf-mist::before,.effects-visible .shelf-mist::after{animation-play-state:running}
 @keyframes fog-cross{0%{transform:translateX(-85%) translateY(5%);opacity:0}15%{opacity:1}50%{transform:translateX(0) translateY(-8%);opacity:1}85%{opacity:1}100%{transform:translateX(85%) translateY(5%);opacity:0}}
 @media(prefers-reduced-motion:reduce){.shelf-mist::before,.shelf-mist::after{animation:none}}
+
+.shelf-menu input[type=color]{width:64px;height:36px;padding:2px;border:1px solid #ccc;border-radius:6px;cursor:pointer}

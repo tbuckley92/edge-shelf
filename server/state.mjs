@@ -11,10 +11,12 @@ export function validateState(body,products){
  const shelves=body.shelves.map(shelf=>{
   if(!shelf||!uuid.test(shelf.id)||shelfIds.has(shelf.id))fail();shelfIds.add(shelf.id);
   const s=shelf.settings||{};
-  if(!['none','rain','snow'].includes(s.weather)||!['none','spot','strip'].includes(s.fixture)||!['warm','cool','amber','blue','off','rainbow'].includes(s.colour)||!Number.isFinite(s.brightness)||s.brightness<0||s.brightness>100||!Number.isFinite(s.speed)||s.speed<3||s.speed>60||typeof s.finish!=='string'||!products.finishes.has(s.finish))fail();
+  if(!['none','rain','snow'].includes(s.weather)||!['none','spot','strip'].includes(s.fixture)||!['warm','cool','amber','blue','off','rainbow','custom'].includes(s.colour)||!Number.isFinite(s.brightness)||s.brightness<0||s.brightness>100||!Number.isFinite(s.speed)||s.speed<3||s.speed>60||typeof s.finish!=='string'||!products.finishes.has(s.finish))fail();
   const fog=s.fog===undefined?(['ice','snow'].includes(s.finish)?30:0):s.fog;
   if(!Number.isFinite(fog)||fog<0||fog>100)fail();
-  return {id:shelf.id,settings:{fog,weather:s.weather,fixture:s.fixture,colour:s.colour,brightness:s.brightness,speed:s.speed,finish:s.finish}};
+  const fogSpeed=s.fogSpeed===undefined?1:s.fogSpeed,fogColour=s.fogColour===undefined?'#edf7ff':s.fogColour,lightColour=s.lightColour===undefined?'#ffe5b3':s.lightColour;
+  if(!Number.isFinite(fogSpeed)||fogSpeed<.25||fogSpeed>3||!/^#[0-9a-f]{6}$/i.test(fogColour)||!/^#[0-9a-f]{6}$/i.test(lightColour))fail();
+  return {id:shelf.id,settings:{fogSpeed,fogColour,lightColour,fog,weather:s.weather,fixture:s.fixture,colour:s.colour,brightness:s.brightness,speed:s.speed,finish:s.finish}};
  });
  if(!Array.isArray(body.order)||body.order.length!==items.length||new Set(body.order).size!==items.length||body.order.some(id=>!ids.has(id)))fail();
  if(body.marketingPreference!==undefined&&body.marketingPreference!==null&&typeof body.marketingPreference!=='boolean')fail();
