@@ -131,12 +131,14 @@ for(const [key,m] of Object.entries(materials))shelfMenu.querySelector('[name=fi
 // Preserve the viewport, including while replacing a focused piece button.
 function renderInPlace(focusId=null){
  const x=window.scrollX,y=window.scrollY;
- const minimum=wall.style.minHeight;
  wall.style.minHeight=wall.offsetHeight+'px';
  render();
  if(focusId){const button=wall.querySelector('[data-id="'+focusId+'"]');button?.focus({preventScroll:true})}
  window.scrollTo({left:x,top:y,behavior:'instant'});
- requestAnimationFrame(()=>{wall.style.minHeight=minimum;window.scrollTo({left:x,top:y,behavior:'instant'})});
+ // A shorter packing must not clamp the current viewport at the document end.
+ const wallTop=wall.getBoundingClientRect().top+window.scrollY;
+ wall.style.minHeight=Math.max(0,y+window.innerHeight-wallTop)+'px';
+ requestAnimationFrame(()=>window.scrollTo({left:x,top:y,behavior:'instant'}));
 }
 function reorder(from,to){
  if(from<0||to<0||from>=order.length||to>=order.length||from===to)return;
