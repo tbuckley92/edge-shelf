@@ -31,4 +31,4 @@ test('every selectable shelf finish is accepted by collection saves and has loca
  assert.throws(()=>validateState(invalid,catalog));
 });
 
-test('fog accepts off and maximum, defaults legacy winter shelves, and rejects invalid strength',()=>{const f=fixture();assert.equal(validateState(f,products).shelves[0].settings.fog,65);for(const fog of [0,45,100]){f.shelves[0].settings.fog=fog;assert.equal(validateState(f,products).shelves[0].settings.fog,fog)}for(const fog of [-1,101,'50',null]){f.shelves[0].settings.fog=fog;assert.throws(()=>validateState(f,products))}});
+test('fog accepts off and maximum, defaults legacy winter shelves, and rejects invalid strength',()=>{const f=fixture();assert.equal(validateState(f,products).shelves[0].settings.fog,30);for(const fog of [0,45,100]){f.shelves[0].settings.fog=fog;assert.equal(validateState(f,products).shelves[0].settings.fog,fog)}for(const fog of [-1,101,'50',null]){f.shelves[0].settings.fog=fog;assert.throws(()=>validateState(f,products))}});
