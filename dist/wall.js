@@ -189,12 +189,13 @@ function pruneShelves(){
 }
 function ensureShelves(count){while(shelfIds.length<count){const id=crypto.randomUUID();shelfIds.push(id);rowSettings[id]={...defaultSettings,finish:['ice','jungle','oak','temple','magma'][shelfIds.length%5]}}}
 function paint(row,key){const m=materials[key];row.style.setProperty('--texture',m.texture);row.style.setProperty('--tone',m.tone);row.style.setProperty('--top',m.top);
- row.dataset.fantasy=m.fringe?'true':'false';
+ row.dataset.fantasy=m.body?'true':'false';row.dataset.foreground=m.foreground?'true':'false';
+ row.style.setProperty('--shelf-foreground',m.foreground||'none');row.style.setProperty('--foreground-rise',m.foregroundRise||4);
  row.style.setProperty('--fantasy-body',m.body||'none');row.style.setProperty('--fantasy-fringe',m.fringe||'none');row.style.setProperty('--fringe-ratio',m.fringeRatio||6);
 }
 function mountShelf(row,n){
  if(row.dataset.mounted)return;row.dataset.mounted='true';const layout=layouts[n];
- row.innerHTML='<div class="display"><div class="lighting" aria-hidden="true"><i class="strip"></i></div><div class="ledge"><span class="top"></span><span class="front"></span><span class="fantasy-body" aria-hidden="true"></span><span class="fantasy-fringe" aria-hidden="true"></span></div><div class="slots"></div><button type="button" class="shelf-gear" aria-label="Settings for shelf '+(n+1)+'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 3-.6 2.3-2 .9-2.2-.6-2 3.4 1.7 1.7v2.5L2.2 15l2 3.4 2.2-.6 2 .9L9 21h4l.6-2.3 2-.9 2.2.6 2-3.4-1.7-1.8v-2.5L19.8 9l-2-3.4-2.2.6-2-.9L13 3Z"/><circle cx="11" cy="12" r="3"/></svg></button></div>';
+ row.innerHTML='<div class="display"><div class="lighting" aria-hidden="true"><i class="strip"></i></div><div class="ledge"><span class="top"></span><span class="front"></span><span class="fantasy-body" aria-hidden="true"></span><span class="fantasy-fringe" aria-hidden="true"></span></div><div class="slots"></div><span class="shelf-foreground" aria-hidden="true"></span><button type="button" class="shelf-gear" aria-label="Settings for shelf '+(n+1)+'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 3-.6 2.3-2 .9-2.2-.6-2 3.4 1.7 1.7v2.5L2.2 15l2 3.4 2.2-.6 2 .9L9 21h4l.6-2.3 2-.9 2.2.6 2-3.4-1.7-1.8v-2.5L19.8 9l-2-3.4-2.2.6-2-.9L13 3Z"/><circle cx="11" cy="12" r="3"/></svg></button></div>';
  row.dataset.finish=Object.hasOwn(materials,rowSettings[shelfIds[n]]?.finish)?rowSettings[shelfIds[n]].finish:Object.hasOwn(materials,finishes[n])?finishes[n]:['ice','jungle','oak','temple','magma'][n%5];
  paint(row,row.dataset.finish);applyLighting(row);
  row.querySelector('.shelf-gear').onclick=()=>openShelf(n);

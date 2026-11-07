@@ -243,3 +243,13 @@ button,select,input,.shelf-menu label,#saveStatus,#saveShelf,#loadStatus,.movebo
 @media(prefers-reduced-motion:reduce){.fantasy-fringe:after{display:none}}
 /* Keep shelf-to-shelf foreground order inside the cabinet, below app controls. */
 .wall{position:relative;isolation:isolate;z-index:0}
+
+/* Layer order: base (2), collectible slots (3), snow/foliage foreground (4).
+   The foreground is a sibling of the slots, outside the base stacking context. */
+.shelf-foreground{display:none;pointer-events:none}
+.wall .row[data-foreground="true"] .shelf-foreground{
+ display:block;position:absolute;left:0;right:0;bottom:16px;
+ height:calc(var(--surface)*.38 + var(--foreground-rise,4)*var(--cm,3px));
+ background:var(--shelf-foreground) center bottom/100% 100% no-repeat;
+ z-index:4;pointer-events:none;
+}
