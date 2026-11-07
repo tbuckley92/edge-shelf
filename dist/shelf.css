@@ -241,7 +241,25 @@ button,select,input,.shelf-menu label,#saveStatus,#saveShelf,#loadStatus,.movebo
 .shelf-foreground{display:none;pointer-events:none}
 .wall .row[data-foreground="true"] .shelf-foreground{
  display:block;position:absolute;left:0;right:0;bottom:16px;
- height:calc(var(--surface)*.38 + var(--foreground-rise,4)*var(--cm,3px));
+ height:calc(var(--surface)*.38 + var(--foreground-rise,4)*var(--cm,3px)*.5);
  background:var(--shelf-foreground) center bottom/100% 100% no-repeat;
  z-index:4;pointer-events:none;
 }
+
+/* Low drifting mist sits in front of the foreground without intercepting input. */
+.shelf-mist{display:none;pointer-events:none}
+.row:is([data-finish="ice"],[data-finish="snow"]) .shelf-mist{
+ display:block;position:absolute;left:0;right:0;
+ bottom:calc(16px + var(--surface)*.18);height:calc(var(--cm,3px)*9);
+ z-index:5;overflow:hidden;pointer-events:none;
+ mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);
+}
+.shelf-mist::before,.shelf-mist::after{
+ content:"";position:absolute;inset:0 -35%;
+ background:radial-gradient(ellipse at 18% 75%,#e5f5ff70,transparent 35%),radial-gradient(ellipse at 57% 65%,#eefaff55,transparent 38%),radial-gradient(ellipse at 88% 85%,#d9efff60,transparent 32%);
+ filter:blur(3px);opacity:.65;animation:shelf-mist-drift 24s ease-in-out infinite alternate;animation-play-state:paused;
+}
+.shelf-mist::after{animation-duration:33s;animation-delay:-12s;animation-direction:alternate-reverse;opacity:.4;bottom:-15%}
+.effects-visible .shelf-mist::before,.effects-visible .shelf-mist::after{animation-play-state:running}
+@keyframes shelf-mist-drift{from{transform:translateX(-12%)}to{transform:translateX(12%)}}
+@media(prefers-reduced-motion:reduce){.shelf-mist::before,.shelf-mist::after{animation:none}}
