@@ -12,7 +12,9 @@ export function validateState(body,products){
   if(!shelf||!uuid.test(shelf.id)||shelfIds.has(shelf.id))fail();shelfIds.add(shelf.id);
   const s=shelf.settings||{};
   if(!['none','rain','snow'].includes(s.weather)||!['none','spot','strip'].includes(s.fixture)||!['warm','cool','amber','blue','off','rainbow'].includes(s.colour)||!Number.isFinite(s.brightness)||s.brightness<0||s.brightness>100||!Number.isFinite(s.speed)||s.speed<3||s.speed>60||typeof s.finish!=='string'||!products.finishes.has(s.finish))fail();
-  return {id:shelf.id,settings:{weather:s.weather,fixture:s.fixture,colour:s.colour,brightness:s.brightness,speed:s.speed,finish:s.finish}};
+  const fog=s.fog===undefined?(['ice','snow'].includes(s.finish)?65:0):s.fog;
+  if(!Number.isFinite(fog)||fog<0||fog>100)fail();
+  return {id:shelf.id,settings:{fog,weather:s.weather,fixture:s.fixture,colour:s.colour,brightness:s.brightness,speed:s.speed,finish:s.finish}};
  });
  if(!Array.isArray(body.order)||body.order.length!==items.length||new Set(body.order).size!==items.length||body.order.some(id=>!ids.has(id)))fail();
  if(body.marketingPreference!==undefined&&body.marketingPreference!==null&&typeof body.marketingPreference!=='boolean')fail();
