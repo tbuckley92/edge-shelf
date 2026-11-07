@@ -11,7 +11,7 @@ test('production save/read queries restore duplicates, order, settings and rejec
  await db.exec(await fs.readFile('migrations/001_edge_shelf.sql','utf8'));
  const a=randomUUID(),b=randomUUID();await db.query("insert into shelf.profiles(id,issuer,subject,shopify_customer_id) values($1,'iss','a','ca'),($2,'iss','b','cb')",[a,b]);await db.exec("insert into shelf.products(id) values('cow')");await db.exec('set role shelf_backend');
  const products=new Map([['cow',{w:60,h:50,d:30}]]);products.finishes=new Set(['ice']);
- const items=[{id:randomUUID(),productId:'cow'},{id:randomUUID(),productId:'cow'}],shelves=items.map(()=>({id:randomUUID(),settings:{finish:'ice',fixture:'strip',weather:'rain',colour:'blue',brightness:80,speed:12,fog:45,fogSpeed:2,fogColour:"#abcdef",lightColour:"#123456"}}));
+ const items=[{id:randomUUID(),productId:'cow'},{id:randomUUID(),productId:'cow'}],shelves=items.map(()=>({id:randomUUID(),settings:{pieceIds:[],finish:'ice',fixture:'strip',weather:'rain',colour:'blue',brightness:80,speed:12,fog:45,fogSpeed:2,fogColour:"#abcdef",lightColour:"#123456"}}));
  let state={layoutId:randomUUID(),revision:0,items,order:items.map(i=>i.id),shelves,marketingPreference:false};
  async function as(owner,fn){await db.exec('begin');try{await db.query("select set_config('shelf.owner',$1,true)",[owner]);const result=await fn();await db.exec('commit');return result}catch(error){await db.exec('rollback');throw error}}
  const saved=await as(a,()=>writeState(sql,a,validateState(state,products),products,packShelves));assert.equal(saved.revision,1);
@@ -19,7 +19,8 @@ test('production save/read queries restore duplicates, order, settings and rejec
  await assert.rejects(as(a,()=>writeState(sql,a,state,products,packShelves)),e=>e.status===409);
  const other=await as(b,()=>readState(sql,b));assert.equal(other.items.length,0);
  await assert.rejects(as(b,()=>writeState(sql,b,{...state,revision:1},products,packShelves)),e=>e.status===409);
- state={...state,revision:1,order:[...state.order].reverse()};await as(a,()=>writeState(sql,a,state,products,packShelves));assert.deepEqual((await as(a,()=>readState(sql,a))).order,state.order);
+ state={...state,revision:1,order:[...state.order].reverse(),shelves:[...state.shelves].reverse().map((s,n)=>({...s,settings:{...s.settings,pieceIds:[state.order[1-n]]}}))};await as(a,()=>writeState(sql,a,state,products,packShelves));assert.deepEqual((await as(a,()=>readState(sql,a))).order,state.order);
+ assert.deepEqual((await as(a,()=>readState(sql,a))).shelves,state.shelves);
  const theft={...state,layoutId:randomUUID(),revision:0};await assert.rejects(as(b,()=>writeState(sql,b,theft,products,packShelves)));
  assert.equal((await as(a,()=>readState(sql,a))).revision,2);
  // A large collection must not add one database round trip per piece/shelf.
