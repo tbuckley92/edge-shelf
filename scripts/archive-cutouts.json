@@ -1,0 +1,1105 @@
+{
+  "method": "Non-generative background removal",
+  "review": "Human reviewed",
+  "items": [
+    {
+      "handle": "archive-ed01",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/A-2048x2048.webp?v=1791362625",
+      "mediaId": "gid://shopify/MediaImage/76064214352197",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed01-cutout.png?v=1794059936",
+      "sha256": "5697628f7650079f063e3d66c4d5e5860cd2ce336cfffb83dbcc6ea28b1ea1db"
+    },
+    {
+      "handle": "archive-ed02",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/A-2048x2048_8f3fe919-1dae-46f4-91c4-35f3431f761f.webp?v=1791362627",
+      "mediaId": "gid://shopify/MediaImage/76064214384965",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed02-cutout.png?v=1794059936",
+      "sha256": "228826f35936969e31f2ab835e2267110d0f35b527065ddb7a1837baa3340262"
+    },
+    {
+      "handle": "archive-ed02w",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED02W-2048x2048.webp?v=1791362645",
+      "mediaId": "gid://shopify/MediaImage/76064214417733",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed02w-cutout.png?v=1794060788",
+      "sha256": "aa6f202be4ed923194af8f4e8c3b43d4359002b84948fa1b254c365e1462fd17"
+    },
+    {
+      "handle": "archive-ed03ccb",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED03CCB-2048x2048.webp?v=1791362632",
+      "mediaId": "gid://shopify/MediaImage/76064214450501",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed03ccb-cutout.png?v=1794059937",
+      "sha256": "5e0fa6d69760159585015ef70f9be5e132eb086ad7c4d020957334d8d4d9e3e3"
+    },
+    {
+      "handle": "archive-ed03s",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED03S_20DRAGON_20SILVER-2048x2048.webp?v=1791362663",
+      "mediaId": "gid://shopify/MediaImage/76064214483269",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed03s-cutout.png?v=1794060787",
+      "sha256": "d8d17fcaa0e5797bb816e5e759de70f3ed34819e622a45bf18f88f2e62104dad"
+    },
+    {
+      "handle": "archive-ed04g",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED04G_20Gold_20Elephant_20A-2048x2048.webp?v=1791362664",
+      "mediaId": "gid://shopify/MediaImage/76064225919301",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed04g-cutout.png?v=1794060113",
+      "sha256": "6fcd653aed3a1fdd277ddf1a70c0c23c6676cef58989655730e44765ad2cf8e2"
+    },
+    {
+      "handle": "archive-ed05",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/A-2048x2048_7d06191e-4573-430b-86db-8fcd44a974fe.webp?v=1791362628",
+      "mediaId": "gid://shopify/MediaImage/76064225952069",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed05-cutout.png?v=1794060113",
+      "sha256": "476ab512739cf56be5b7541867279dd5f34933a9b6374abe1edc5a8c246a82cb"
+    },
+    {
+      "handle": "archive-ed06ccb",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED06CCB-2048x2048.webp?v=1791362633",
+      "mediaId": "gid://shopify/MediaImage/76064225984837",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed06ccb-cutout.png?v=1794060112",
+      "sha256": "2ce8d868b272ad88a4789995d03a640edb781d6c0b8a30007bfeaa61fbfd510a"
+    },
+    {
+      "handle": "archive-ed06w",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED06W-2048x2048.webp?v=1791362647",
+      "mediaId": "gid://shopify/MediaImage/76064226017605",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed06w-cutout.png?v=1794060112",
+      "sha256": "1678e64b4d017b58fd2518380c7794fa16f1e023fc84b4c84f9108accf3f54b3"
+    },
+    {
+      "handle": "archive-ed07",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED07-2048x2048.webp?v=1791362629",
+      "mediaId": "gid://shopify/MediaImage/76064226050373",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed07-cutout.png?v=1794060113",
+      "sha256": "f21f5460d595642cd8ce7451fcf3eebb9f6941ea36deb8e1537bb5ee7166580d"
+    },
+    {
+      "handle": "archive-ed07b",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/web-ed07-horse-bay-2-2048x2048.webp?v=1791362647",
+      "mediaId": "gid://shopify/MediaImage/76064226083141",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed07b-cutout.png?v=1794060113",
+      "sha256": "df9046e89a18619bf61c415cbc3810a94ec4ac655fa780e2d2815646bad2e861"
+    },
+    {
+      "handle": "archive-ed07s",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED07S-2048x2048.webp?v=1791362713",
+      "mediaId": "gid://shopify/MediaImage/76064226115909",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed07s-cutout.png?v=1794060112",
+      "sha256": "33d7999040d07a25fe3eb065bf5fb83a2da552f2967e31db7ef655bb74ee0ecc"
+    },
+    {
+      "handle": "archive-ed08",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED08_20UNICORN-2048x2048.webp?v=1791362630",
+      "mediaId": "gid://shopify/MediaImage/76064226148677",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed08-cutout.png?v=1794060113",
+      "sha256": "b49a63646a53d662b8ec2f8e661efe740adac169eeb3856f6a1313d47720c6ff"
+    },
+    {
+      "handle": "archive-ed09ccb",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED09CCB-2048x2048.webp?v=1791362633",
+      "mediaId": "gid://shopify/MediaImage/76064226181445",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed09ccb-cutout.png?v=1794060113",
+      "sha256": "951a2bd531d6cba7111fba01ce6e5bb4732aa54664d6cf5f38ec1193c16d48c6"
+    },
+    {
+      "handle": "archive-ed09s",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED09S_20HARE_20SILVER-2048x2048.webp?v=1791362665",
+      "mediaId": "gid://shopify/MediaImage/76064226214213",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed09s-cutout.png?v=1794060113",
+      "sha256": "146d3fcc49586d132257e42e34f2285a1703a29ca12cfc8137f89e5dba997478"
+    },
+    {
+      "handle": "archive-ed09w",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED09W_20HARE_20WHITE-2048x2048.webp?v=1791362657",
+      "mediaId": "gid://shopify/MediaImage/76064226246981",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed09w-cutout.png?v=1794060113",
+      "sha256": "b660669b23b508a64f82bd99380f10316338e39f6088a0276cca9476a8734291"
+    },
+    {
+      "handle": "archive-ed10",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED10W-B-2048x2048.webp?v=1791362634",
+      "mediaId": "gid://shopify/MediaImage/76064226279749",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed10-cutout.png?v=1794060113",
+      "sha256": "c106ef3dfdc2da119dbd8045cc706854c0acadeca89c5ac677ca110c7cba45ab"
+    },
+    {
+      "handle": "archive-ed10b",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED10B-2048x2048.webp?v=1791362648",
+      "mediaId": "gid://shopify/MediaImage/76064226312517",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed10b-cutout.png?v=1794060113",
+      "sha256": "3394203816681a86a9010ed0fec7872803f8a7b64563844defa17406b19e5f2b"
+    },
+    {
+      "handle": "archive-ed10ccb",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED10CCB-2048x2048.webp?v=1791362635",
+      "mediaId": "gid://shopify/MediaImage/76064226345285",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed10ccb-cutout.png?v=1794060113",
+      "sha256": "8451e4f76749a0d36c75fd5076ccb9bc589acc82e2751a9b3aee85b605d5eab1"
+    },
+    {
+      "handle": "archive-ed10s",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED10W-2048x2048_b0a8bd98-c199-4acf-bd18-c98ad1065658.webp?v=1791362649",
+      "mediaId": "gid://shopify/MediaImage/76064226378053",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed10s-cutout.png?v=1794060113",
+      "sha256": "27ea603b9826db3a701a6f61a51038545f9e7a64cbd4e9fc45f6161f109a59f3"
+    },
+    {
+      "handle": "archive-ed11s",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED11S_20COBRA_20SILVER-2048x2048.webp?v=1791362666",
+      "mediaId": "gid://shopify/MediaImage/76064226410821",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed11s-cutout.png?v=1794060113",
+      "sha256": "389f67744a9218a483b216fb1c78f1d26e5a1a61f380edf1e0a308f2cde5cd35"
+    },
+    {
+      "handle": "archive-ed12au",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/A-2048x2048_2437e4ad-836a-4da1-8d18-b480d698a913.webp?v=1791362733",
+      "mediaId": "gid://shopify/MediaImage/76064226443589",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed12au-cutout.png?v=1794060114",
+      "sha256": "fd4bdb2c99d8fb1629dc46f1b97ad82b39725bb97aa7e294ac8fcd14bcf403b1"
+    },
+    {
+      "handle": "archive-ed12s",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED12S_20PENGUIN_20SILVER_20ICE-2048x2048.webp?v=1791362650",
+      "mediaId": "gid://shopify/MediaImage/76064226476357",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed12s-cutout.png?v=1794060114",
+      "sha256": "73f4941e43370a57dc26c68d134974542c9a7349e085101e58ea2f86085df87c"
+    },
+    {
+      "handle": "archive-ed13",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED13A-2048x2048.webp?v=1791362638",
+      "mediaId": "gid://shopify/MediaImage/76064226509125",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed13-cutout.png?v=1794060113",
+      "sha256": "c25369db314f29c77df8b8534501333ac81ee7d0de152a6272ac1f1c9848ee7a"
+    },
+    {
+      "handle": "archive-ed14",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED14AA-2048x2048.webp?v=1791362639",
+      "mediaId": "gid://shopify/MediaImage/76064226541893",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed14-cutout.png?v=1794060113",
+      "sha256": "c337c5d06033d6cdf0dc2249aa40c4f33af07ce56ee314f506c0aef084c40d94"
+    },
+    {
+      "handle": "archive-ed14b",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED14BA-2048x2048.webp?v=1791362640",
+      "mediaId": "gid://shopify/MediaImage/76064226574661",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed14b-cutout.png?v=1794060113",
+      "sha256": "8f0757cd1d57307ac510500a04965eb4bb515963704d489875db6364b7753919"
+    },
+    {
+      "handle": "archive-ed15r",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED15R_20DAISY_20RED-2048x2048.webp?v=1791362641",
+      "mediaId": "gid://shopify/MediaImage/76064226607429",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed15r-cutout.png?v=1794060113",
+      "sha256": "f93bdb0e524c17ca755678e9edf40095190b4dbdae2d950653072c1525103d4a"
+    },
+    {
+      "handle": "archive-ed15w",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED15W_20DAISY_20WHITE-2048x2048.webp?v=1791362641",
+      "mediaId": "gid://shopify/MediaImage/76064226640197",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed15w-cutout.png?v=1794060114",
+      "sha256": "96052b9ffadad3914380d91e1de39af7ebe0ec0cf1851d441bf613955ebdb919"
+    },
+    {
+      "handle": "archive-ed15y",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED15Y_20DAISY_20YELLOW-2048x2048.webp?v=1791362642",
+      "mediaId": "gid://shopify/MediaImage/76064226672965",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed15y-cutout.png?v=1794060114",
+      "sha256": "2f563ee508423948293f677a82d225411eda9228299e5656a16ec77912c58d5f"
+    },
+    {
+      "handle": "archive-ed17",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED17_20MERMAID_20A-2048x2048.webp?v=1791362650",
+      "mediaId": "gid://shopify/MediaImage/76064226705733",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed17-cutout.png?v=1794060113",
+      "sha256": "34172f4d8af842976f2627bf2d5693a025e315abbe587d87b40cd305ef2066e7"
+    },
+    {
+      "handle": "archive-ed17a",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED17A_20MERMAID_20AQUA_20A-2048x2048.webp?v=1791362651",
+      "mediaId": "gid://shopify/MediaImage/76064226738501",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed17a-cutout.png?v=1794060113",
+      "sha256": "560f9d3f7f27c6c510dd09b157a3969ea78d1f3080b63668eedc93c3f01359f9"
+    },
+    {
+      "handle": "archive-ed17m",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED17M_20MERMAID_20MOONLIGHT_20A-2048x2048.webp?v=1791362657",
+      "mediaId": "gid://shopify/MediaImage/76064226771269",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed17m-cutout.png?v=1794060113",
+      "sha256": "ceffeada664bb2f2f530c9e0cd44a7003eb9f35ed44412e44eaeb10ad912e628"
+    },
+    {
+      "handle": "archive-ed18",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED18_20SQUIRREL_20RED_20WITH_20BASE_20A-2048x2048.webp?v=1791362658",
+      "mediaId": "gid://shopify/MediaImage/76064226804037",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed18-cutout.png?v=1794060113",
+      "sha256": "50821508752a25674db2ea3518fa13310a5be6db77ced7161aef2cfb1459acaf"
+    },
+    {
+      "handle": "archive-ed19",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED19M_20DUCK_20AND_20DUCKLINGS_20MALLARD-2048x2048.webp?v=1791362659",
+      "mediaId": "gid://shopify/MediaImage/76064226836805",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed19-cutout.png?v=1794060114",
+      "sha256": "3c21011737a5a8031bc32edc69ced5189ac04dc3f98cf826a92480eef74b3096"
+    },
+    {
+      "handle": "archive-ed19m",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED19M-2048x2048.webp?v=1791362679",
+      "mediaId": "gid://shopify/MediaImage/76064226869573",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed19m-cutout.png?v=1794061580",
+      "sha256": "da39a33a106630a342d290e3a0e7235b2feedf1bebe04976a040de25d4b4144a"
+    },
+    {
+      "handle": "archive-ed11t",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED11T_20COBRA_20NJA_20HAJE_20TEAL-2048x2048.webp?v=1791362666",
+      "mediaId": "gid://shopify/MediaImage/76064309674309",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed11t-cutout.png?v=1794060723",
+      "sha256": "c80993937635ad2b6f9a39dd7a5a3e78915f0098bb01e5e8f439913b370e634c"
+    },
+    {
+      "handle": "archive-ed21",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED21_20HARE_20STAR_20GAZER_20A-2048x2048.webp?v=1791362668",
+      "mediaId": "gid://shopify/MediaImage/76064309707077",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed21-cutout.png?v=1794060723",
+      "sha256": "b251eff45897edae9029b592a2f7ab3ef5b3f1470c4a4abaf5063694e0d806bb"
+    },
+    {
+      "handle": "archive-ed24cg",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED24COL-Gorilla-Colour-01-WEB-2048x2048.webp?v=1791362727",
+      "mediaId": "gid://shopify/MediaImage/76064309739845",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed24cg-cutout.png?v=1794060725",
+      "sha256": "60a1c21fff09381e81d08fd87c270b47a6b988e433933d9aeaac1a6492ad84a3"
+    },
+    {
+      "handle": "archive-ed26t",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED26T-2048x2048.webp?v=1791362704",
+      "mediaId": "gid://shopify/MediaImage/76064309772613",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed26t-cutout.png?v=1794060723",
+      "sha256": "4bad8470a73ad181e7a896df79af7ee075c462882d939fe1be77d836d3bded4a"
+    },
+    {
+      "handle": "archive-ed27r",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED27R-2048x2048.webp?v=1791362696",
+      "mediaId": "gid://shopify/MediaImage/76064309805381",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed27r-cutout.png?v=1794060724",
+      "sha256": "0b6e83528de8787946e62f24e8af3827fbdb8ab901ab8399324f959d776a2e23"
+    },
+    {
+      "handle": "archive-ed30",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ed30-polar-bear-2048x2048.webp?v=1791362697",
+      "mediaId": "gid://shopify/MediaImage/76064309838149",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed30-cutout.png?v=1794060723",
+      "sha256": "87df7016e81dd30f4e97356bc4a69e165f61cf2a6e443c3addeb74f2fd61ae62"
+    },
+    {
+      "handle": "archive-ed36bw",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ed36bw-1-web-2048x2048.webp?v=1791362727",
+      "mediaId": "gid://shopify/MediaImage/76064309870917",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed36bw-cutout.png?v=1794060724",
+      "sha256": "865779d531632bd9794843a81f617b3c1e2bd1d1976df80299feb032ea962128"
+    },
+    {
+      "handle": "archive-ed38rp",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED38RP-octopus-ripple-A-web-2048x2048.webp?v=1791362731",
+      "mediaId": "gid://shopify/MediaImage/76064309903685",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed38rp-cutout.png?v=1794060724",
+      "sha256": "2755fb3cbf4f6e156aee7efe130f908f3eae4c4d528f34ab04e97816a3f22a3a"
+    },
+    {
+      "handle": "archive-ed39bd",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED39BD1-2048x2048.webp?v=1791362730",
+      "mediaId": "gid://shopify/MediaImage/76064309936453",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed39bd-cutout.png?v=1794060725",
+      "sha256": "eeba8a1135dd50744e7091bff20156437113c450fb35cd69386ab1a87a558b3f"
+    },
+    {
+      "handle": "archive-ed39w",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ed39w-hedgehog-snowball-A-2048x2048.webp?v=1791362721",
+      "mediaId": "gid://shopify/MediaImage/76064309969221",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed39w-cutout.png?v=1794060724",
+      "sha256": "8e3de882bba4fb805adeb1a544b15ef82a5be96a522e32f9c62ad3cdd87359db"
+    },
+    {
+      "handle": "archive-ed46ra",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED46RA-1-2048x2048.webp?v=1791362733",
+      "mediaId": "gid://shopify/MediaImage/76064310001989",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed46ra-cutout.png?v=1794060724",
+      "sha256": "2c5d49b7fcf2565c9cc241e30101931faba18c5b0fcf013a6b13ad8e1cd92762"
+    },
+    {
+      "handle": "archive-ed49fl",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED49FL-audit-01.webp?v=1791958666",
+      "mediaId": "gid://shopify/MediaImage/76064310034757",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed49fl-cutout.png?v=1794060723",
+      "sha256": "ed48e1cdfaf31023ca28c5c58d159230b2fa7f4ae59d58c4623c457a52261bbb"
+    },
+    {
+      "handle": "archive-ed50ta",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED50TA-audit-01.webp?v=1791958475",
+      "mediaId": "gid://shopify/MediaImage/76064310067525",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed50ta-cutout.png?v=1794060723",
+      "sha256": "ea2f7a912ec7b95737e25576cdd0b41a734beba92841604487aee3d4f6d3e7dc"
+    },
+    {
+      "handle": "archive-edb01",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edb01-a-2048x2048.webp?v=1791362630",
+      "mediaId": "gid://shopify/MediaImage/76064310100293",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb01-cutout.png?v=1794060724",
+      "sha256": "3b3777f36a28821737f11a70a43f00cf1076ade884cbcf6cb42b2d4ef76027b5"
+    },
+    {
+      "handle": "archive-edb01ccb",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB01CCB-2048x2048.webp?v=1791362636",
+      "mediaId": "gid://shopify/MediaImage/76064310133061",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb01ccb-cutout.png?v=1794060724",
+      "sha256": "6f32783a236eb46850349119c8acb9ba0a32ae9d0e380bc91ef80c712d2abc89"
+    },
+    {
+      "handle": "archive-edb01t",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB01T-2048x2048.webp?v=1791362651",
+      "mediaId": "gid://shopify/MediaImage/76064310165829",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb01t-cutout.png?v=1794060724",
+      "sha256": "318c189cf96290441e500bc6cc7103c91c54ddcfe88b3bb1cc3b6c3f91aeb952"
+    },
+    {
+      "handle": "archive-edb01w",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB01W-2048x2048.webp?v=1791362636",
+      "mediaId": "gid://shopify/MediaImage/76064310198597",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb01w-cutout.png?v=1794060724",
+      "sha256": "3a728f6d6b0002d2b37988de7e1ec8820d38d8224e1a389b6793eb710c5abd75"
+    },
+    {
+      "handle": "archive-edb02",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB02_20Tiger_20Bust_1_-2048x2048.webp?v=1791362632",
+      "mediaId": "gid://shopify/MediaImage/76064310231365",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb02-cutout.png?v=1794060724",
+      "sha256": "d781d4e1759f3aaa32b6524db2faf460f025713ae70a91cc65b98c6df09a00a0"
+    },
+    {
+      "handle": "archive-edb02ccb",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB02CCB-2048x2048.webp?v=1791362637",
+      "mediaId": "gid://shopify/MediaImage/76064310264133",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb02ccb-cutout.png?v=1794060724",
+      "sha256": "e5b545846f2275f5540e3e364321dfec2b1933813a6a7e8259f70d1670e51cf4"
+    },
+    {
+      "handle": "archive-edb02g",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB02G_20TIGER_20BUST_20GOLDEN_20A-2048x2048.webp?v=1791362652",
+      "mediaId": "gid://shopify/MediaImage/76064310296901",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb02g-cutout.png?v=1794060724",
+      "sha256": "1051be8f7317b37e5e47ec9bdaf2db0d031db2db581c537b4e194d91c49b2b44"
+    },
+    {
+      "handle": "archive-edb02w",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB02S-B-2048x2048.webp?v=1791362682",
+      "mediaId": "gid://shopify/MediaImage/76064310329669",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb02w-cutout.png?v=1794060724",
+      "sha256": "30256eae523bb6169715869997c4997e1a4e6c69d25b9c888b5dd353f9bc678c"
+    },
+    {
+      "handle": "archive-edb04",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB04_20Wolf_20Bust_1_-2048x2048.webp?v=1791362638",
+      "mediaId": "gid://shopify/MediaImage/76064310362437",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb04-cutout.png?v=1794060724",
+      "sha256": "2f125dec7ebc0f67fb9f032f5ff19498a45f7102e5b374f1f2121e6defedf475"
+    },
+    {
+      "handle": "archive-edb04f",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB04F-2048x2048.webp?v=1791362671",
+      "mediaId": "gid://shopify/MediaImage/76064310395205",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb04f-cutout.png?v=1794060723",
+      "sha256": "f84dcfaa0cd419ee1781f3d6f15bd5b908b2678a2bfbf3087f2543ff06717ef0"
+    },
+    {
+      "handle": "archive-edb04r",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB04R-2048x2048.webp?v=1791362670",
+      "mediaId": "gid://shopify/MediaImage/76064310427973",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb04r-cutout.png?v=1794060725",
+      "sha256": "42e17c054eb1dcfeadac816c7fc550b9a8b457ed8c8a9ace8469e9168b140eab"
+    },
+    {
+      "handle": "archive-edb04s",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB04S_20WOLF_20BUST_20SILVER_20MOON-2048x2048.webp?v=1791362653",
+      "mediaId": "gid://shopify/MediaImage/76064310460741",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb04s-cutout.png?v=1794060725",
+      "sha256": "76c0c682b4452d8719220f9d0b96a3cbd014cb30406d09a76ca59abe6f16b919"
+    },
+    {
+      "handle": "archive-edb04wwfc",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/A-2048x2048_c54e2ae2-c86d-4621-9a68-6109a5b8def6.webp?v=1791362676",
+      "mediaId": "gid://shopify/MediaImage/76064310493509",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb04wwfc-cutout.png?v=1794060724",
+      "sha256": "c2f8a7578fd5e518ae07ee74f6bcf323351645632299804276f8bdcc9fb6a092"
+    },
+    {
+      "handle": "archive-edb05s",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB05SA-2048x2048.webp?v=1791362654",
+      "mediaId": "gid://shopify/MediaImage/76064310526277",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb05s-cutout.png?v=1794060724",
+      "sha256": "41f7e983fa5ead0e43cc938ee3c27bc533d5703a2aa56aed184499cd16d0ab60"
+    },
+    {
+      "handle": "archive-edb06",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB06-2048x2048.webp?v=1791362654",
+      "mediaId": "gid://shopify/MediaImage/76064310559045",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb06-cutout.png?v=1794060725",
+      "sha256": "a1dcda06b6316d6a915a3a13fe824b0d8d9efa362cde8f96b1b1b861d78ae205"
+    },
+    {
+      "handle": "archive-edb06g",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB06G-2048x2048.webp?v=1791362643",
+      "mediaId": "gid://shopify/MediaImage/76064310591813",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb06g-cutout.png?v=1794060725",
+      "sha256": "cdaae5d5e2c6ea2496809ce3988f84a0ba521d815193f6560fe301f751dc1973"
+    },
+    {
+      "handle": "archive-edb06t",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB06N_20CLEAPOATRA_20BUST_20TEAL-2048x2048.webp?v=1791362655",
+      "mediaId": "gid://shopify/MediaImage/76064310624581",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb06t-cutout.png?v=1794060724",
+      "sha256": "8daa28a47b4ba6228ccfd97fa5ff8ea6fc5bce41c94667a853258fc668051082"
+    },
+    {
+      "handle": "archive-edb09e",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/A-2048x2048_ccbca9c3-90ae-493e-ae17-54a35ff0c2d8.webp?v=1791362703",
+      "mediaId": "gid://shopify/MediaImage/76064310657349",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb09e-cutout.png?v=1794060724",
+      "sha256": "87a38304ab2c9fa0f2dc558d9823bf471a5295205416d3547a2f10980d4bdb15"
+    },
+    {
+      "handle": "archive-edb09k",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB09K_20LION_20BUST_20BLACK_20A-2048x2048.webp?v=1791362684",
+      "mediaId": "gid://shopify/MediaImage/76064310690117",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb09k-cutout.png?v=1794060724",
+      "sha256": "d5f7c463337c37c45eae7ec4aa9e88e8a55e17aa65acaff3552fac6a1100882e"
+    },
+    {
+      "handle": "archive-edb09kc",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edb09kc_1_-2048x2048.webp?v=1791362728",
+      "mediaId": "gid://shopify/MediaImage/76064310722885",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb09kc-cutout.png?v=1794060725",
+      "sha256": "31be825ab7a94eaa85424e532bb5e06ccaeca02cbe6d6571319fe8f8ffdd62dd"
+    },
+    {
+      "handle": "archive-edb09pr",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/A-2048x2048_207b180f-38c9-4911-a652-889f29144822.webp?v=1791362729",
+      "mediaId": "gid://shopify/MediaImage/76064310755653",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb09pr-cutout.png?v=1794060724",
+      "sha256": "f018195b0e6d4962c5d93ddacb91c20b117e8bf841f07493d0d9e1a5ad9d9b03"
+    },
+    {
+      "handle": "archive-edb11",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB11_20FALCON_20BUST_20HUNTER_20BROWN_20A-2048x2048.webp?v=1791362656",
+      "mediaId": "gid://shopify/MediaImage/76064310788421",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb11-cutout.png?v=1794060724",
+      "sha256": "b6f66edf5bbfc555ccf0dc9db5a5e033d01a2c265dfb4035088fb6ebf98e085e"
+    },
+    {
+      "handle": "archive-edb11p",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB11T_20FALCON_20BUST_20RA_20TEAL_20A-2048x2048_58fab7f6-e380-4361-936e-bb7699607add.webp?v=1791362705",
+      "mediaId": "gid://shopify/MediaImage/76064310821189",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb11p-cutout.png?v=1794060724",
+      "sha256": "8d735cee0b1a772020fedb08723acde1d2f6d75465593440c48671cdaae356ae"
+    },
+    {
+      "handle": "archive-edb11r",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB11T_20FALCON_20BUST_20RA_20TEAL_20A-2048x2048.webp?v=1791362660",
+      "mediaId": "gid://shopify/MediaImage/76064310853957",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb11r-cutout.png?v=1794060724",
+      "sha256": "8d735cee0b1a772020fedb08723acde1d2f6d75465593440c48671cdaae356ae"
+    },
+    {
+      "handle": "archive-edb13sg",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/A-2048x2048_a69b9f61-0df6-4c94-9abc-83fc56131cb3.webp?v=1791362688",
+      "mediaId": "gid://shopify/MediaImage/76064310886725",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb13sg-cutout.png?v=1794060724",
+      "sha256": "9898e502386339f4d9e54d7a3bdea2b624a29a132bc0181de102724970dc3f5f"
+    },
+    {
+      "handle": "archive-edb14",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB14-2048x2048.webp?v=1791362660",
+      "mediaId": "gid://shopify/MediaImage/76064310919493",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb14-cutout.png?v=1794060724",
+      "sha256": "e6a6e94b0e6c8a220232c6ffc8e6facc0457d6f0c6835e06a1926039565baf02"
+    },
+    {
+      "handle": "archive-edb16",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB16-2048x2048.webp?v=1791362661",
+      "mediaId": "gid://shopify/MediaImage/76064310952261",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb16-cutout.png?v=1794060724",
+      "sha256": "20650fca3bf8a59e60c5592c89f5cb6b470483870538af653c14279aa55b7691"
+    },
+    {
+      "handle": "archive-edb17",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB17_20PUG_20BUST_20FAWN_20A-2048x2048.webp?v=1791362662",
+      "mediaId": "gid://shopify/MediaImage/76064310985029",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb17-cutout.png?v=1794060724",
+      "sha256": "15a9265cf46622beaba4df7ca42141f7c1bd19fa2f4a7961aa4b8f82dcec8200"
+    },
+    {
+      "handle": "archive-edb17b",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB17B_20PUG_20BUST_20BLACK_20A-2048x2048.webp?v=1791362671",
+      "mediaId": "gid://shopify/MediaImage/76064311017797",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb17b-cutout.png?v=1794060724",
+      "sha256": "eab251f247d98e7989bec029987c2c4e75934f07bcaceadd1cedf0f3b395f4f4"
+    },
+    {
+      "handle": "archive-edb19",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edb19l-2048x2048.webp?v=1791362673",
+      "mediaId": "gid://shopify/MediaImage/76064311050565",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb19-cutout.png?v=1794060724",
+      "sha256": "d9706cd96c744b39119f375a0cc50b7ccc36750633052676d4e2a73d6c004aae"
+    },
+    {
+      "handle": "archive-edb28tc",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB28TC-French-Bulldog-Tricolore-A-web-2048x2048.webp?v=1791362725",
+      "mediaId": "gid://shopify/MediaImage/76064311083333",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb28tc-cutout.png?v=1794060724",
+      "sha256": "4403d691b2e26c049f11a9f500824c8e3623d9dfc8feb167601e66e94fda2786"
+    },
+    {
+      "handle": "archive-edb29cp",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edb29cp-a-2048x2048.webp?v=1791362721",
+      "mediaId": "gid://shopify/MediaImage/76064311116101",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb29cp-cutout.png?v=1794060724",
+      "sha256": "ad5ef94438098098bf3a742449b78bd35b8764ce3a3e8e42936299cb92cc80b7"
+    },
+    {
+      "handle": "archive-edb33s",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB33S-audit-01.webp?v=1791958433",
+      "mediaId": "gid://shopify/MediaImage/76064311148869",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb33s-cutout.png?v=1794060723",
+      "sha256": "cf65fdcd1360af7640beec186c56c9c3508a137f6102fa4f333f842487df00bb"
+    },
+    {
+      "handle": "archive-edbs03",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDBS03_20VENUS_20BUST_20FUSION_20COPPER_20BLAZE-2048x2048.webp?v=1791362686",
+      "mediaId": "gid://shopify/MediaImage/76064311181637",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edbs03-cutout.png?v=1794060723",
+      "sha256": "184497d6c9a0e73aa6478b840a2a9ff6172e0e6cff2478ce02b62db3608c54b0"
+    },
+    {
+      "handle": "archive-edbs07",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDBS07_20RHINO_20BUST_20SMOULDERING_20BROWN_20RUST-2048x2048.webp?v=1791362687",
+      "mediaId": "gid://shopify/MediaImage/76064311214405",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edbs07-cutout.png?v=1794060724",
+      "sha256": "9f48d7c2569b3a60fd3dab7f54d129d2f4568aac08ff05869d72212e4f789a2e"
+    },
+    {
+      "handle": "archive-edbs13",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDBS13_20BULLDOG_20BUST_20SMOULDERING_20BROWN_20RUST-2048x2048.webp?v=1791362688",
+      "mediaId": "gid://shopify/MediaImage/76064311247173",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edbs13-cutout.png?v=1794060724",
+      "sha256": "d2dd2f52bc04376b9c004c29c34d9560fad0ad5c21aeee710725c4253177eeb1"
+    },
+    {
+      "handle": "archive-edbs14",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDBS14_20FOX_20BUST_20FUSION_20COPPER_20BLAZE-2048x2048.webp?v=1791362689",
+      "mediaId": "gid://shopify/MediaImage/76064311279941",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edbs14-cutout.png?v=1794060724",
+      "sha256": "7a3c9c973104d9ad5c9be58281f36526560d4115b0fba4e989a816702ec44178"
+    },
+    {
+      "handle": "archive-edbs16",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDBS16_20GREEN_20MAN_20BUST_20SMOULDERING_20BROWN_20RUST-2048x2048.webp?v=1791362691",
+      "mediaId": "gid://shopify/MediaImage/76064311312709",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edbs16-cutout.png?v=1794060724",
+      "sha256": "3fce2ab9e527cb96c58328145d70bb21f5bf909925f13a8719a9be2f92e19e34"
+    },
+    {
+      "handle": "archive-edbs19",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDBS19_20ELF_20BUST_20IRON_20PINK_20MIST-2048x2048.webp?v=1791362692",
+      "mediaId": "gid://shopify/MediaImage/76064311345477",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edbs19-cutout.png?v=1794060724",
+      "sha256": "46c5c67845be59803388b249f0f746ae75a7563f1d3d857e6bb3e5622802be31"
+    },
+    {
+      "handle": "archive-edbs20",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDBS20_20SPARTAN_20BUST_20SMOULDERING_20BROWN_20RUST-2048x2048.webp?v=1791362693",
+      "mediaId": "gid://shopify/MediaImage/76064311378245",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edbs20-cutout.png?v=1794060724",
+      "sha256": "982f01078a6c4c8c88b4527b49e460c5ebaa8e3edab8118494be27371c9c08c9"
+    },
+    {
+      "handle": "archive-edl02r",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDL02R-audit-01.webp?v=1791958563",
+      "mediaId": "gid://shopify/MediaImage/76064311411013",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edl02r-cutout.png?v=1794060722",
+      "sha256": "38d2678db6af94e46ebe7fae73c3a5bc89654381c69e3bcd0ee1ee762a0c5bd4"
+    },
+    {
+      "handle": "archive-edm01g",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/archive-EDM01G-1.webp?v=1791956982",
+      "mediaId": "gid://shopify/MediaImage/76064311443781",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edm01g-cutout.png?v=1794060722",
+      "sha256": "6a6f49075511b8eb93fa3423b708a988171cc3a2b9fbd691ebaf257e12aa8574"
+    },
+    {
+      "handle": "archive-ed03w",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED03W_20DRAGON_20WHITE-2048x2048.webp?v=1791362646",
+      "mediaId": "gid://shopify/MediaImage/76064346210629",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed03w-cutout.png?v=1794061453",
+      "sha256": "9763d5bd153e3ad26ac04c31f14e3a811aba11ae5b7239a44be38e5bd9fc708f"
+    },
+    {
+      "handle": "archive-ed07p",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED07P-2048x2048.webp?v=1791362707",
+      "mediaId": "gid://shopify/MediaImage/76064346243397",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed07p-cutout.png?v=1794061454",
+      "sha256": "69f606e423f51eab4abcee6c53c6523d2658d884f5bcc3c2679ef3149b10b2c3"
+    },
+    {
+      "handle": "archive-ed18a",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED18-2048x2048.webp?v=1791362677",
+      "mediaId": "gid://shopify/MediaImage/76064346276165",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed18a-cutout.png?v=1794061454",
+      "sha256": "3a1d04f5d038adb50b7384d60bd454133e7adac0c5dc644187249dfcb2c9962f"
+    },
+    {
+      "handle": "archive-ed18g",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED18G-1024x1024-2048x2048.webp?v=1791362678",
+      "mediaId": "gid://shopify/MediaImage/76064346308933",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed18g-cutout.png?v=1794061454",
+      "sha256": "70c9a7e5f406a18d0d3fbfa5abff89457a9c71456eaaadc33fad01c55f6eee42"
+    },
+    {
+      "handle": "archive-ed20",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED20_20OWL_20NIGHT_20WATCHMAN_20A-2048x2048.webp?v=1791362668",
+      "mediaId": "gid://shopify/MediaImage/76064346341701",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed20-cutout.png?v=1794061017",
+      "sha256": "a62da4cf9f3b6fc7b731eb1d890aa54524e64d6149eff26b87c3b85e4bd1fbc4"
+    },
+    {
+      "handle": "archive-ed27b",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED27B-2048x2048.webp?v=1791362704",
+      "mediaId": "gid://shopify/MediaImage/76064346374469",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed27b-cutout.png?v=1794061454",
+      "sha256": "1f332ece094f37cbb48540827f58a29cd820635966f6aad7cfed75e79a34fe8f"
+    },
+    {
+      "handle": "archive-ed27g",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED27G-2048x2048.webp?v=1791362695",
+      "mediaId": "gid://shopify/MediaImage/76064346407237",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed27g-cutout.png?v=1794061017",
+      "sha256": "4f6cce6eecee31ab2c4b777bc33fa8bbaa003cef3886fa845354d3e0fc9a4fa6"
+    },
+    {
+      "handle": "archive-edb19le",
+      "sourceUrl": "https://edgesculpture.com/image/cache/catalog/Busts/EDB19LE/edb19le-Ancient-Folklore-A-2048x2048.webp",
+      "mediaId": "gid://shopify/MediaImage/76064346440005",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb19le-cutout.png?v=1794061018",
+      "sha256": "2ca961abc4f4338448c5c1389adb5c53ee3be66be35e541bc6c8553042ca7c97"
+    },
+    {
+      "handle": "archive-edb20",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edb20-2048x2048.webp?v=1791362674",
+      "mediaId": "gid://shopify/MediaImage/76064346472773",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb20-cutout.png?v=1794061016",
+      "sha256": "2e63cb785aa35ec81de868f4c875e617b6c1b4bee277922d2bc0712ac99d1c0c"
+    },
+    {
+      "handle": "archive-edb20le",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edb20le-Ancient-Warrior-A-2048x2048.webp?v=1791362724",
+      "mediaId": "gid://shopify/MediaImage/76064346505541",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb20le-cutout.png?v=1794061017",
+      "sha256": "eb86f59408d68848a94f001ec625760b8c97dc52518720357f1d1f5a424737f2"
+    },
+    {
+      "handle": "archive-edb20s",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edb20s-2-2048x2048.webp?v=1791362675",
+      "mediaId": "gid://shopify/MediaImage/76064346538309",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb20s-cutout.png?v=1794061016",
+      "sha256": "d66115a3539c5f21062b47b3b67d54651931553002d35bce351842a37a95f948"
+    },
+    {
+      "handle": "archive-edb21bl",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB21BL_20Panther_20Bust_20Night_20Shadow-2048x2048.webp?v=1791362708",
+      "mediaId": "gid://shopify/MediaImage/76064346571077",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb21bl-cutout.png?v=1794061017",
+      "sha256": "a97cc609b396a276650185d6888599413a6e0f4e63df8b72fdec7f5f1f89503f"
+    },
+    {
+      "handle": "archive-edb21cp",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB21CP_20Panther_20Bust_20Jungle_20Flame-2048x2048.webp?v=1791362709",
+      "mediaId": "gid://shopify/MediaImage/76064346603845",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb21cp-cutout.png?v=1794061017",
+      "sha256": "dad1948be06f54561b6f730079a7dd235e66c25dcf6886aa149f687af7252822"
+    },
+    {
+      "handle": "archive-edb21gd",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB21GD_20Panther_20Bust_20Temple_20Gold-2048x2048.webp?v=1791362710",
+      "mediaId": "gid://shopify/MediaImage/76064346636613",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb21gd-cutout.png?v=1794061017",
+      "sha256": "b988344dc0935cbe2a1c442eee8331e3f3fa03c8cfea92aba9e37252519c6a49"
+    },
+    {
+      "handle": "archive-edb21gr",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB21GR_20Panther_20Bust_20Green_20Dream-2048x2048.webp?v=1791362710",
+      "mediaId": "gid://shopify/MediaImage/76064346669381",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb21gr-cutout.png?v=1794061016",
+      "sha256": "3ee6029a2acf56836a4f37e0a8d81c7178f0e35919c5dbef0f8df6a856e5640d"
+    },
+    {
+      "handle": "archive-edb21pk",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB21PK_20Panther_20Bust_20Rinky_20Dink-2048x2048.webp?v=1791362711",
+      "mediaId": "gid://shopify/MediaImage/76064346702149",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb21pk-cutout.png?v=1794061017",
+      "sha256": "c6772baf1ad77881412a87e08fc5c08da5b1c34a13fe4b4590482ea4d3e7808f"
+    },
+    {
+      "handle": "archive-edb21pr",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB21PR_20Panther_20Bust_20Moon_20Hunter-2048x2048.webp?v=1791362712",
+      "mediaId": "gid://shopify/MediaImage/76064346734917",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb21pr-cutout.png?v=1794061017",
+      "sha256": "cb6234ce078230fc327e97e6b49d3eb84eded3d1b1fe2d7ff22ad4fce042ef82"
+    },
+    {
+      "handle": "archive-edb21sv",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB21SL_20Panther_20Bust_20Silent_20Silver-2048x2048.webp?v=1791362713",
+      "mediaId": "gid://shopify/MediaImage/76064346767685",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb21sv-cutout.png?v=1794061016",
+      "sha256": "f7d26911b1264dbe3c2dcbcf61cfeabe3c8e442c6e9164256808b2e3956eae1c"
+    },
+    {
+      "handle": "archive-edb27sg",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB27SG-Staff-Bull-Terrier-St-George-A-web-2048x2048.webp?v=1791362725",
+      "mediaId": "gid://shopify/MediaImage/76064346800453",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb27sg-cutout.png?v=1794061017",
+      "sha256": "4867635f818a8ebb0e906ccd8fcaa110e4b620fe17db4866e0e8dfe279ef2361"
+    },
+    {
+      "handle": "archive-edms01",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDMS01_20HANNYA_20MASK_20EMERALD_20GOLD_20GLOW-2048x2048.webp?v=1791362693",
+      "mediaId": "gid://shopify/MediaImage/76064346833221",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edms01-cutout.png?v=1794061016",
+      "sha256": "c25262109291d2214c387ad039d78063a50901644c0de08eb83217c16102e610"
+    },
+    {
+      "handle": "archive-edms02",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDMS02_20VENETIAN_20MASK_20IRON_20PINK_20MIST-2048x2048.webp?v=1791362694",
+      "mediaId": "gid://shopify/MediaImage/76064346865989",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edms02-cutout.png?v=1794061017",
+      "sha256": "cc6f07aa38d35ea6a3f5ce136c7034171d0cd6c492938c99a9334923433adf98"
+    },
+    {
+      "handle": "archive-eds21",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDS21_20HARE_20STAR_20GAZER_20FUSION_20COPPER_20BLAZE-2048x2048.webp?v=1791362679",
+      "mediaId": "gid://shopify/MediaImage/76064346898757",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-eds21-cutout.png?v=1794061017",
+      "sha256": "2022d9b932cda2eba6146ac22f85f16f3d1c9dbee11c90258f5ed7f2c8256133"
+    },
+    {
+      "handle": "archive-eds23",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDS23_20BULL_20TERRIER_20SMOULDERING_20BROWN_20RUST-2048x2048.webp?v=1791362680",
+      "mediaId": "gid://shopify/MediaImage/76064346931525",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-eds23-cutout.png?v=1794061017",
+      "sha256": "ab3db869a08b85c430af5f62f708b776f70ff71f6ee77727c7de99302857d092"
+    },
+    {
+      "handle": "archive-eds25",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDS25_20BARN_20OWL_20EMERALD_20GOLD_20GLOW-2048x2048.webp?v=1791362681",
+      "mediaId": "gid://shopify/MediaImage/76064346964293",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-eds25-cutout.png?v=1794061016",
+      "sha256": "7a6ff3eae605627794dae37324ebfebc1d5b6f247a12306aa38b86e8527b86bc"
+    },
+    {
+      "handle": "archive-eds26",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDS26_20CAT_20SITTING_20EMERALD_20GOLD_20GLOW-2048x2048.webp?v=1791362682",
+      "mediaId": "gid://shopify/MediaImage/76064346997061",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-eds26-cutout.png?v=1794061016",
+      "sha256": "b4cfd904ae0b0513d1363cc65d0d782c2cfbf08a2d414dfd871a71f2a02d271a"
+    },
+    {
+      "handle": "archive-edwho01g",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDWHO01G_20CYBERMAN_20BUST_20GOLD-2048x2048.webp?v=1791362675",
+      "mediaId": "gid://shopify/MediaImage/76064347029829",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edwho01g-cutout.png?v=1794061580",
+      "sha256": "f43d5e03b8cbe7fcd0b9fdffb847b01b9f517c7ef6339f268fb342dbb1507bb0"
+    },
+    {
+      "handle": "archive-edwwfc",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/A-2048x2048_c60635d5-a2a4-447b-b6dc-29e086e5a32a.webp?v=1791362702",
+      "mediaId": "gid://shopify/MediaImage/76064347062597",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edwwfc-cutout.png?v=1794061016",
+      "sha256": "40105a6c4e0971527af0ca61b456eac6e4027af5a53b9156dee131fb0f2032a1"
+    },
+    {
+      "handle": "archive-edwwfcg",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/A-2048x2048_ee6952ce-408f-4944-812f-2e82928bece9.webp?v=1791362701",
+      "mediaId": "gid://shopify/MediaImage/76064347095365",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edwwfcg-cutout.png?v=1794061017",
+      "sha256": "2a662c148370ed01330c4a6283a647ec426270e142157c19453a63d677560151"
+    },
+    {
+      "handle": "archive-edx01",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDX01-audit-01.webp?v=1791958511",
+      "mediaId": "gid://shopify/MediaImage/76064347128133",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edx01-cutout.png?v=1794061016",
+      "sha256": "b3aa2c90546c9edcfbd4afbe97e023a371f3fba0e306787d5c60a72c3e70db04"
+    },
+    {
+      "handle": "archive-edzsl",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDZSL-2048x2048.webp?v=1791362645",
+      "mediaId": "gid://shopify/MediaImage/76064347160901",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edzsl-cutout.png?v=1794061017",
+      "sha256": "36429cd5daf911687226a6a593cf107c1d3c5cfc4bded6257c465961e8db8c38"
+    },
+    {
+      "handle": "archive-ed26s",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/A-2048x2048_c16a5673-fa32-4ad6-bafd-b0f5b55d14f1.webp?v=1791362695",
+      "mediaId": "gid://shopify/MediaImage/76064376586565",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed26s-cutout.png?v=1794061445",
+      "sha256": "81c13f1dcaba59cd2152b0a0c10ab9aa00ad5b24d3a38ac8c038023cd1c2fc1c"
+    },
+    {
+      "handle": "archive-ed04s",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED04S_20ELEPHANT_20SILVER-2048x2048.webp?v=1791362664",
+      "mediaId": "gid://shopify/MediaImage/76064376619333",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed04s-cutout.png?v=1794061445",
+      "sha256": "37ce5131f5d0fffa182b4bdd0d69652f81d2c7027edf2a3cb6841795388e706b"
+    },
+    {
+      "handle": "archive-edb06s",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/A-2048x2048_f0162c0f-b2aa-412e-b25a-4450f4a83e85.webp?v=1791362698",
+      "mediaId": "gid://shopify/MediaImage/76064376652101",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb06s-cutout.png?v=1794061446",
+      "sha256": "ac5beac291e3f931f47b906477d779b4b1263919be905be1a3788f32b9f433cf"
+    },
+    {
+      "handle": "archive-edb09s",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/A-2048x2048_bebe83ba-5adf-4da9-915d-bc2ea5d5e32b.webp?v=1791362699",
+      "mediaId": "gid://shopify/MediaImage/76064376684869",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb09s-cutout.png?v=1794061445",
+      "sha256": "00033c123c8177fd59b8a6074313a7460cd06836c39f64c154adfb10aa7ba623"
+    },
+    {
+      "handle": "archive-edb16s",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/A-2048x2048_0b8d58bc-34ac-4f79-8311-7d199ac13878.webp?v=1791362700",
+      "mediaId": "gid://shopify/MediaImage/76064376717637",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb16s-cutout.png?v=1794061445",
+      "sha256": "c97b0e45d7ad1079c03ad2cea3692547e70b20bb4b4b4e0a83d7fd88c40be6f1"
+    },
+    {
+      "handle": "archive-edb19s",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/A-2048x2048_cfa87588-672b-4ae7-a367-2c2a27cfc2fe.webp?v=1791362701",
+      "mediaId": "gid://shopify/MediaImage/76064376750405",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb19s-cutout.png?v=1794061445",
+      "sha256": "21f2341ba7fbeb0a944ae37fe27e7555ba9e6276f374379ba326ada62494f8f5"
+    },
+    {
+      "handle": "archive-edm01r",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/archive-EDM01R-01.webp?v=1791956940",
+      "mediaId": "gid://shopify/MediaImage/76064376783173",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edm01r-cutout.png?v=1794061444",
+      "sha256": "4a021f0f32194795f14e69012b1dcd94b5db34b4839d6e2d9263b6c74a066064"
+    },
+    {
+      "handle": "archive-edm01w",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/archive-EDM01W-1.webp?v=1791956962",
+      "mediaId": "gid://shopify/MediaImage/76064376815941",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edm01w-cutout.png?v=1794061444",
+      "sha256": "f08e47dea1cfc78c2d804e293652df7fd0c8b3b24a2c93f28d997fb0ea428c69"
+    },
+    {
+      "handle": "archive-edm01jg",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/archive-EDM01JG-1.webp?v=1791956975",
+      "mediaId": "gid://shopify/MediaImage/76064376848709",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edm01jg-cutout.png?v=1794061444",
+      "sha256": "4124fd172b9e129928d1159de25a462c901d07f5c4525efc260afab8e06ffdd6"
+    },
+    {
+      "handle": "archive-edm02m",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/archive-EDM02M-1.webp?v=1791956995",
+      "mediaId": "gid://shopify/MediaImage/76064376881477",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edm02m-cutout.png?v=1794061444",
+      "sha256": "c8f0a1f9ff58ff632916dbdadc6c7adc210e3e3ae0bbfde833c3fdedacf2b26b"
+    },
+    {
+      "handle": "archive-edm02t",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/archive-EDM02T-1.webp?v=1791957009",
+      "mediaId": "gid://shopify/MediaImage/76064376914245",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edm02t-cutout.png?v=1794061444",
+      "sha256": "862664d0c33ca75f92059c8ae8f2e72e88e102c6455a77faf47c8d2fcc4b6362"
+    },
+    {
+      "handle": "archive-edm02r",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/archive-EDM02R-1.webp?v=1791957022",
+      "mediaId": "gid://shopify/MediaImage/76064376947013",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edm02r-cutout.png?v=1794061444",
+      "sha256": "5cc50a4f300e8abe389e37e70bc1fc516f98b864346b86320337d89de7670a73"
+    },
+    {
+      "handle": "archive-edb13bl",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB13BL.1-2048x2048.webp?v=1791362714",
+      "mediaId": "gid://shopify/MediaImage/76064376979781",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb13bl-cutout.png?v=1794061445",
+      "sha256": "0098d6b5315075b3cbb2d27062a44da40290a54f27afc311d8e3382f8cc35ac2"
+    },
+    {
+      "handle": "archive-edb13bn",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB13BN-2048x2048.webp?v=1791362715",
+      "mediaId": "gid://shopify/MediaImage/76064377012549",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb13bn-cutout.png?v=1794061446",
+      "sha256": "4a6cc2bac322b9026689ebcd6a38fd827392c29491dea422cb12ad77abb811a7"
+    },
+    {
+      "handle": "archive-edb13gr",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB13GR-2048x2048.webp?v=1791362716",
+      "mediaId": "gid://shopify/MediaImage/76064377045317",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb13gr-cutout.png?v=1794061445",
+      "sha256": "c1a9316b0198b84a8198f8f425a041124e6fc8eed383b7473c3bfabb18729fd3"
+    },
+    {
+      "handle": "archive-edb13gy",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB13GY-A-2048x2048.webp?v=1791362717",
+      "mediaId": "gid://shopify/MediaImage/76064377078085",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb13gy-cutout.png?v=1794061445",
+      "sha256": "8f70ac2d6da51ec6f0afab4a543cb43a1c9cb050652393a397f719383827b789"
+    },
+    {
+      "handle": "archive-edb13m",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB13M-A-2048x2048.webp?v=1791362718",
+      "mediaId": "gid://shopify/MediaImage/76064377110853",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb13m-cutout.png?v=1794061445",
+      "sha256": "9f877fb4b233c5b5d8fce4e257523c30d1a3c5ecff082c178b961c9320fc91ce"
+    },
+    {
+      "handle": "archive-edb13pk",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB13PK-A-2048x2048.webp?v=1791362719",
+      "mediaId": "gid://shopify/MediaImage/76064377143621",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb13pk-cutout.png?v=1794061445",
+      "sha256": "4b6def8419c8383584f46838e3eeb0a9243aa95c8e5458721399b8aead35b856"
+    },
+    {
+      "handle": "archive-edb13r",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB13R-A-2048x2048.webp?v=1791362720",
+      "mediaId": "gid://shopify/MediaImage/76064377176389",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb13r-cutout.png?v=1794061446",
+      "sha256": "7b1ca4484c957e19c41a5a5f85d7fb067b137e20fcb90344d9ed8e5fe0122134"
+    },
+    {
+      "handle": "archive-edb02b",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB02B_20TIGER_20BUST_20BLACK-2048x2048.webp?v=1791362669",
+      "mediaId": "gid://shopify/MediaImage/76064377209157",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb02b-cutout.png?v=1794061445",
+      "sha256": "b1eb67c3169f3297b8d57275e0c3f9cc992a08b397c6d0c495f3df5edf1315f5"
+    },
+    {
+      "handle": "archive-edb02t",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB02T_20TIGER_20BUST_20TEAL-2048x2048.webp?v=1791362670",
+      "mediaId": "gid://shopify/MediaImage/76064377241925",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb02t-cutout.png?v=1794061446",
+      "sha256": "198cba0d27684a2d0064851e51c4989dcb7c6077c45eb9b38bda04db56095b3e"
+    },
+    {
+      "handle": "archive-edb04wwgw",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/A-2048x2048_b1d3dbcd-1ae6-4429-a8c8-3182049ae40a.webp?v=1791362677",
+      "mediaId": "gid://shopify/MediaImage/76064377274693",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb04wwgw-cutout.png?v=1794061445",
+      "sha256": "013390c28d7c1a89a2c29722a577a29a48fa195854d5361b3e612ad8d1d4ba4b"
+    },
+    {
+      "handle": "archive-edb15f",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB15F_20TREX_20BUST_20FOSSIL_20BRONZE_20PATINA_20A-2048x2048.webp?v=1791362684",
+      "mediaId": "gid://shopify/MediaImage/76064377307461",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb15f-cutout.png?v=1794061445",
+      "sha256": "e43374af4641c82878160947025081a5fe391e2b93229a14629516060998a188"
+    },
+    {
+      "handle": "archive-edbs02",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDBS02_20TIGER_20BUST_20EMERALD_20GOLD_20GLOW-2048x2048.webp?v=1791362685",
+      "mediaId": "gid://shopify/MediaImage/76064377340229",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edbs02-cutout.png?v=1794061447",
+      "sha256": "b4818c239b9b2c429378e3d63557ee55ba5db58bcdb321eff97e1a8670f8ffe1"
+    },
+    {
+      "handle": "archive-edbs18",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDBS18_20HORSE_20BUST_20EMERALD_20GOLD_20GLOW-2048x2048.webp?v=1791362692",
+      "mediaId": "gid://shopify/MediaImage/76064377372997",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edbs18-cutout.png?v=1794061446",
+      "sha256": "89dcf3b131c2258102af11a93aad3b6bd8595472548ac7345caf2ffe161d8852"
+    },
+    {
+      "handle": "archive-edb06d",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB06D-2048x2048.webp?v=1791362643",
+      "mediaId": "gid://shopify/MediaImage/76064388612421",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb06d-cutout.png?v=1794061571",
+      "sha256": "84c4e431e7ae0db8c11e6e6c609700842499c1d2ed9f6b33632dbdc2f1da0e38"
+    },
+    {
+      "handle": "archive-edb08",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB08-2048x2048.webp?v=1791362644",
+      "mediaId": "gid://shopify/MediaImage/76064388645189",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb08-cutout.png?v=1794061572",
+      "sha256": "6e1ea7f5dd81b4d4122f95aacf9be1f87542c0fc688b47d31bb6b06feea4292d"
+    },
+    {
+      "handle": "archive-edb11g",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB11G_20FALCON_20BUST_20GOLDEN-2048x2048.webp?v=1791362659",
+      "mediaId": "gid://shopify/MediaImage/76064388677957",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb11g-cutout.png?v=1794061571",
+      "sha256": "f18659baae652c2e459b688be8d358c22ec5a1eda4b3f15983aec397953435d7"
+    },
+    {
+      "handle": "archive-ed16s",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED16S_20SHARK_20SILVER-2048x2048.webp?v=1791362667",
+      "mediaId": "gid://shopify/MediaImage/76064388710725",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed16s-cutout.png?v=1794061570",
+      "sha256": "fb232146993b0264fa26c8cc9be70c9a3628c27cb48cf2a8c63835a96590bf07"
+    },
+    {
+      "handle": "archive-edb19m",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edb19m-2048x2048.webp?v=1791362672",
+      "mediaId": "gid://shopify/MediaImage/76064388743493",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb19m-cutout.png?v=1794061571",
+      "sha256": "09a04eaf3c364cec7caba60834f064625e8510f411a8e9804b6dd93e2ba027b6"
+    },
+    {
+      "handle": "archive-edb08b",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB08B_20PANDA_20BUST_20BROWN-2048x2048.webp?v=1791362683",
+      "mediaId": "gid://shopify/MediaImage/76064388776261",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb08b-cutout.png?v=1794061571",
+      "sha256": "e77774effe885b453a11ad610ccf6a3c30aa914cab0d64e506d8f8fae16a8b00"
+    },
+    {
+      "handle": "archive-edbs15",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDBS15_20TREX_20BUST_20EMERALD_20GOLD_20GLOW-2048x2048.webp?v=1791362690",
+      "mediaId": "gid://shopify/MediaImage/76064388809029",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edbs15-cutout.png?v=1794061571",
+      "sha256": "92bf68e15fa1d03c5ca20b5b8b18a1eb36296811abfbe8b804c021e0a11ca4c8"
+    },
+    {
+      "handle": "archive-edb07s",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/A-2048x2048_0210a1e1-a344-43ac-8a7e-a78a17d02e5e.webp?v=1791362698",
+      "mediaId": "gid://shopify/MediaImage/76064388841797",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb07s-cutout.png?v=1794061570",
+      "sha256": "696812bd878c8c8612b7e5c6aceed8d12e8c43d7f603dfe54f3267e7cd169eb6"
+    },
+    {
+      "handle": "archive-edb14w",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB14W_20FOX_20BUST_20ARCTIC_20A-2048x2048.webp?v=1791362706",
+      "mediaId": "gid://shopify/MediaImage/76064388874565",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb14w-cutout.png?v=1794061571",
+      "sha256": "b05505626ecf4d12dbb2c9c7f3e4f5ad66083b2832cd3f7c9cd1a5cecf86694e"
+    },
+    {
+      "handle": "archive-edb16a",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/EDB16-retailer-site-2048x2048.webp?v=1791362707",
+      "mediaId": "gid://shopify/MediaImage/76064388907333",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb16a-cutout.png?v=1794061571",
+      "sha256": "44c04380e54f31c7ca96e246cd1d82f51fc00d1401c94bfde1dc221d3cdae7d3"
+    },
+    {
+      "handle": "archive-edb16le",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edb16le-Ancient-Legend-A-2048x2048.webp?v=1791362722",
+      "mediaId": "gid://shopify/MediaImage/76064388940101",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-edb16le-cutout.png?v=1794061571",
+      "sha256": "d57dd02ce917ad5165d5964862d22aba069e9d65d44ea8855e6e2a392c262628"
+    },
+    {
+      "handle": "archive-ed33rf",
+      "sourceUrl": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/ED33RF-sea-turtle-reef-A-web-2048x2048.webp?v=1791362731",
+      "mediaId": "gid://shopify/MediaImage/76064388972869",
+      "url": "https://cdn.shopify.com/s/files/1/1101/1853/5493/files/edge-archive-ed33rf-cutout.png?v=1794061571",
+      "sha256": "7c6514a0beba534c0718c8944d1af151fa51e2cd6762826ff2e460751f48317d"
+    }
+  ]
+}
