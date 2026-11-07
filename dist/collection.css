@@ -1,0 +1,12 @@
+[hidden]{display:none!important}
+.edge-button{display:inline-block;border:0;border-radius:4px;background:#111;color:#d9e5ed;padding:12px 16px;text-decoration:none;font:600 12px Montserrat,sans-serif;cursor:pointer}
+.edge-button:hover{color:#e7c8f2}.edge-button:disabled{opacity:.5;cursor:wait}
+#loginPanel,#collectionTools,#emptyCollection,#loadStatus{padding:14px 22px;font:13px/1.6 Montserrat,sans-serif}
+#collectionTools{display:flex;gap:12px;align-items:center;flex-wrap:wrap}#collectionTools details{font-size:11px;flex-basis:100%}
+#signOut,#retrySave{background:transparent;border:1px solid #ddd;border-radius:4px;padding:10px;font:inherit}
+#catalogueSearch{display:block;width:100%;padding:12px;border:1px solid #bbb;border-radius:4px;font:inherit;margin:12px 0}
+.catalogue-result{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #eee;font-size:12px}.catalogue-result img{width:52px;height:65px;object-fit:contain}.catalogue-result span{flex:1}
+/* Lightweight geometry remains when shelf children are unmounted. */
+.wall.cabinet .row{height:calc(var(--clearance)*var(--cm,3px) + 16px + var(--surface) + 3px)}
+.row:not(.effects-visible) .weather *{animation-play-state:paused!important}
+@media(prefers-reduced-motion:reduce){.weather *{animation:none!important}}

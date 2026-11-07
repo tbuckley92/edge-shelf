@@ -1,0 +1,9 @@
+node_modules/
+.env
+.env.*
+!.env.example
+.netlify/
+
+# Generated product cut-outs are created by the build, never while scrolling.
+dist/assets/*.webp
+!dist/assets/texture-*.webp
