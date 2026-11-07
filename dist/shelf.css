@@ -274,3 +274,6 @@ button,select,input,.shelf-menu label,#saveStatus,#saveShelf,#loadStatus,.movebo
 .wall .piece img,.ghost,.swap-preview{-webkit-user-drag:none;pointer-events:none}
 .wall .shelf-move{touch-action:none;min-height:44px;min-width:112px}
 .shelf-reordering,.shelf-reordering *{-webkit-user-select:none;-webkit-touch-callout:none}
+
+.row[data-photo="true"] .display::before{content:"";position:absolute;inset:0;z-index:-1;background-image:linear-gradient(rgba(0,0,0,var(--bg-dim,.25)),rgba(0,0,0,var(--bg-dim,.25))),var(--row-photo);background-size:cover;background-position:var(--bg-x,50%) var(--bg-y,50%);pointer-events:none}
+.background-settings{margin:12px 0;padding:10px;border:1px solid #ddd;border-radius:6px}.background-settings legend{font-weight:600}.background-settings p{font-size:12px}.photo-upload input{max-width:210px}#removeBackground{padding:8px;border:1px solid #ccc;background:white;border-radius:4px}

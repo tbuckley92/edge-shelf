@@ -19,7 +19,7 @@ if(!rowSettings||typeof rowSettings!=='object')rowSettings={};
 const legacy={fixture:read('edge-wall-fixture','spot'),colour:read('edge-wall-led','warm'),brightness:read('edge-wall-brightness',70),speed:read('edge-wall-cycle-seconds',15)};
 function settings(n){
  const value={...legacy,...rowSettings[shelfIds[n]]};
- return {pieceIds:(value.pieceIds||[]).filter(id=>byId.has(id)),fogSpeed:Number.isFinite(value.fogSpeed)?Math.max(.25,Math.min(3,value.fogSpeed)):1,
+ return {background:value.background||null,bgX:value.bgX??50,bgY:value.bgY??50,bgDim:value.bgDim??25,pieceIds:(value.pieceIds||[]).filter(id=>byId.has(id)),fogSpeed:Number.isFinite(value.fogSpeed)?Math.max(.25,Math.min(3,value.fogSpeed)):1,
  fogColour:/^#[0-9a-f]{6}$/i.test(value.fogColour)?value.fogColour:'#edf7ff',
  lightColour:/^#[0-9a-f]{6}$/i.test(value.lightColour)?value.lightColour:'#ffe5b3',
  weather:['rain','snow'].includes(value.weather)?value.weather:'none',
@@ -47,20 +47,22 @@ function animateRainbow(time){
 function syncRainbow(){cancelAnimationFrame(rainbowFrame);if(!document.hidden&&!matchMedia('(prefers-reduced-motion: reduce)').matches&&[...wall.querySelectorAll('.row[data-mounted].effects-visible')].some(r=>settings(r.dataset.row).colour==='rainbow'))rainbowFrame=requestAnimationFrame(animateRainbow)}
 document.addEventListener('visibilitychange',syncRainbow);
 function applyLighting(row){
- const s=settings(row.dataset.row);row.dataset.fixture=s.fixture;applyWeather(row,s.weather);row.style.setProperty('--fog-strength',s.fog/100);
+ const s=settings(row.dataset.row);row.style.setProperty('--row-photo',s.background?'url("/api/background?shelf='+shelfIds[Number(row.dataset.row)]+'&image='+s.background+'")':'none');row.style.setProperty('--bg-x',s.bgX+'%');row.style.setProperty('--bg-y',s.bgY+'%');row.style.setProperty('--bg-dim',s.bgDim/100);row.dataset.photo=s.background?'true':'false';row.dataset.fixture=s.fixture;applyWeather(row,s.weather);row.style.setProperty('--fog-strength',s.fog/100);
  row.style.setProperty('--fog-duration',(10/s.fogSpeed)+'s');row.style.setProperty('--fog-colour',colourRGB(s.fogColour));
  row.style.setProperty('--light',s.colour==='rainbow'?rainbowRGB(0):s.colour==='custom'?colourRGB(s.lightColour):lights[s.colour]);
  row.style.setProperty('--power',s.fixture==='none'||s.colour==='off'?0:s.brightness/100);
  row.style.setProperty('--rim',s.fixture==='none'||s.colour==='off'?0:s.brightness/300);
 }
 const shelfMenu=document.querySelector('#shelfMenu');
+let originalPhoto=null;
 let editingRow=null, originalSettings=null, originalFinish=null, savingShelf=false;
 function openShelf(n){
  editingRow=n;originalSettings=rowSettings[shelfIds[n]]?{...rowSettings[shelfIds[n]]}:null;shelfMenu.querySelector('h2').textContent='Shelf '+(n+1);
  const row=wall.querySelector('[data-row="'+n+'"]'),s=settings(n);
- originalFinish=row.dataset.finish;shelfMenu.querySelector('[name=finish]').value=originalFinish;
+ originalPhoto=s.background;originalFinish=row.dataset.finish;shelfMenu.querySelector('[name=finish]').value=originalFinish;
  document.querySelector('#saveStatus').textContent='';
- for(const key of ['fixture','colour','brightness','speed','weather','fog','fogSpeed','fogColour','lightColour'])shelfMenu.querySelector('[name='+key+']').value=s[key];
+ for(const key of ['fixture','colour','brightness','speed','weather','fog','fogSpeed','fogColour','lightColour','bgX','bgY','bgDim'])shelfMenu.querySelector('[name='+key+']').value=s[key];
+ document.querySelector('#backgroundFile').value='';document.querySelector('#backgroundStatus').textContent='JPG, PNG or WebP · up to 20 MB';
  menuLabels();shelfMenu.classList.remove('closing');shelfMenu.showModal();
  requestAnimationFrame(()=>{
   const room=window.innerHeight-shelfMenu.getBoundingClientRect().height-76;
@@ -70,6 +72,7 @@ function openShelf(n){
  });
 }
 function menuLabels(){
+ document.querySelector('#removeBackground').disabled=!rowSettings[shelfIds[editingRow]]?.background;
  const colour=shelfMenu.querySelector('[name=colour]').value;
  const noLights=shelfMenu.querySelector('[name=fixture]').value==='none';
  for(const key of ['colour','brightness','lightColour'])shelfMenu.querySelector('[name='+key+']').closest('label').hidden=noLights;
@@ -77,19 +80,21 @@ function menuLabels(){
  for(const key of ['brightness','speed','fog','fogSpeed'])shelfMenu.querySelector('[data-output='+key+']').textContent=shelfMenu.querySelector('[name='+key+']').value+(key==='speed'?'s':key==='fogSpeed'?'×':'%');
 }
 shelfMenu.addEventListener('input',event=>{
+ if(event.target.type==='file')return;
  if(event.target.name==='lightColour')shelfMenu.querySelector('[name=colour]').value='custom';
  if(editingRow===null)return;const n=editingRow,row=wall.querySelector('[data-row="'+n+'"]');
  const finish=shelfMenu.querySelector('[name=finish]').value;paint(row,finish);row.dataset.finish=finish;
- rowSettings[shelfIds[n]]={pieceIds:settings(n).pieceIds,finish,fogSpeed:+shelfMenu.querySelector('[name=fogSpeed]').value,fogColour:shelfMenu.querySelector('[name=fogColour]').value,lightColour:shelfMenu.querySelector('[name=lightColour]').value,fog:+shelfMenu.querySelector('[name=fog]').value,weather:shelfMenu.querySelector('[name=weather]').value,fixture:shelfMenu.querySelector('[name=fixture]').value,colour:shelfMenu.querySelector('[name=colour]').value,brightness:+shelfMenu.querySelector('[name=brightness]').value,speed:+shelfMenu.querySelector('[name=speed]').value};
+ rowSettings[shelfIds[n]]={background:settings(n).background,bgX:+shelfMenu.querySelector('[name=bgX]').value,bgY:+shelfMenu.querySelector('[name=bgY]').value,bgDim:+shelfMenu.querySelector('[name=bgDim]').value,pieceIds:settings(n).pieceIds,finish,fogSpeed:+shelfMenu.querySelector('[name=fogSpeed]').value,fogColour:shelfMenu.querySelector('[name=fogColour]').value,lightColour:shelfMenu.querySelector('[name=lightColour]').value,fog:+shelfMenu.querySelector('[name=fog]').value,weather:shelfMenu.querySelector('[name=weather]').value,fixture:shelfMenu.querySelector('[name=fixture]').value,colour:shelfMenu.querySelector('[name=colour]').value,brightness:+shelfMenu.querySelector('[name=brightness]').value,speed:+shelfMenu.querySelector('[name=speed]').value};
  applyLighting(row);menuLabels();syncRainbow();document.querySelector('#saveStatus').textContent='Unsaved changes';
 });
 document.querySelector('#saveShelf').onclick=()=>{
- if(editingRow===null)return;
+ if(editingRow===null||savingShelf)return;
  const n=editingRow,row=wall.querySelector('[data-row="'+n+'"]');
  rowSettings[shelfIds[n]]={...settings(n),finish:row.dataset.finish};
  // Commit the preview locally before closing; the queued snapshot retains it.
  originalSettings={...rowSettings[shelfIds[n]]};originalFinish=row.dataset.finish;
- persist(true).catch(()=>{});closeTray();
+ const photoShelf=shelfIds[n],obsolete=originalPhoto,retainedPhoto=rowSettings[photoShelf].background;originalPhoto=retainedPhoto;
+ persist(true).then(()=>{if(obsolete&&obsolete!==retainedPhoto)discardPhoto(photoShelf,obsolete)}).catch(()=>{});closeTray();
 };
 let closingTimer=null;
 function closeTray(){
@@ -102,6 +107,7 @@ shelfMenu.addEventListener('cancel',e=>{e.preventDefault();closeTray()});
 shelfMenu.addEventListener('close',()=>{
  if(editingRow===null)return;
  const n=editingRow,row=wall.querySelector('[data-row="'+n+'"]');
+ const pendingPhoto=rowSettings[shelfIds[n]]?.background;if(pendingPhoto&&pendingPhoto!==originalPhoto)discardPhoto(shelfIds[n],pendingPhoto);
  if(originalSettings)rowSettings[shelfIds[n]]=originalSettings;else delete rowSettings[shelfIds[n]];
  if(row){row.dataset.finish=originalFinish;paint(row,originalFinish);applyLighting(row)}
  editingRow=null;pruneShelves();syncRainbow();
@@ -456,3 +462,24 @@ window.addEventListener('touchend',e=>{if(shelfDrag?.touch!==undefined&&[...e.ch
 window.addEventListener('touchcancel',()=>endShelfDrag(false));
 wall.addEventListener('selectstart',e=>{if(e.target.closest('.row'))e.preventDefault()});
 wall.addEventListener('dragstart',e=>{if(e.target.closest('.row'))e.preventDefault()});
+
+async function discardPhoto(shelf,image){try{await api('background?shelf='+shelf+'&image='+image,{method:'DELETE'})}catch{}}
+async function compressBackground(file){
+ if(file.size>20000000)throw Error('Choose a photo smaller than 20 MB.');
+ const url=URL.createObjectURL(file),image=new Image();
+ try{image.src=url;await image.decode();const scale=Math.min(1,1600/image.naturalWidth,1200/image.naturalHeight);const canvas=document.createElement('canvas');canvas.width=Math.round(image.naturalWidth*scale);canvas.height=Math.round(image.naturalHeight*scale);canvas.getContext('2d').drawImage(image,0,0,canvas.width,canvas.height);const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/jpeg',.8));if(!blob||blob.size>1000000)throw Error('Please choose a smaller photo.');return blob;}finally{URL.revokeObjectURL(url)}
+}
+document.querySelector('#backgroundFile').onchange=async e=>{
+ const file=e.target.files[0];if(!file||editingRow===null)return;
+ const n=editingRow,id=shelfIds[n],row=wall.querySelector('[data-row="'+n+'"]'),message=document.querySelector('#backgroundStatus');savingShelf=true;document.querySelector('#saveShelf').disabled=true;e.target.disabled=true;
+ try{
+  message.textContent='Preparing photo…';const blob=await compressBackground(file);
+  // Ensure a newly created shelf exists before attaching a private upload.
+  await persist();message.textContent='Uploading photo…';
+  const response=await fetch('/api/background?shelf='+id,{method:'POST',credentials:'same-origin',headers:{'Content-Type':'image/jpeg'},body:blob});const result=await response.json();if(!response.ok)throw Error(result.error||'Upload failed.');
+  const previous=settings(n).background;rowSettings[id]={...rowSettings[id],background:result.image};
+  if(previous&&previous!==originalPhoto)discardPhoto(id,previous);
+  applyLighting(row);menuLabels();message.textContent='Photo ready. Adjust its position, then Save.';
+ }catch(error){message.textContent=error.message}finally{savingShelf=false;document.querySelector('#saveShelf').disabled=false;e.target.disabled=false;e.target.value=''}
+};
+document.querySelector('#removeBackground').onclick=()=>{if(editingRow===null||savingShelf)return;const id=shelfIds[editingRow],previous=settings(editingRow).background;if(previous&&previous!==originalPhoto)discardPhoto(id,previous);rowSettings[id]={...rowSettings[id],background:null};applyLighting(wall.querySelector('[data-row="'+editingRow+'"]'));menuLabels();document.querySelector('#backgroundStatus').textContent='Photo removed. Save to keep this change.'};

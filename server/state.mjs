@@ -18,7 +18,9 @@ export function validateState(body,products){
   if(!Number.isFinite(fogSpeed)||fogSpeed<.25||fogSpeed>3||!/^#[0-9a-f]{6}$/i.test(fogColour)||!/^#[0-9a-f]{6}$/i.test(lightColour))fail();
   const pieceIds=s.pieceIds===undefined?[]:s.pieceIds;
   if(!Array.isArray(pieceIds)||pieceIds.length>3000||new Set(pieceIds).size!==pieceIds.length||pieceIds.some(id=>!ids.has(id)))fail();
-  return {id:shelf.id,settings:{pieceIds,fogSpeed,fogColour,lightColour,fog,weather:s.weather,fixture:s.fixture,colour:s.colour,brightness:s.brightness,speed:s.speed,finish:s.finish}};
+  const background=s.background??null,bgX=s.bgX??50,bgY=s.bgY??50,bgDim=s.bgDim??25;
+  if((background!==null&&!uuid.test(background))||[bgX,bgY,bgDim].some(v=>!Number.isFinite(v)||v<0||v>100))fail();
+  return {id:shelf.id,settings:{background,bgX,bgY,bgDim,pieceIds,fogSpeed,fogColour,lightColour,fog,weather:s.weather,fixture:s.fixture,colour:s.colour,brightness:s.brightness,speed:s.speed,finish:s.finish}};
  });
  if(!Array.isArray(body.order)||body.order.length!==items.length||new Set(body.order).size!==items.length||body.order.some(id=>!ids.has(id)))fail();
  if(body.marketingPreference!==undefined&&body.marketingPreference!==null&&typeof body.marketingPreference!=='boolean')fail();

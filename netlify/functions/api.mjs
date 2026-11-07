@@ -1,3 +1,4 @@
+import {background} from '../../server/background.mjs';
 import catalog from '../../dist/catalog.json' with {type:'json'};
 import {packShelves} from '../../dist/packing.mjs';
 import {login,callback,authenticated,logout} from '../../server/auth.mjs';
@@ -13,6 +14,7 @@ export default async function handler(request){
   if(request.method==='GET'&&path==='/api/auth/callback')return await callback(request);
   if(request.method==='GET'&&path==='/api/collection')return json(await authenticated(request,(sql,id)=>readState(sql,id)));
   if(['POST','PUT','DELETE','PATCH'].includes(request.method))assertOrigin(request,process.env.APP_ORIGIN);
+  if(path==='/api/background'&&['GET','POST','DELETE'].includes(request.method))return await background(request);
   if(request.method==='POST'&&path==='/api/auth/logout')return await logout(request);
   if(request.method==='PUT'&&path==='/api/collection'){
    if(!request.headers.get('content-type')?.startsWith('application/json'))throw new HttpError(415,'JSON required.');
