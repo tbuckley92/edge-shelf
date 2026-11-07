@@ -308,7 +308,7 @@ window.addEventListener('touchcancel',()=>end(false));
 window.addEventListener('blur',()=>end(false));
 window.addEventListener('keydown',e=>{if(e.key==='Escape'&&drag){e.preventDefault();end(false)}});
 window.addEventListener('scroll',()=>{if(drag?.touch!==undefined&&!drag.ghost){ignoreUntil=Date.now()+600;end(false)}},{passive:true});
-wall.addEventListener('contextmenu',e=>{if(e.target.closest('.piece'))e.preventDefault()});
+wall.addEventListener('contextmenu',e=>{if(e.target.closest('.piece,.shelf-move'))e.preventDefault()});
 
 wall.onclick=e=>{const btn=e.target.closest('.piece');if(btn&&Date.now()>ignoreUntil)openDetails(Number(btn.dataset.index))};
 const status=document.querySelector('#loadStatus');
@@ -426,6 +426,7 @@ function endShelfDrag(commit){
  document.body.classList.remove('shelf-reordering');if(commit)moveShelf(d.from,d.to);
 }
 wall.addEventListener('pointerdown',e=>{
+ if(e.pointerType==='touch')return;
  const handle=e.target.closest('.shelf-move');if(!handle||e.button!==0||drag||shelfDrag)return;
  e.preventDefault();const row=handle.closest('.row');handle.setPointerCapture(e.pointerId);
  shelfDrag={from:Number(row.dataset.row),to:Number(row.dataset.row),pointer:e.pointerId,y:e.clientY};row.classList.add('shelf-selected');document.body.classList.add('shelf-reordering');shelfDragFrame();
@@ -435,3 +436,23 @@ window.addEventListener('pointerup',e=>{if(shelfDrag?.pointer===e.pointerId)endS
 window.addEventListener('pointercancel',()=>endShelfDrag(false));window.addEventListener('blur',()=>endShelfDrag(false));
 window.addEventListener('keydown',e=>{if(e.key==='Escape')endShelfDrag(false)});
 wall.addEventListener('keydown',e=>{const handle=e.target.closest('.shelf-move');if(!handle||!['ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();const from=Number(handle.closest('.row').dataset.row);moveShelf(from,from+(e.key==='ArrowUp'?-1:1))});
+
+// Own the handle's touch gesture from touchstart, before Safari starts selection.
+wall.addEventListener('touchstart',e=>{
+ const handle=e.target.closest('.shelf-move');if(!handle)return;
+ if(e.touches.length!==1){endShelfDrag(false);return}
+ e.preventDefault();if(drag||shelfDrag)return;
+ const t=e.touches[0],row=handle.closest('.row');
+ window.getSelection()?.removeAllRanges();
+ shelfDrag={from:Number(row.dataset.row),to:Number(row.dataset.row),touch:t.identifier,y:t.clientY};
+ row.classList.add('shelf-selected');document.body.classList.add('shelf-reordering');shelfDragFrame();
+},{passive:false});
+window.addEventListener('touchmove',e=>{
+ if(shelfDrag?.touch===undefined)return;
+ const t=[...e.touches].find(t=>t.identifier===shelfDrag.touch);if(!t)return;
+ e.preventDefault();shelfDrag.y=t.clientY;
+},{passive:false});
+window.addEventListener('touchend',e=>{if(shelfDrag?.touch!==undefined&&[...e.changedTouches].some(t=>t.identifier===shelfDrag.touch)){e.preventDefault();endShelfDrag(true)}},{passive:false});
+window.addEventListener('touchcancel',()=>endShelfDrag(false));
+wall.addEventListener('selectstart',e=>{if(e.target.closest('.row'))e.preventDefault()});
+wall.addEventListener('dragstart',e=>{if(e.target.closest('.row'))e.preventDefault()});

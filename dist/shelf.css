@@ -266,3 +266,11 @@ button,select,input,.shelf-menu label,#saveStatus,#saveShelf,#loadStatus,.movebo
 .shelf-drop-before{box-shadow:inset 0 4px #b5dbd0}
 .shelf-drop-after{box-shadow:inset 0 -4px #b5dbd0}
 .shelf-reordering,.shelf-reordering *{cursor:grabbing!important;user-select:none}
+
+/* Safari does not reliably inherit callout/selection suppression into images. */
+.wall .row,.wall .row *,.ghost,.swap-preview{
+ -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;
+}
+.wall .piece img,.ghost,.swap-preview{-webkit-user-drag:none;pointer-events:none}
+.wall .shelf-move{touch-action:none;min-height:44px;min-width:112px}
+.shelf-reordering,.shelf-reordering *{-webkit-user-select:none;-webkit-touch-callout:none}
