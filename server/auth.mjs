@@ -8,7 +8,7 @@ export function configuration(){
  if(new URL(APP_ORIGIN).origin!==APP_ORIGIN||!APP_ORIGIN.startsWith('https://')||!/^[a-z0-9.-]+$/.test(SHOP_DOMAIN))throw new Error('Invalid server configuration');
  return {origin:APP_ORIGIN,domain:SHOP_DOMAIN,issuer:SHOPIFY_ISSUER,clientId:SHOPIFY_CLIENT_ID,secret:SHOPIFY_CLIENT_SECRET,redirect:APP_ORIGIN+'/api/auth/callback'};
 }
-async function readJSON(url,options={}){const response=await fetch(url,{...options,signal:AbortSignal.timeout(10000)});if(!response.ok)throw new Error('Identity provider request failed');return response.json();}
+async function readJSON(url,options={}){const response=await fetch(url,{...options,signal:AbortSignal.timeout(10000)});if(!response.ok)throw Object.assign(new Error('Identity provider request failed'),{code:'SHOPIFY_HTTP_'+response.status+'_'+(new URL(url).pathname.endsWith('/token')?'TOKEN':'API')});return response.json();}
 export async function discovery(config){
  if(discoveryCache?.domain===config.domain&&discoveryCache.until>Date.now())return discoveryCache;
  const [oidc,api]=await Promise.all([readJSON(`https://${config.domain}/.well-known/openid-configuration`),readJSON(`https://${config.domain}/.well-known/customer-account-api`)]);
@@ -40,7 +40,7 @@ export async function callback(request){
  // Shopify customer ID is resolved exclusively with the token exchanged above.
  const result=await readJSON(d.api.graphql_api,{method:'POST',headers:{Authorization:token.access_token,'Content-Type':'application/json'},body:JSON.stringify({query:'query ShelfIdentity { customer { id firstName } }'})});
  const customer=result.data?.customer;
- if(result.errors||!/^gid:\/\/shopify\/Customer\/\d+$/.test(customer?.id||''))throw new Error('Customer identity unavailable');
+ if(result.errors||!/^gid:\/\/shopify\/Customer\/\d+$/.test(customer?.id||''))throw Object.assign(new Error('Customer identity unavailable'),{code:'CUSTOMER_IDENTITY_UNAVAILABLE'});
  const session=randomToken(),seconds=Math.min(Number(token.expires_in)||3600,86400);
  if(seconds<=0)throw new Error('Expired token');
  await transaction(async sql=>{
