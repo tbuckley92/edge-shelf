@@ -62,3 +62,6 @@ Email preferences remain in Profile with no new mailing-list integration. My col
 
 ## Rock platform themes and groups
 Apply `supabase/migrations/20261112095223_rock_platforms.sql` before deployment. Existing displays receive an empty config and still resolve to one moss rock per displayed copy. Rock settings save under the existing owner lock, optimistic revision and audit rules. Sizes allow up to 3 pieces with separate foreground layers. The public demo allows temporary editing without account writes. No billing or privacy changes.
+
+## Vertical rock helix
+The rock view now uses native vertical scrolling with a virtualized helix and one sculpture per platform. Existing grouped platforms split losslessly on render, preserving themes; future settings saves persist the single-piece config. No database migration is needed. Tapping a sculpture opens the cabinet-style details drawer. Foreground scenery uses separate small clusters aligned to the curved rim.

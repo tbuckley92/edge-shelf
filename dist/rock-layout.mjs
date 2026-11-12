@@ -1,10 +1,14 @@
 // Shared platform semantics. Inventory and placements remain authoritative.
 export const rockStyles=['moss','waterfall','ice','lava'];
-export const rockSizes={small:1,medium:2,large:3};
+export const rockSizes={small:1};
 export const rockForegrounds=['none','shrubs','stones','ice'];
 export function resolveRocks(config,order){
  const available=new Set(order),used=new Set(),rocks=[];
- for(const r of config||[]){const pieceIds=r.pieceIds.filter(id=>available.has(id)&&!used.has(id)).slice(0,rockSizes[r.size]);pieceIds.forEach(id=>used.add(id));rocks.push({...r,pieceIds});}
+ for(const r of config||[]){
+  const pieceIds=r.pieceIds.filter(id=>available.has(id)&&!used.has(id));
+  if(!pieceIds.length)rocks.push({...r,size:'small',pieceIds:[]});
+  pieceIds.forEach((id,index)=>{used.add(id);let key=index===0?r.id:'split-'+id;while(rocks.some(x=>x.id===key))key+='-x';rocks.push({...r,id:key,size:'small',pieceIds:[id]});});
+ }
  for(const id of order)if(!used.has(id)){let key=id,n=0;while(rocks.some(r=>r.id===key))key=id+'-'+(++n);rocks.push({id:key,style:'moss',size:'small',foreground:'none',pieceIds:[id]});}
  return rocks;
 }
