@@ -126,7 +126,20 @@ function setEditorSection(section){for(const panel of form.querySelectorAll('[da
 if(isPillars){for(const button of dialog.querySelectorAll('[data-editor-section]'))button.onclick=()=>setEditorSection(button.dataset.editorSection);$('#editDetailPillar').onclick=()=>{const rock=rocks.find(r=>r.pieceIds.includes(detailItem));if(!rock)return;clearTimeout(detailCloseTimer);detailCloseTimer=null;details.close();details.classList.remove('closing');scrub(rocks.indexOf(rock));openEditor(false,rock.id)}}
 function readPillarEffects(){return Object.fromEntries(Object.keys(defaultPillarEffects).map(key=>{const input=$('#pe-'+key);return [key,input.type==='checkbox'?input.checked:input.type==='range'?Number(input.value):input.value]}))}
 function updateEffectOutputs(){for(const input of form.querySelectorAll('#pillarEffectsSettings input[type=range]'))input.previousElementSibling.textContent=input.value+'%'}
-function cancelPillarEditor(){if(busy)return;if(isPillars&&editing){const node=[...orbit.children].find(n=>n.dataset.id===editing.id);if(node)paintPillarEffects(node,rocks.find(r=>r.id===editing.id)?.effects)}dialog.close()}
+function previewPillarStyle(style){
+ if(!isPillars||!editing)return;
+ const node=[...orbit.children].find(n=>n.dataset.id===editing.id);
+ const index=pillarStyles.indexOf(style);if(!node||index<0)return;
+ node.querySelector('.pillar-art').style.backgroundPosition=(index%5*25)+'% '+(index<5?0:100)+'%';
+ const surface=index<5?'63.5%':'66.5%';
+ node.style.setProperty('--pillar-surface',surface);
+ node.querySelector('.rock-bob').style.setProperty('--pillar-surface',surface);
+ const label=labels[style]+' pillar: '+(editing.pieceIds.map(name).join(', ')||'empty');
+ node.setAttribute('aria-label',label);node.querySelector('.rock-bob').setAttribute('aria-label',label);
+ paintPillarEffects(node,readPillarEffects());
+}
+if(isPillars)$('#rockStyle').addEventListener('change',()=>previewPillarStyle($('#rockStyle').value));
+function cancelPillarEditor(){if(busy)return;if(isPillars&&editing){const node=[...orbit.children].find(n=>n.dataset.id===editing.id);if(node){const original=rocks.find(r=>r.id===editing.id);if(original)previewPillarStyle(original.style);paintPillarEffects(node,original?.effects)}}dialog.close()}
 if(isPillars){$('#closeRockEditor').onclick=cancelPillarEditor;dialog.addEventListener('cancel',e=>{e.preventDefault();cancelPillarEditor()});$('#pillarEffectsSettings').addEventListener('input',()=>{updateEffectOutputs();const node=[...orbit.children].find(n=>n.dataset.id===editing?.id);if(node)paintPillarEffects(node,readPillarEffects())})}
 
 async function saveConfig(config,focusId){if(busy)return;busy=true;$('#saveRock').disabled=true;$('#removeEmptyRock').disabled=true;try{const next=demo?{...state,rockConfig:config}:await api('displays',{method:'POST',body:JSON.stringify({action:'configureRocks',displayId:state.layoutId,revision:state.revision,rocks:config})});applyState(next,focusId);dialog.close();$('#rockStatus').textContent=demo?'Demo changes only — nothing saved to your account.':unit[0].toUpperCase()+unit.slice(1)+' settings saved.'}catch(e){$('#rockEditorStatus').textContent=e.message}finally{busy=false;$('#saveRock').disabled=false;$('#removeEmptyRock').disabled=false}}
