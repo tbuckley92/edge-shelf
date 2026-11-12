@@ -118,8 +118,52 @@ $('#atmosphereForm').addEventListener('input',()=>{atmosphere={fog:$('#fogEnable
 $('#atmosphereForm').onsubmit=async e=>{e.preventDefault();if(busy)return;busy=true;$('#saveAtmosphere').disabled=true;try{const next=demo?{...state,atmosphere:{...atmosphere}}:await api('displays',{method:'POST',body:JSON.stringify({action:'configureAtmosphere',displayId:state.layoutId,revision:state.revision,atmosphere})});const savedPosition=position;applyState(next);position=target=savedPosition;scene.scrollTop=position*scrollStep;render();atmosphereDialog.close();$('#rockStatus').textContent=demo?'Demo atmosphere updated — nothing saved to your account.':'Atmosphere saved.'}catch(e){$('#atmosphereStatus').textContent=e.message}finally{busy=false;$('#saveAtmosphere').disabled=false}};
 reduced.addEventListener('change',render);
 const dialog=$('#rockEditor'),form=$('#rockForm');
+
+function refreshPiecePicker(){
+ const select=$('#rockPiece0');
+ let picker=$('#visualPiecePicker');
+ if(!picker){
+  select.closest('label').hidden=true;
+  picker=el('div',undefined,'visual-piece-picker');picker.id='visualPiecePicker';
+  const label=el('span','Piece');label.id='visualPieceLabel';
+  const trigger=el('button');trigger.type='button';trigger.id='visualPieceTrigger';trigger.setAttribute('aria-expanded','false');trigger.setAttribute('aria-controls','visualPieceOptions');trigger.setAttribute('aria-labelledby','visualPieceLabel visualPieceTrigger');
+  const options=el('div');options.id='visualPieceOptions';options.hidden=true;options.setAttribute('role','group');options.setAttribute('aria-label','Choose a piece');
+  trigger.onclick=()=>{options.hidden=!options.hidden;trigger.setAttribute('aria-expanded',String(!options.hidden))};
+  picker.addEventListener('keydown',e=>{if(e.key==='Escape'&&!options.hidden){e.preventDefault();e.stopPropagation();options.hidden=true;trigger.setAttribute('aria-expanded','false');trigger.focus()}});
+  picker.append(label,trigger,options);select.closest('label').after(picker);
+  const css=el('style');css.textContent=`
+   .visual-piece-picker{margin:16px 0;min-width:0}
+   .visual-piece-picker>span{display:block;font-weight:600;margin-bottom:8px}
+   .visual-piece-picker button{display:flex!important;align-items:center;gap:12px;width:100%;text-align:left;min-height:68px;padding:8px 12px;background:#fff;color:#17221e;border:1px solid #cdd5ce;border-radius:10px;font:inherit}
+   .visual-piece-picker button img{width:48px;height:52px;object-fit:contain;flex-shrink:0}
+   .visual-piece-picker .piece-copy{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+   .visual-piece-picker small{font-size:12px;color:#65736a}
+   .visual-piece-picker button:focus-visible{outline:3px solid #6ca4ad;outline-offset:2px}
+   #visualPieceOptions{max-height:270px;overflow-y:auto;margin-top:6px;border:1px solid #cdd5ce;border-radius:10px;padding:4px;background:#fff}
+   #visualPieceOptions[hidden]{display:none}
+   #visualPieceOptions button{border:0;border-radius:6px;margin:0}
+   #visualPieceOptions button:hover,#visualPieceOptions button[aria-pressed=true]{background:#e8efeb}
+  `;document.head.append(css);
+ }
+ const trigger=$('#visualPieceTrigger'),options=$('#visualPieceOptions');
+ const contents=id=>{
+  const copy=el('span',undefined,'piece-copy');
+  copy.append(el('span',id?name(id):'Empty slot'));
+  if(id)copy.append(el('small',statusLabels[items.get(id).status]));
+  return id?[picture(art(items.get(id)),''),copy]:[el('span','—'),copy];
+ };
+ trigger.replaceChildren(...contents(select.value),el('span','⌄'));
+ options.replaceChildren();options.hidden=true;trigger.setAttribute('aria-expanded','false');
+ for(const id of ['',...state.order]){
+  const button=el('button');button.type='button';button.append(...contents(id));
+  button.setAttribute('aria-pressed',String(id===select.value));
+  button.onclick=()=>{select.value=id;refreshPiecePicker();trigger.focus()};
+  options.append(button);
+ }
+}
+
 function openEditor(add=false,pillarId=null){if(busy)return;editing=add?{id:crypto.randomUUID(),style:isPillars?'greek':'moss',size:'small',foreground:'none',pieceIds:[]}:structuredClone(pillarId?rocks.find(r=>r.id===pillarId):currentRock());if(!editing)return;$('#rockStyle').value=editing.style;$('#rockForeground').value=editing.foreground;$('#rockEditorTitle').textContent=add?'Add a '+unit:unit[0].toUpperCase()+unit.slice(1)+' settings';$('#removeEmptyRock').hidden=add||editing.pieceIds.length>0;$('#rockEditorStatus').textContent='';
- for(let i=0;i<1;i++){const select=$('#rockPiece'+i);select.replaceChildren();const empty=el('option','Empty slot');empty.value='';select.append(empty);for(const id of state.order){const opt=el('option',name(id)+' · '+statusLabels[items.get(id).status]);opt.value=id;select.append(opt)}select.value=editing.pieceIds[i]||''}if(isPillars){const effects={...defaultPillarEffects,...editing.effects};for(const key of Object.keys(defaultPillarEffects)){const input=$('#pe-'+key);if(input.type==='checkbox')input.checked=effects[key];else input.value=effects[key]}updateEffectOutputs();setEditorSection(add?'pillar':'weather');scene.scrollIntoView({block:'start',behavior:'instant'})}dialog.showModal();}
+ for(let i=0;i<1;i++){const select=$('#rockPiece'+i);select.replaceChildren();const empty=el('option','Empty slot');empty.value='';select.append(empty);for(const id of state.order){const opt=el('option',name(id)+' · '+statusLabels[items.get(id).status]);opt.value=id;select.append(opt)}select.value=editing.pieceIds[i]||''}if(isPillars){const effects={...defaultPillarEffects,...editing.effects};for(const key of Object.keys(defaultPillarEffects)){const input=$('#pe-'+key);if(input.type==='checkbox')input.checked=effects[key];else input.value=effects[key]}updateEffectOutputs();setEditorSection(add?'pillar':'weather');scene.scrollIntoView({block:'start',behavior:'instant'})}refreshPiecePicker();dialog.showModal();}
 $('#editRock').onclick=()=>openEditor();$('#addRock').onclick=()=>openEditor(true);$('#closeRockEditor').onclick=()=>dialog.close();
 
 function setEditorSection(section){for(const panel of form.querySelectorAll('[data-editor-panel]'))panel.hidden=panel.dataset.editorPanel!==section;for(const button of dialog.querySelectorAll('[data-editor-section]'))button.setAttribute('aria-pressed',String(button.dataset.editorSection===section));form.scrollTop=0}
