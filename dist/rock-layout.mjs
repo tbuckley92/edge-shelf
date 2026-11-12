@@ -1,3 +1,4 @@
+import {validatePillarEffects} from './pillar-effects.mjs';
 import {pillarStyles} from './pillar-layout.mjs';
 // Shared platform semantics. Inventory and placements remain authoritative.
 export const rockStyles=['moss','waterfall','ice','lava'];
@@ -20,7 +21,7 @@ export function validateRocks(config,order,type='rocks'){
   if(!r||typeof r.id!=='string'||!/^[a-zA-Z0-9-]{1,60}$/.test(r.id)||ids.has(r.id)||!(type==='pillars'?pillarStyles:rockStyles).includes(r.style)||!Object.hasOwn(rockSizes,r.size)||!rockForegrounds.includes(r.foreground)||!Array.isArray(r.pieceIds)||r.pieceIds.length>rockSizes[r.size])throw Error('Choose a valid rock style, size and foreground.');
   ids.add(r.id);if(!r.pieceIds.length)empty++;
   for(const id of r.pieceIds){if(!available.has(id)||used.has(id))throw Error('Each displayed copy can occupy only one rock.');used.add(id);}
-  return {id:r.id,style:r.style,size:r.size,foreground:r.foreground,pieceIds:[...r.pieceIds]};
+  return {id:r.id,style:r.style,size:r.size,foreground:r.foreground,pieceIds:[...r.pieceIds],...(type==='pillars'&&r.effects!==undefined?{effects:validatePillarEffects(r.effects)}:{})};
  });
  if(empty>100)throw Error('Keep no more than 100 empty platforms.');
  // Omitted pieces receive their own default platform; never silently remove a piece.
