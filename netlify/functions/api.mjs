@@ -1,3 +1,4 @@
+import {readCollectionManager,manageCollection} from '../../server/collection-manager.mjs';
 import {background} from '../../server/background.mjs';
 import catalog from '../../dist/catalog.json' with {type:'json'};
 import {packShelves} from '../../dist/packing.mjs';
@@ -25,9 +26,15 @@ async function handle(request){
   if(request.method==='GET'&&path==='/api/profile')return json(await authenticated(request,async(sql,id)=>({...await readProfile(sql,id),accountUrl:'https://'+configuration().domain+'/account/profile'})));
   if(request.method==='GET'&&path.startsWith('/api/profiles/'))return json(await transaction(sql=>readPublicProfile(sql,path.slice('/api/profiles/'.length))));
   if(request.method==='GET'&&path==='/api/admin')return json(await authenticated(request,adminOverview));
+  if(request.method==='GET'&&path==='/api/collection/manage')return json(await authenticated(request,readCollectionManager));
   if(request.method==='GET'&&path==='/api/collection')return json(await authenticated(request,(sql,id)=>readState(sql,id)));
   if(['POST','PUT','DELETE','PATCH'].includes(request.method))assertOrigin(request,process.env.APP_ORIGIN);
   if(path==='/api/background'&&['GET','POST','DELETE'].includes(request.method))return await background(request);
+  if(request.method==='POST'&&path==='/api/collection/manage'){
+   const raw=await request.text();if(raw.length>20000)throw new HttpError(413,'Request too large.');
+   let body;try{body=JSON.parse(raw)}catch{throw new HttpError(400,'Invalid JSON.');}
+   return json(await authenticated(request,(sql,id)=>manageCollection(sql,id,body,products)));
+  }
   if(request.method==='POST'&&path==='/api/auth/logout')return await logout(request);
   if(request.method==='POST'&&path==='/api/avatar')return await authenticated(request,async(sql,id)=>{
    if(!['image/jpeg','image/png','image/webp'].includes(request.headers.get('content-type')))throw new HttpError(415,'Choose a JPG, PNG or WebP photo.');
