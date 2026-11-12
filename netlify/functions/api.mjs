@@ -33,7 +33,7 @@ async function handle(request){
   if(['POST','PUT','DELETE','PATCH'].includes(request.method))assertOrigin(request,process.env.APP_ORIGIN);
   if(path==='/api/background'&&['GET','POST','DELETE'].includes(request.method))return await background(request);
   if(request.method==='POST'&&path==='/api/displays'){
-   const raw=await request.text();if(raw.length>150000)throw new HttpError(413,'Request too large.');
+   const raw=await request.text();if(raw.length>1000000)throw new HttpError(413,'Request too large.');
    let body;try{body=JSON.parse(raw)}catch{throw new HttpError(400,'Invalid JSON.');}
    return json(await authenticated(request,(sql,id)=>mutateDisplay(sql,id,body,products)));
   }

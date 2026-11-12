@@ -59,3 +59,6 @@ Apply `supabase/migrations/20261112083300_collection_status_frames.sql` and `sup
 All collection statuses can appear on any display. Changing status preserves placements; removing a placement preserves inventory. Only current copies count towards level, once each regardless of display reuse. Arrangement saves cannot change inventory. Inventory management and display mutations use owner locks and revisions; stale saves are rejected. Older clients must reload.
 
 Email preferences remain in Profile with no new mailing-list integration. My collection is directly accessible in the menu. See `docs/collector-displays.md` for the data model and prototype limitations.
+
+## Rock platform themes and groups
+Apply `supabase/migrations/20261112095223_rock_platforms.sql` before deployment. Existing displays receive an empty config and still resolve to one moss rock per displayed copy. Rock settings save under the existing owner lock, optimistic revision and audit rules. Sizes allow up to 3 pieces with separate foreground layers. The public demo allows temporary editing without account writes. No billing or privacy changes.
