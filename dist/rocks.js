@@ -1,5 +1,6 @@
 import {api,el,loadAssets,statusLabels,statusIcons,signout} from './display-api.mjs';
 import {createPicker,setupRename} from './display-picker.mjs';
+import {defaultAtmosphere} from './rock-atmosphere.mjs';
 import {resolveRocks} from './rock-layout.mjs';
 const $=s=>document.querySelector(s),scene=$('#rockScene'),orbit=$('#rockOrbit'),demo=new URLSearchParams(location.search).get('demo')==='1';
 const reduced=matchMedia('(prefers-reduced-motion: reduce)'),mod=(v,n)=>((v%n)+n)%n;
@@ -7,6 +8,7 @@ let state,catalog,assets,rocks=[],items=new Map(),position=0,target=0,frame=0,gr
 const labels={moss:'Moss',waterfall:'Waterfall',ice:'Ice',lava:'Lava'};
 const fronts={shrubs:'texture-layered-grass-foreground-v1.webp',stones:'texture-layered-volcanic-foreground-v1.webp',ice:'texture-layered-ice-foreground-v1.webp'};
 const scrollStep=140;
+let atmosphere={...defaultAtmosphere};
 const clamp=v=>Math.max(0,Math.min(Math.max(0,rocks.length-1),v));
 const currentRock=()=>rocks[mod(Math.round(position),rocks.length)];
 const art=item=>assets[item.productId]?.src||catalog.get(item.productId)?.img||'';
@@ -27,6 +29,7 @@ function drawRock(r){
 function render(){
  if(!state)return;const n=rocks.length;$('#rockEmpty').hidden=n>0;$('#rockSelected').hidden=!n;$('.orbit-controls').hidden=!n||grid;$('#prevRock').disabled=n<2||position<.01;$('#nextRock').disabled=n<2||position>=n-1-.01;
  if(!n){orbit.replaceChildren();$('#rockCounter').textContent='';return}
+ scene.style.setProperty('--world-progress',reduced.matches?'0.5':String(position/Math.max(1,n-1)));
  const selected=mod(Math.round(position),n),r=rocks[selected];$('#rockCounter').textContent=(selected+1)+' / '+n+' rocks';
  if(selectedKey!==r.id){selectedKey=r.id;renderSelected(r)}
  const base=Math.round(position),radius=Math.min(scene.clientWidth*.29,270),spacing=scene.clientWidth<650?125:145;
@@ -60,13 +63,28 @@ $('#pauseMotion').onclick=()=>{paused=!paused;$('#pauseMotion').textContent=paus
 function renderGrid(){const root=$('#rockGrid');root.replaceChildren();rocks.forEach((r,index)=>{const card=el('button',undefined,'rock-grid-card');card.append(picture('/assets/'+(r.style==='moss'?'floating-rock-v1.webp':'floating-rock-'+r.style+'-v1.webp'),''),el('strong',labels[r.style]+' rock'),el('span',r.pieceIds.map(name).join(' · ')||'Empty platform'));card.onclick=()=>{grid=false;position=target=index;toggleView();scene.scrollTop=index*scrollStep;scene.focus()};root.append(card)})}
 function toggleView(){$('#toggleGrid').textContent=grid?'Orbit view':'Grid view';$('#toggleGrid').setAttribute('aria-pressed',String(grid));scene.hidden=grid;$('#rockGrid').hidden=!grid;if(grid)renderGrid();else sizeTrack();render();motion()}
 $('#toggleGrid').onclick=()=>{grid=!grid;toggleView()};
-function applyState(next,focusId){state=next;items=new Map(state.items.map(i=>[i.id,i]));rocks=resolveRocks(state.rockConfig,state.order);selectedKey='';orbit.replaceChildren();$('#displayTitle').textContent=state.name;document.title=state.name+' · Edge Shelf';const index=focusId?rocks.findIndex(r=>r.id===focusId):-1;position=target=index>=0?index:clamp(Math.round(position));sizeTrack();scene.scrollTop=position*scrollStep;render();if(grid)renderGrid()}
+function applyState(next,focusId){state=next;atmosphere={...defaultAtmosphere,...state.atmosphere};paintAtmosphere();items=new Map(state.items.map(i=>[i.id,i]));rocks=resolveRocks(state.rockConfig,state.order);selectedKey='';orbit.replaceChildren();$('#displayTitle').textContent=state.name;document.title=state.name+' · Edge Shelf';const index=focusId?rocks.findIndex(r=>r.id===focusId):-1;position=target=index>=0?index:clamp(Math.round(position));sizeTrack();scene.scrollTop=position*scrollStep;render();if(grid)renderGrid()}
 const context={getState:()=>state,beforeMutate:async()=>{if(busy)throw Error('Please wait for this change to save.');},applyState,focusPiece:id=>{rotate(rocks.findIndex(r=>r.pieceIds.includes(id)))}};
 async function removePiece(id){if(busy)return;busy=true;try{applyState(await api('displays',{method:'POST',body:JSON.stringify({action:'remove',displayId:state.layoutId,revision:state.revision,itemId:id})}));$('#rockStatus').textContent='Removed from this display. Your collection is unchanged.';return true}catch(e){$('#rockStatus').textContent=e.message;$('#pieceDetailStatus').textContent=e.message;return false}finally{busy=false}}
 const details=$('#rockDetails');let detailItem=null,detailCloseTimer=null;
 function openDetails(id){const item=items.get(id),p=catalog.get(item?.productId);if(!p)return;detailItem=id;details.querySelector('h2').textContent=p.name;details.querySelector('.dimensions').textContent=[p.h>0?'Height '+p.h+' cm':null,p.w>0?'Width '+p.w+' cm':null,p.d>0?'Depth '+p.d+' cm':null].filter(Boolean).join(' · ');details.querySelector('.product-link').href='https://edgesculpture.es/products/'+encodeURIComponent(item.productId);const img=details.querySelector('.product-image');img.src=art(item);img.alt=p.name;$('#pieceStatus').textContent=statusIcons[item.status]+' '+statusLabels[item.status];$('#removeDetailPiece').hidden=demo;$('#pieceDetailStatus').textContent='';details.classList.remove('closing');details.showModal()}
 function closeDetails(){if(!details.open||detailCloseTimer)return;details.classList.add('closing');detailCloseTimer=setTimeout(()=>{details.close();details.classList.remove('closing');detailCloseTimer=null},reduced.matches?0:320)}
 details.querySelector('.close-details').onclick=closeDetails;details.addEventListener('cancel',e=>{e.preventDefault();closeDetails()});$('#removeDetailPiece').onclick=async()=>{if(await removePiece(detailItem))closeDetails()};
+const atmosphereDialog=$('#atmosphereEditor');
+function paintAtmosphere(){
+ scene.style.setProperty('--fog-colour',atmosphere.colour);
+ scene.style.setProperty('--fog-density',atmosphere.fog?atmosphere.density/100:0);
+ scene.style.setProperty('--fog-duration',(105-atmosphere.speed*.9)+'s');
+ scene.classList.toggle('fog-still',atmosphere.speed===0);
+ scene.classList.toggle('world-mountains',atmosphere.background==='mountains');
+ $('#fogDensityValue').textContent=atmosphere.density+'%';$('#fogSpeedValue').textContent=atmosphere.speed===0?'Still':atmosphere.speed+'%';
+}
+function cancelAtmosphere(){if(busy)return;atmosphere={...defaultAtmosphere,...state.atmosphere};paintAtmosphere();atmosphereDialog.close()}
+$('#editAtmosphere').onclick=()=>{if(!state||busy)return;$('#fogEnabled').checked=atmosphere.fog;$('#fogDensity').value=atmosphere.density;$('#fogSpeed').value=atmosphere.speed;$('#fogColour').value=atmosphere.colour;$('#worldBackground').value=atmosphere.background;$('#atmosphereStatus').textContent='';paintAtmosphere();atmosphereDialog.showModal()};
+$('#closeAtmosphere').onclick=cancelAtmosphere;atmosphereDialog.addEventListener('cancel',e=>{e.preventDefault();cancelAtmosphere()});
+$('#atmosphereForm').addEventListener('input',()=>{atmosphere={fog:$('#fogEnabled').checked,density:Number($('#fogDensity').value),speed:Number($('#fogSpeed').value),colour:$('#fogColour').value,background:$('#worldBackground').value};paintAtmosphere()});
+$('#atmosphereForm').onsubmit=async e=>{e.preventDefault();if(busy)return;busy=true;$('#saveAtmosphere').disabled=true;try{const next=demo?{...state,atmosphere:{...atmosphere}}:await api('displays',{method:'POST',body:JSON.stringify({action:'configureAtmosphere',displayId:state.layoutId,revision:state.revision,atmosphere})});const savedPosition=position;applyState(next);position=target=savedPosition;scene.scrollTop=position*scrollStep;render();atmosphereDialog.close();$('#rockStatus').textContent=demo?'Demo atmosphere updated — nothing saved to your account.':'Atmosphere saved.'}catch(e){$('#atmosphereStatus').textContent=e.message}finally{busy=false;$('#saveAtmosphere').disabled=false}};
+reduced.addEventListener('change',render);
 const dialog=$('#rockEditor'),form=$('#rockForm');
 function openEditor(add=false){if(busy)return;editing=add?{id:crypto.randomUUID(),style:'moss',size:'small',foreground:'none',pieceIds:[]}:structuredClone(currentRock());if(!editing)return;$('#rockStyle').value=editing.style;$('#rockForeground').value=editing.foreground;$('#rockEditorTitle').textContent=add?'Add a rock':'Rock settings';$('#removeEmptyRock').hidden=add||editing.pieceIds.length>0;$('#rockEditorStatus').textContent='';
  for(let i=0;i<1;i++){const select=$('#rockPiece'+i);select.replaceChildren();const empty=el('option','Empty slot');empty.value='';select.append(empty);for(const id of state.order){const opt=el('option',name(id)+' · '+statusLabels[items.get(id).status]);opt.value=id;select.append(opt)}select.value=editing.pieceIds[i]||''}dialog.showModal();}
