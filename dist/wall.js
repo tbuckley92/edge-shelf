@@ -237,7 +237,7 @@ function render(){
  const missing=order.map(id=>byId.get(id)).filter(p=>!(p.w>0&&p.h>0)||p.w>100),pending=document.querySelector('#pending');
  pending.hidden=!missing.length;pending.replaceChildren();
  if(missing.length){const heading=document.createElement('strong');heading.textContent='Awaiting dimensions or a wider shelf';pending.append(heading);for(const p of missing){const line=document.createElement('button');line.dataset.id=p.id;line.textContent=p.name;line.onclick=()=>openDetails(order.indexOf(p.id));pending.append(line)}}
- document.querySelector('#emptyCollection').hidden=order.length>0||!signedIn;
+ document.querySelector('#emptyCollection').hidden=ownedItems.length>0||!signedIn;
  performance.clearMeasures('edge-render');performance.measure('edge-render',{start:started,end:performance.now()});
 }
 let drag=null,ignoreUntil=0;
@@ -360,13 +360,18 @@ function persist(includePreview=false){
  pendingSaves++;const work=saveChain.catch(()=>{}).then(async()=>{
   if(conflict)throw new Error('Collection changed elsewhere. Reload before saving.');
   data.revision=revision;report('Saving…');
-  try{const result=await api('collection',{method:'PUT',body:JSON.stringify(data)});revision=result.revision;report(pendingSaves>1?'Saving…':'Saved');document.querySelector('#retrySave').hidden=true;}
+  try{const result=await api('collection',{method:'PUT',body:JSON.stringify(data)});revision=result.revision;document.querySelector('#collectorLevel').textContent='Level '+data.items.length;report(pendingSaves>1?'Saving…':'Saved');document.querySelector('#retrySave').hidden=true;}
   catch(error){if(error.status===409)conflict=true;report(error.message);document.querySelector('#retrySave').hidden=false;throw error}
  }).finally(()=>pendingSaves--);saveChain=work;return work;
 }
 function queueSave(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>persist().catch(()=>{}),200)}
 document.querySelector('#retrySave').onclick=()=>persist().then(()=>document.querySelector('#retrySave').hidden=true).catch(()=>{});
-function rebuildItems(){byId=new Map(ownedItems.filter(i=>catalog.has(i.productId)).map(i=>[i.id,{...catalog.get(i.productId),id:i.id,productId:i.productId}]));order=order.filter(id=>byId.has(id))}
+function rebuildItems(){byId=new Map(ownedItems.filter(i=>catalog.has(i.productId)).map(i=>[i.id,{...catalog.get(i.productId),id:i.id,productId:i.productId}]));order=order.filter(id=>byId.has(id));renderStored()}
+function renderStored(){
+ const stored=ownedItems.filter(i=>!order.includes(i.id)),box=document.querySelector('#storedPieces');box.replaceChildren();document.querySelector('#storedCollection').hidden=!stored.length;
+ for(const item of stored){const button=document.createElement('button');button.textContent=(catalog.get(item.productId)?.name||'Piece')+' · Place on shelf';button.onclick=async()=>{order.push(item.id);rebuildItems();renderInPlace();try{await persist();showAddedPiece(item.id)}catch(e){report(e.message)}};box.append(button)}
+}
+ document.querySelector('#storePiece').onclick=async()=>{order=order.filter(id=>id!==chosen);for(const s of Object.values(rowSettings))if(s.pieceIds)s.pieceIds=s.pieceIds.filter(id=>id!==chosen);dialog.close();rebuildItems();renderInPlace();try{await persist()}catch(e){report(e.message)}};
 let removedCopy=null;
 document.querySelector('#removePiece').onclick=async()=>{
  const item=ownedItems.find(i=>i.id===chosen);if(!item)return;
@@ -427,7 +432,7 @@ async function start(){
  try{
   const state=await api('collection');signedIn=true;layoutId=state.layoutId||crypto.randomUUID();revision=state.revision;ownedItems=state.items;order=state.order;
   shelfIds=state.shelves.map(s=>s.id);rowSettings=Object.fromEntries(state.shelves.map(s=>[s.id,s.settings]));marketingPreference=state.profile.marketing_preference;
-  document.querySelector('#marketingPreference').checked=marketingPreference===true;
+  document.querySelector('#marketingPreference').checked=marketingPreference===true;document.querySelector('#collectorLevel').textContent='Level '+ownedItems.length;
   document.querySelector('#loginPanel').hidden=true;document.querySelector('#collectionTools').hidden=false;rebuildItems();render();
  }catch(error){if(error.status!==401)report(error.message)}
 }

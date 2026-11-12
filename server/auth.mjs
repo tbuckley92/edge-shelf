@@ -1,6 +1,7 @@
 import {createRemoteJWKSet,jwtVerify} from 'jose';
 import {randomToken,hash,equal,cookie,sessionCookie,loginCookie,assertIdentity,HttpError} from './security.mjs';
 import {transaction,ownerContext} from './db.mjs';
+import {sealToken,openToken,identityQuery,updateCustomerName} from './customer.mjs';
 let discoveryCache;
 export function configuration(){
  const {APP_ORIGIN,SHOP_DOMAIN,SHOPIFY_ISSUER,SHOPIFY_CLIENT_ID,SHOPIFY_CLIENT_SECRET}=process.env;
@@ -38,19 +39,19 @@ export async function callback(request){
  const token=await readJSON(d.oidc.token_endpoint,{method:'POST',headers,body});
  const payload=await verifyIdentityToken(token.id_token,d.keys,c,attempt.nonce);
  // Shopify customer ID is resolved exclusively with the token exchanged above.
- const result=await readJSON(d.api.graphql_api,{method:'POST',headers:{Authorization:token.access_token,'Content-Type':'application/json'},body:JSON.stringify({query:'query ShelfIdentity { customer { id firstName } }'})});
+ const result=await readJSON(d.api.graphql_api,{method:'POST',headers:{Authorization:token.access_token,'Content-Type':'application/json'},body:JSON.stringify({query:identityQuery})});
  const customer=result.data?.customer;
  if(result.errors||!/^gid:\/\/shopify\/Customer\/\d+$/.test(customer?.id||''))throw Object.assign(new Error('Customer identity unavailable'),{code:'CUSTOMER_IDENTITY_UNAVAILABLE'});
  const session=randomToken(),seconds=Math.min(Number(token.expires_in)||3600,86400);
  if(seconds<=0)throw new Error('Expired token');
  await transaction(async sql=>{
   await sql`select set_config('shelf.issuer',${c.issuer},true),set_config('shelf.subject',${payload.sub},true)`;
-  const [profile]=await sql`insert into shelf.profiles(issuer,subject,shopify_customer_id,display_name) values(${c.issuer},${payload.sub},${customer.id},${customer.firstName||null}) on conflict(issuer,subject) do update set shopify_customer_id=excluded.shopify_customer_id returning id`;
+  const [profile]=await sql`insert into shelf.profiles(issuer,subject,shopify_customer_id,first_name,last_name,email,phone) values(${c.issuer},${payload.sub},${customer.id},${customer.firstName||null},${customer.lastName||null},${customer.emailAddress?.emailAddress||null},${customer.phoneNumber?.phoneNumber||null}) on conflict(issuer,subject) do update set shopify_customer_id=excluded.shopify_customer_id,first_name=excluded.first_name,last_name=excluded.last_name,email=excluded.email,profile_revision=shelf.profiles.profile_revision+1 returning id`;
   const old=cookie(request,'__Host-edge_session');if(old)await sql`delete from shelf.sessions where token_hash=${hash(old)}`;
   await sql`delete from shelf.sessions where expires_at<now()`;
-  await sql`insert into shelf.sessions(token_hash,owner_id,expires_at) values(${hash(session)},${profile.id},now()+${seconds}*interval '1 second')`;
+  await sql`insert into shelf.sessions(token_hash,owner_id,expires_at,customer_token) values(${hash(session)},${profile.id},now()+${seconds}*interval '1 second',${sealToken(token.access_token,session)})`;
  });
- // Tokens are not stored or exposed. Reauthentication after expiry uses Shopify's existing session.
+ // Only session-bound encrypted access tokens are stored. No refresh tokens.
  const responseHeaders=new Headers({Location:c.origin,'Cache-Control':'no-store'});
  responseHeaders.append('Set-Cookie',sessionCookie(session,seconds));responseHeaders.append('Set-Cookie',loginCookie('',0));
  return new Response(null,{status:302,headers:responseHeaders});
@@ -58,9 +59,13 @@ export async function callback(request){
 export async function authenticated(request,fn){
  const token=cookie(request,'__Host-edge_session');if(!token)throw new HttpError(401,'Sign in to continue.');
  return transaction(async sql=>{
-  const [session]=await sql`select owner_id from shelf.sessions where token_hash=${hash(token)} and expires_at>now()`;
+  const [session]=await sql`select owner_id,customer_token from shelf.sessions where token_hash=${hash(token)} and expires_at>now()`;
   if(!session)throw new HttpError(401,'Your session expired. Sign in again.');
-  await ownerContext(sql,session.owner_id);return fn(sql,session.owner_id);
+  await ownerContext(sql,session.owner_id);return fn(sql,session.owner_id,{updateName:async(first,last)=>{
+   if(!session.customer_token)throw new HttpError(401,'Sign in again to connect profile editing to Shopify.');
+   const [p]=await sql`select shopify_customer_id from shelf.profiles where id=${session.owner_id}`;
+   const d=await discovery(configuration());return updateCustomerName(d.api.graphql_api,openToken(session.customer_token,token),p.shopify_customer_id,first,last);
+  }});
  });
 }
 export async function logout(request){const token=cookie(request,'__Host-edge_session');if(token)await transaction(sql=>sql`delete from shelf.sessions where token_hash=${hash(token)}`);return new Response(null,{status:204,headers:{'Set-Cookie':sessionCookie('',0),'Cache-Control':'no-store'}});}

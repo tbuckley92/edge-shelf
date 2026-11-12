@@ -22,7 +22,7 @@ export function validateState(body,products){
   if((background!==null&&!uuid.test(background))||[bgX,bgY,bgDim].some(v=>!Number.isFinite(v)||v<0||v>100))fail();
   return {id:shelf.id,settings:{background,bgX,bgY,bgDim,pieceIds,fogSpeed,fogColour,lightColour,fog,weather:s.weather,fixture:s.fixture,colour:s.colour,brightness:s.brightness,speed:s.speed,finish:s.finish}};
  });
- if(!Array.isArray(body.order)||body.order.length!==items.length||new Set(body.order).size!==items.length||body.order.some(id=>!ids.has(id)))fail();
+ if(!Array.isArray(body.order)||body.order.length>items.length||new Set(body.order).size!==body.order.length||body.order.some(id=>!ids.has(id)))fail();
  if(body.marketingPreference!==undefined&&body.marketingPreference!==null&&typeof body.marketingPreference!=='boolean')fail();
  return {layoutId:body.layoutId,revision:body.revision,items,shelves,order:body.order,marketingPreference:body.marketingPreference};
 }
