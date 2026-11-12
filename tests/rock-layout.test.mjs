@@ -11,9 +11,9 @@ test('legacy groups split all 3000 copies with stable themes and unique platform
 });
 
 import {pillarStyles,pillarProjection} from '../dist/pillar-layout.mjs';
-test('pillar defaults and finite arc keep one piece per pedestal without a rear seam',()=>{
+test('pillar queue approaches from left and exits horizontally right without wrapping',()=>{
  const order=['a','b','c'],result=resolveRocks([],order,'pillars');assert.ok(result.every(r=>r.style==='greek'&&r.pieceIds.length===1));assert.deepEqual(validateRocks(result,order,'pillars'),result);assert.equal(pillarStyles.length,10);
- const centre=pillarProjection(0,1000);assert.equal(centre.scale,1);assert.equal(centre.x,0);assert.equal(centre.opacity,1);
- for(let d=.1;d<=4;d+=.1){const left=pillarProjection(-d,1000),right=pillarProjection(d,1000);assert.ok(left.x<0&&right.x>0);assert.equal(left.y,right.y);assert.ok(right.scale<=1&&right.opacity>=0&&right.opacity<=1);}
+ const centre=pillarProjection(0,1000);assert.equal(centre.scale,1);assert.equal(Math.abs(centre.x),0);assert.equal(centre.opacity,1);
+ for(let d=.1;d<=4;d+=.1){const incoming=pillarProjection(d,1000),outgoing=pillarProjection(-d,1000);assert.ok(incoming.x<0&&outgoing.x>0);assert.equal(outgoing.y,0);assert.equal(outgoing.scale,1);assert.ok(incoming.y<0&&incoming.scale<1&&incoming.opacity>=0&&incoming.opacity<=1);}
  assert.equal(pillarProjection(4,1000).opacity,0);assert.equal(pillarProjection(100,1000).opacity,0);
 });

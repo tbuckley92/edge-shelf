@@ -42,7 +42,7 @@ function render(){
   // Keep the helix path, but pull non-active platforms sharply into the distance.
   // Unlike cyclic cosine depth, focus never brightens distant turns again.
   const distance=index-position,angle=distance*1.15,focus=Math.exp(-2.4*distance*distance),scale=.34+.66*focus,x=Math.sin(angle)*radius,y=distance*spacing;
-  const width=isPillars?Math.min(scene.clientWidth<650?210:285,scene.clientWidth*.49,scene.clientHeight*.39):(scene.clientWidth<650?Math.min(220,scene.clientWidth*.53):Math.min(370,scene.clientWidth*.36,scene.clientHeight*.65));
+  const width=isPillars?Math.min(480,scene.clientWidth*.78,scene.clientHeight*.65):(scene.clientWidth<650?Math.min(220,scene.clientWidth*.53):Math.min(370,scene.clientWidth*.36,scene.clientHeight*.65));
   const arc=isPillars?pillarProjection(distance,scene.clientWidth):null;
   node.style.width=width+'px';node.style.height=width*(isPillars?2.15:1.48)+'px';node.style.transform=`translate(-50%,-50%) translate(${arc?arc.x:x}px,${arc?arc.y:y}px) scale(${arc?arc.scale:scale})`;// Continuous atmospheric absorption avoids crossing a hard fog z-index boundary.
   node.style.opacity=arc?arc.opacity:.025+.975*Math.pow(focus,1.15);node.style.zIndex=String(10+Math.round((arc?arc.depth:focus)*90));node.style.filter='saturate('+(.35+.65*(arc?arc.depth:focus))+') blur('+((1-(arc?arc.depth:focus))*1.8)+'px)';node.setAttribute('aria-current',index===selected?'true':'false');node.style.pointerEvents=arc&&arc.opacity<.03?'none':'';node.tabIndex=arc&&arc.opacity<.03?-1:0;

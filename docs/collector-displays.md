@@ -48,3 +48,6 @@ Pillars are a third persisted display type, using the existing owner-scoped plat
 Navigation follows a finite front arc with no wrap-around seam or helical rise. Vertical scrolling, the centred vertical slider, thumbnail dragging and left/right row-end buttons share one position. The redundant visible counter has been removed from rocks and pillars.
 
 Art: dist/assets/pillars-atlas-v1.webp, a transparent 5×2 atlas generated using the built-in image tool. Prompt: ten isolated detailed flat-topped pedestal pillars, Egyptian/Aztec/Ice/Lava/Jungle then Greek/Tree/Gothic/Crystal/Coral, equal grid cells and perspective, no sculptures or text.
+
+### Pillar close-up presentation
+The active sculpture and capital are enlarged, with the pedestal base intentionally cropped below the scene. Upcoming pieces form a smaller queue on the left, enlarge into the centre, then travel horizontally out to the right as scrolling advances. Reverse scrolling reverses that path. No circular wrap or helical rise. Navigation and saved display data are unchanged.
