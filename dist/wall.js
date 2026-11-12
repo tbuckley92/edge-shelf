@@ -9,7 +9,7 @@ sizeObserver.observe(wall);
 function read(key,fallback){return fallback}
 function save(){queueSave()}
 let layouts=[], order=[], byId=new Map(), finishes={}, chosen=null;
-let catalog=new Map(), assets={}, ownedItems=[], shelfIds=[], layoutId=null, revision=0, signedIn=false, frameStyle='classic';
+let catalog=new Map(), assets={}, ownedItems=[], shelfIds=[], layoutId=null, revision=0, signedIn=false, frameStyle='classic',displayName='',defaultFinish='ice';
 const defaultSettings={finish:'ice',weather:'none',fixture:'spot',colour:'warm',brightness:70,speed:15};
 if(!finishes||typeof finishes!=='object')finishes={};
 
@@ -161,7 +161,7 @@ function reorder(from,to){
 }
 function openDetails(index){
  const p=byId.get(order[index]);if(!p)return;chosen=p.id;
- document.querySelector("#removePiece").hidden=false;
+
  dialog.querySelector('h2').textContent=p.name;
  dialog.querySelector('.dimensions').textContent=[p.h>0?'Height '+p.h+' cm':null,p.w>0?'Width '+p.w+' cm':null,p.d>0?'Depth '+p.d+' cm':null].filter(Boolean).join(' · ');
  dialog.querySelector('.product-link').href='https://edgesculpture.es/products/'+encodeURIComponent(p.productId);
@@ -183,7 +183,7 @@ function showArt(btn){
  const image=new Image();image.alt=p.name;image.draggable=false;image.decoding='async';image.src=asset.src;
  image.onerror=()=>{if(btn.isConnected)fallback(btn)};
  const light=document.createElement('span');light.className='surface-light';light.setAttribute('aria-hidden','true');
- light.style.setProperty('--silhouette','url("'+asset.src+'")');btn.replaceChildren(image,light);
+ light.style.setProperty('--silhouette','url("'+asset.src+'")');const marker=document.createElement('span');marker.className='piece-status '+p.status;marker.textContent={current:'✓',previous:'↶',wishlist:'♡'}[p.status];marker.title={current:'Currently owned',previous:'Previously owned',wishlist:'Wishlist'}[p.status];marker.setAttribute('aria-label',marker.title);btn.replaceChildren(image,light,marker);
 }
 const observer={disconnect(){},observe:showArt};
 const effectObserver=new IntersectionObserver(entries=>{
@@ -202,7 +202,7 @@ const shelfObserver=new IntersectionObserver(entries=>{
 function pruneShelves(){
  for(const row of wall.querySelectorAll('.row[data-mounted]')){const r=row.getBoundingClientRect();if((r.bottom < -650 || r.top > innerHeight+650)&&Number(row.dataset.row)!==editingRow){row.querySelectorAll('.weather').forEach(layer=>weatherObserver.unobserve(layer));row.replaceChildren();delete row.dataset.mounted}}
 }
-function ensureShelves(count){while(shelfIds.length<count){const id=crypto.randomUUID();shelfIds.push(id);rowSettings[id]={...defaultSettings,finish:['ice','jungle','oak','temple','magma'][shelfIds.length%5]}}}
+function ensureShelves(count){while(shelfIds.length<count){const id=crypto.randomUUID();shelfIds.push(id);rowSettings[id]={...defaultSettings,finish:defaultFinish}}}
 function paint(row,key){const m=materials[key];row.style.setProperty('--texture',m.texture);row.style.setProperty('--tone',m.tone);row.style.setProperty('--top',m.top);
  row.dataset.fantasy=m.body?'true':'false';row.dataset.foreground=m.foreground?'true':'false';
  row.style.setProperty('--shelf-foreground',m.foreground||'none');row.style.setProperty('--foreground-rise',m.foregroundRise||4);
@@ -211,12 +211,12 @@ function paint(row,key){const m=materials[key];row.style.setProperty('--texture'
 function mountShelf(row,n){
  if(row.dataset.mounted)return;row.dataset.mounted='true';const layout=layouts[n];
  row.innerHTML='<div class="display"><span class="row-background" aria-hidden="true"></span><button type="button" class="shelf-move" aria-label="Move shelf '+(n+1)+'" title="Drag shelf; use arrow keys to move">⠿ Move shelf</button><div class="lighting" aria-hidden="true"><i class="strip"></i></div><div class="ledge"><span class="top"></span><span class="front"></span><span class="fantasy-body" aria-hidden="true"></span><span class="fantasy-fringe" aria-hidden="true"></span></div><div class="slots"></div><span class="shelf-foreground" aria-hidden="true"></span><span class="shelf-mist mist-back" aria-hidden="true"></span><span class="shelf-mist mist-front" aria-hidden="true"></span><button type="button" class="shelf-gear" aria-label="Settings for shelf '+(n+1)+'"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 3-.6 2.3-2 .9-2.2-.6-2 3.4 1.7 1.7v2.5L2.2 15l2 3.4 2.2-.6 2 .9L9 21h4l.6-2.3 2-.9 2.2.6 2-3.4-1.7-1.8v-2.5L19.8 9l-2-3.4-2.2.6-2-.9L13 3Z"/><circle cx="11" cy="12" r="3"/></svg></button></div>';
- row.dataset.finish=Object.hasOwn(materials,rowSettings[shelfIds[n]]?.finish)?rowSettings[shelfIds[n]].finish:Object.hasOwn(materials,finishes[n])?finishes[n]:['ice','jungle','oak','temple','magma'][n%5];
+ row.dataset.finish=Object.hasOwn(materials,rowSettings[shelfIds[n]]?.finish)?rowSettings[shelfIds[n]].finish:Object.hasOwn(materials,finishes[n])?finishes[n]:defaultFinish;
  paint(row,row.dataset.finish);applyLighting(row);
  row.querySelector('.shelf-gear').onclick=()=>openShelf(n);
  for(const item of layout.items){
  const p=byId.get(item.id),btn=document.createElement('button');btn.className='piece';btn.dataset.id=p.id;btn.dataset.index=order.indexOf(p.id);
- btn.title=p.name+' · '+p.w+' × '+p.h+' cm';btn.setAttribute('aria-label','Details for '+btn.title);
+ btn.title=p.name+' · '+p.w+' × '+p.h+' cm';btn.setAttribute('aria-label','Details for '+btn.title+' · '+({current:'Currently owned',previous:'Previously owned',wishlist:'Wishlist'}[p.status]));
  btn.style.setProperty('--x',item.x);btn.style.setProperty('--w',p.w);btn.style.setProperty('--h',p.h);btn.style.setProperty('--piece-depth',p.d||30);
  const lamp=document.createElement('i');lamp.className='lamp';lamp.style.setProperty('--x',item.x);lamp.style.setProperty('--w',p.w);row.querySelector('.lighting').append(lamp);
  row.querySelector('.slots').append(btn);observer.observe(btn);
@@ -353,7 +353,7 @@ async function api(path,options={}){
  let data;try{data=await response.json()}catch{throw new Error('The collection service is unavailable.')}
  if(!response.ok){const error=new Error(data.error||'Could not save.');error.status=response.status;throw error}return data;
 }
-function snapshot(includePreview=false){for(const s of Object.values(rowSettings))if(s.pieceIds)s.pieceIds=s.pieceIds.filter(id=>byId.has(id));return {layoutId,revision,items:ownedItems,order:[...order],shelves:shelfIds.map(id=>({id,settings:{...defaultSettings,...(!includePreview&&editingRow!==null&&id===shelfIds[editingRow]?originalSettings:rowSettings[id])}})),frame:frameStyle}}
+function snapshot(includePreview=false){for(const s of Object.values(rowSettings))if(s.pieceIds)s.pieceIds=s.pieceIds.filter(id=>byId.has(id));return {version:2,layoutId,revision,items:ownedItems,order:[...order],shelves:shelfIds.map(id=>({id,settings:{...defaultSettings,...(!includePreview&&editingRow!==null&&id===shelfIds[editingRow]?originalSettings:rowSettings[id])}})),frame:frameStyle}}
 let saveChain=Promise.resolve(),saveTimer=null,conflict=false,pendingSaves=0;
 function persist(includePreview=false){
  clearTimeout(saveTimer);saveTimer=null;const data=snapshot(includePreview);
@@ -366,71 +366,21 @@ function persist(includePreview=false){
 }
 function queueSave(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>persist().catch(()=>{}),200)}
 document.querySelector('#retrySave').onclick=()=>persist().then(()=>document.querySelector('#retrySave').hidden=true).catch(()=>{});
-function rebuildItems(){byId=new Map(ownedItems.filter(i=>(i.status||'current')==='current'&&catalog.has(i.productId)).map(i=>[i.id,{...catalog.get(i.productId),id:i.id,productId:i.productId}]));order=order.filter(id=>byId.has(id))}
+function rebuildItems(){byId=new Map(ownedItems.filter(i=>catalog.has(i.productId)).map(i=>[i.id,{...catalog.get(i.productId),id:i.id,productId:i.productId,status:i.status||'current'}]));order=order.filter(id=>byId.has(id))}
  document.querySelector('#storePiece').onclick=async()=>{order=order.filter(id=>id!==chosen);for(const s of Object.values(rowSettings))if(s.pieceIds)s.pieceIds=s.pieceIds.filter(id=>id!==chosen);dialog.close();rebuildItems();renderInPlace();try{await persist()}catch(e){report(e.message)}};
-let removedCopy=null;
-document.querySelector('#removePiece').onclick=async()=>{
- const item=ownedItems.find(i=>i.id===chosen);if(!item)return;
- const index=order.indexOf(item.id);removedCopy={item,index};
- ownedItems=ownedItems.filter(i=>i.id!==item.id);order=order.filter(id=>id!==item.id);
- dialog.close();rebuildItems();renderInPlace();
- document.querySelector('#undoRemoval').hidden=false;
- try{await persist()}catch(error){report(error.message)}
-};
-document.querySelector('#undoRemoval').onclick=async()=>{
- if(!removedCopy)return;const {item,index}=removedCopy;removedCopy=null;
- ownedItems.push(item);order.splice(index,0,item.id);rebuildItems();renderInPlace();
- document.querySelector('#undoRemoval').hidden=true;
- try{await persist()}catch(error){report(error.message)}
-};
-const catalogueDrawer=document.querySelector('#catalogueDrawer');
-const pendingCatalogueAdds=new Map();
-function showAddedPiece(id){
- // Shelves outside the viewport are virtualized, so mount the destination first.
- const index=layouts.findIndex(layout=>layout.items.some(item=>item.id===id));
- let target;
- if(index>=0){const row=wall.querySelector('[data-row="'+index+'"]');mountShelf(row,index);target=row.querySelector('[data-id="'+id+'"]')}
- else target=document.querySelector('#pending [data-id="'+id+'"]');
- target?.scrollIntoView({block:'center',inline:'nearest'});target?.focus({preventScroll:true});
-}
-document.querySelector('#addPiece').onclick=()=>{catalogueDrawer.showModal();searchCatalog()};
-document.querySelector('#closeCatalogue').onclick=()=>catalogueDrawer.close();
-document.querySelector('#catalogueSearch').oninput=searchCatalog;
-document.querySelector('#catalogueSort').onchange=searchCatalog;
-function searchCatalog(){
- const term=document.querySelector('#catalogueSearch').value.toLocaleLowerCase(),results=document.querySelector('#catalogueResults');results.replaceChildren();
- const sorting=document.querySelector('#catalogueSort').value;
- const pieces=[...catalog.values()].filter(p=>(p.name+' '+p.id).toLocaleLowerCase().includes(term));
- pieces.sort((a,b)=>sorting==='name'?a.name.localeCompare(b.name):((a.releaseDate?0:1)-(b.releaseDate?0:1)|| (sorting==='oldest'?1:-1)*(a.releaseDate||'').localeCompare(b.releaseDate||'')||a.name.localeCompare(b.name)));
- document.querySelector('#catalogueNote').textContent=pieces.some(p=>!p.releaseDate)?'Release dates not yet recorded appear after dated pieces.':'';
- for(const p of pieces){
-  const row=document.createElement('div');row.className='catalogue-result';
-  const img=new Image();img.alt='';img.loading='lazy';img.src=assets[p.id]?.src||p.img;row.append(img);
-  const label=document.createElement('span');label.textContent=p.name;row.append(label);
-  if(p.releaseDate){const date=document.createElement('small');date.textContent=p.releaseDate;row.append(date)}
-  const button=document.createElement('button');button.className='edge-button';button.textContent=pendingCatalogueAdds.has(p.id)?'Retry saving':'Add owned copy';
-  const errorMessage=document.createElement('span');errorMessage.setAttribute('role','alert');
-  let item=pendingCatalogueAdds.get(p.id)||null;if(item)errorMessage.textContent='This copy has not been confirmed saved. Retry saving.';button.onclick=async()=>{
-   button.disabled=true;errorMessage.textContent='';
-   if(!item){item={id:crypto.randomUUID(),productId:p.id};pendingCatalogueAdds.set(p.id,item);ownedItems.push(item);order.push(item.id);rebuildItems();renderInPlace()}
-   try{await persist();pendingCatalogueAdds.delete(p.id);catalogueDrawer.close();requestAnimationFrame(()=>showAddedPiece(item.id))}
-   catch(error){errorMessage.textContent='Could not save this copy: '+error.message;button.textContent='Retry saving';report(error.message)}
-   finally{button.disabled=false}
-  };row.append(button,errorMessage);results.append(row);
- }
-}
 document.querySelector('#frameStyle').onchange=e=>{frameStyle=e.target.value;wall.dataset.frame=frameStyle;queueSave()};
 document.querySelector('#signOut').onclick=async()=>{try{await saveChain.catch(()=>{});await api('auth/logout',{method:'POST'});location.reload()}catch(error){report(error.message)}};
 window.addEventListener('beforeunload',event=>{if(saveTimer||pendingSaves){event.preventDefault();event.returnValue=''}});
 async function start(){
- const accountRequest=api('bootstrap').then(data=>({data})).catch(error=>({error}));
+ const displayId=new URLSearchParams(location.search).get('id');if(!displayId){location.replace('/');return}
+ const accountRequest=api('bootstrap?display='+encodeURIComponent(displayId)).then(data=>({data})).catch(error=>({error}));
  const [pieces,prepared]=await Promise.all([fetch('catalog.json').then(r=>{if(!r.ok)throw Error();return r.json()}),fetch('assets.json').then(r=>{if(!r.ok)throw Error();return r.json()})]);
  catalog=new Map(pieces.map(p=>[p.id,p]));assets=prepared;
  try{
-  const account=await accountRequest;if(account.error)throw account.error;const state=account.data.state;window.edgeProfile=account.data.profile;window.dispatchEvent(new CustomEvent('edge:profile',{detail:account.data.profile}));signedIn=true;layoutId=state.layoutId||crypto.randomUUID();revision=state.revision;ownedItems=state.items;order=state.order;
+  const account=await accountRequest;if(account.error)throw account.error;const state=account.data.state;window.edgeProfile=account.data.profile;window.dispatchEvent(new CustomEvent('edge:profile',{detail:account.data.profile}));if(state.type==='rocks'){location.replace('/rocks.html?id='+state.layoutId);return}signedIn=true;layoutId=state.layoutId;revision=state.revision;displayName=state.name;defaultFinish=state.defaultFinish;document.querySelector('#displayTitle').textContent=displayName;document.title=displayName+' · Edge Shelf';ownedItems=state.items;order=state.order;
   shelfIds=state.shelves.map(s=>s.id);rowSettings=Object.fromEntries(state.shelves.map(s=>[s.id,s.settings]));frameStyle=state.frame||'classic';wall.dataset.frame=frameStyle;document.querySelector('#frameStyle').value=frameStyle;
   document.querySelector('#collectorLevel').textContent='Level '+ownedItems.filter(i=>(i.status||'current')==='current').length;
-  document.querySelector('#loginPanel').hidden=true;document.querySelector('#collectionTools').hidden=false;document.querySelector('#addPieceTools').hidden=false;document.querySelector('#signOut').hidden=false;rebuildItems();render();
+  document.querySelector('#loginPanel').hidden=true;document.querySelector('#collectionTools').hidden=false;document.querySelector('#addPieceTools').hidden=false;document.querySelector('#signOut').hidden=false;rebuildItems();render();window.dispatchEvent(new CustomEvent('edge:display-ready'));
  }catch(error){if(error.status!==401)report(error.message)}
 }
 start().catch(()=>report('Could not load the catalogue. Reload to try again.'));
@@ -513,3 +463,7 @@ document.querySelector('#backgroundFile').onchange=async e=>{
  }catch(error){message.textContent=error.message}finally{savingShelf=false;document.querySelector('#saveShelf').disabled=false;e.target.disabled=false;e.target.value=''}
 };
 document.querySelector('#removeBackground').onclick=()=>{if(editingRow===null||savingShelf)return;const id=shelfIds[editingRow],previous=settings(editingRow).background;if(previous&&previous!==originalPhoto)discardPhoto(id,previous);rowSettings[id]={...rowSettings[id],background:null};applyLighting(wall.querySelector('[data-row="'+editingRow+'"]'));menuLabels();document.querySelector('#backgroundStatus').textContent='Photo removed. Save to keep this change.'};
+
+window.edgeDisplay={getState:()=>({layoutId,revision,name:displayName,type:'cabinet',frame:frameStyle,defaultFinish,items:ownedItems,order:[...order],shelves:shelfIds.map(id=>({id,settings:rowSettings[id]}))}),beforeMutate:async()=>{if(saveTimer)await persist();await saveChain;},applyState:state=>{layoutId=state.layoutId;revision=state.revision;ownedItems=state.items;order=state.order;displayName=state.name;defaultFinish=state.defaultFinish;shelfIds=state.shelves.map(s=>s.id);rowSettings=Object.fromEntries(state.shelves.map(s=>[s.id,s.settings]));document.querySelector('#displayTitle').textContent=state.name;rebuildItems();renderInPlace();document.querySelector('#collectorLevel').textContent='Level '+ownedItems.filter(i=>i.status==='current').length;}};
+
+window.edgeDisplay.focusPiece=id=>{const n=layouts.findIndex(r=>r.items.some(i=>i.id===id));if(n<0)return;const row=wall.querySelector('[data-row="'+n+'"]');mountShelf(row,n);row.querySelector('[data-id="'+id+'"]')?.scrollIntoView({block:'center',behavior:'smooth'});};

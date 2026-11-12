@@ -37,6 +37,7 @@ test('profile migration preserves collections, isolates users, projects public f
  await db.exec(await fs.readFile('supabase/migrations/20261112073058_collector_profiles.sql','utf8'));
  await db.exec(await fs.readFile('supabase/migrations/20261112075814_profile_avatars_privacy.sql','utf8'));
  await db.exec(await fs.readFile('supabase/migrations/20261112083300_collection_status_frames.sql','utf8'));
+ await db.exec(await fs.readFile('supabase/migrations/20261112091800_named_displays.sql','utf8'));
  await db.exec('update shelf.profiles set profile_revision=0');
  const baseline=await db.query('select count(*)::int as n from shelf.owned_items');assert.equal(baseline.rows[0].n,2);
  await db.query("update shelf.profiles set email='private@example.com' where id=$1",[a]);
@@ -83,9 +84,10 @@ test('profile migration preserves collections, isolates users, projects public f
  const products=new Map([['bear',{w:30,h:40,d:20}]]);products.finishes=new Set(['ice']);
  const items=[{id:randomUUID(),productId:'bear'},{id:randomUUID(),productId:'bear'}];
  const state={layoutId:randomUUID(),revision:0,items,order:[],shelves:[]};
+ await as(a,()=>sql`insert into shelf.layouts(id,owner_id) values(${state.layoutId},${a})`);
  await as(a,()=>writeState(sql,a,validateState(state,products),products,packShelves));
  assert.equal((await as(a,()=>readProfile(sql,a))).level,2);assert.deepEqual((await as(a,()=>readState(sql,a))).order,[]);
- await as(a,()=>writeState(sql,a,validateState({...state,revision:1,items:items.slice(0,1)},products),products,packShelves));assert.equal((await as(a,()=>readProfile(sql,a))).level,1);
+ await as(a,()=>writeState(sql,a,validateState({...state,revision:1,items:items.slice(0,1)},products),products,packShelves));assert.equal((await as(a,()=>readProfile(sql,a))).level,2,'display save does not delete inventory');
  await db.exec('create role anon;create role authenticated;set role anon');await assert.rejects(db.exec('select * from shelf.profiles'),/permission denied/);await assert.rejects(db.exec('select * from shelf.sessions'),/permission denied/);
  }finally{await db.close()}
 });

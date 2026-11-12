@@ -24,33 +24,29 @@ export function validateState(body,products){
  });
  if(!Array.isArray(body.order)||body.order.length>items.length||new Set(body.order).size!==body.order.length||body.order.some(id=>!ids.has(id)))fail();
  if(body.marketingPreference!==undefined&&body.marketingPreference!==null&&typeof body.marketingPreference!=='boolean')fail();
- const frame=body.frame??'classic';if(!['classic','black','temple'].includes(frame)||body.order.some(id=>items.find(i=>i.id===id).status!=='current'))fail();
+ const frame=body.frame??'classic';if(!['classic','black','temple','rock','ice'].includes(frame))fail();
  return {frame,layoutId:body.layoutId,revision:body.revision,items,shelves,order:body.order,marketingPreference:body.marketingPreference};
 }
-export async function readState(sql,owner){
+export async function readState(sql,owner,selected=null){
+ if(selected&&!uuid.test(selected))throw new HttpError(404,'Display unavailable.');
  const [state]=await sql`select
   jsonb_build_object('display_name',p.display_name,'marketing_preference',p.marketing_preference) as profile,
-  coalesce(l.frame,'classic') as frame,l.id as "layoutId",coalesce(l.revision,0) as revision,
+  l.name,l.display_type as type,l.default_finish as "defaultFinish",coalesce(l.frame,'classic') as frame,l.id as "layoutId",coalesce(l.revision,0) as revision,
   coalesce((select jsonb_agg(jsonb_build_object('id',i.id,'productId',i.product_id,'status',i.status) order by i.id) from shelf.owned_items i where i.owner_id=p.id),'[]'::jsonb) as items,
   coalesce((select jsonb_agg(x.item_id order by x.position) from shelf.placements x where x.owner_id=p.id and x.layout_id=l.id),'[]'::jsonb) as "order",
   coalesce((select jsonb_agg(jsonb_build_object('id',s.id,'settings',s.settings) order by s.position) from shelf.shelves s where s.owner_id=p.id and s.layout_id=l.id),'[]'::jsonb) as shelves
-  from shelf.profiles p left join shelf.layouts l on l.owner_id=p.id and l.name='My shelves' where p.id=${owner}`;
- if(!state)throw new HttpError(404,'Collection not found.');return state;
+  from shelf.profiles p left join shelf.layouts l on l.owner_id=p.id and l.id=coalesce(${selected}::uuid,(select id from shelf.layouts where owner_id=p.id order by created_at,id limit 1)) where p.id=${owner}`;
+ if(!state||(selected&&!state.layoutId))throw new HttpError(404,'Collection not found.');return state;
 }
 export async function writeState(sql,owner,state,products,packShelves){
  // Atomic optimistic concurrency: stale devices never silently overwrite another device.
- await sql`insert into shelf.layouts(id,owner_id) values(${state.layoutId},${owner}) on conflict do nothing`;
- const changed=await sql`update shelf.layouts set revision=revision+1,frame=${state.frame??'classic'} where id=${state.layoutId} and owner_id=${owner} and revision=${state.revision} returning revision`;
+ const changed=await sql`update shelf.layouts set revision=revision+1,frame=${state.frame??'classic'} where id=${state.layoutId} and owner_id=${owner} and revision=${state.revision} returning revision,display_type`;
  if(!changed.length)throw new HttpError(409,'This collection changed on another device. Reload before saving.');
  await sql`delete from shelf.placements where layout_id=${state.layoutId} and owner_id=${owner}`;
- // Ownership checks also cover attempted reuse of another collector's IDs.
- const itemRows=await sql`insert into shelf.owned_items(id,owner_id,product_id,status)
- select x.id,${owner}::uuid,x.product_id,x.status from jsonb_to_recordset(${sql.json(state.items.map(i=>({id:i.id,product_id:i.productId,status:i.status??'current'})))}::jsonb) as x(id uuid,product_id text,status text)
- on conflict(id) do update set product_id=excluded.product_id,status=excluded.status where shelf.owned_items.owner_id=${owner} returning id`;
- if(itemRows.length!==state.items.length)throw new HttpError(403,'Item is unavailable.');
- const retained=state.items.map(i=>i.id);
- if(retained.length)await sql`delete from shelf.owned_items where owner_id=${owner} and id not in ${sql(retained)}`;
- else await sql`delete from shelf.owned_items where owner_id=${owner}`;
+ // Layout saves never mutate inventory. Resolve products from owner-scoped database rows.
+ const inventory=await sql`select id,product_id as "productId" from shelf.owned_items where owner_id=${owner}`;
+ const inventoryMap=new Map(inventory.map(i=>[i.id,i]));
+ if(state.order.some(id=>!inventoryMap.has(id)))throw new HttpError(403,'Piece unavailable.');
  const shelfRows=await sql`insert into shelf.shelves(id,owner_id,layout_id,position,settings)
  select x.id,${owner}::uuid,${state.layoutId}::uuid,x.position,x.settings
  from jsonb_to_recordset(${sql.json(state.shelves.map((s,position)=>({id:s.id,position,settings:s.settings})))}::jsonb) as x(id uuid,position integer,settings jsonb)
@@ -59,8 +55,8 @@ export async function writeState(sql,owner,state,products,packShelves){
  const shelfIds=state.shelves.map(s=>s.id);
  if(shelfIds.length)await sql`delete from shelf.shelves where owner_id=${owner} and layout_id=${state.layoutId} and id not in ${sql(shelfIds)}`;
  else await sql`delete from shelf.shelves where owner_id=${owner} and layout_id=${state.layoutId}`;
- const itemCatalog=new Map(state.items.map(i=>[i.id,products.get(i.productId)]));
- const rows=packShelves(state.order,itemCatalog,state.shelves.map(s=>s.settings.pieceIds)),placement=new Map();
+ const itemCatalog=new Map(inventory.map(i=>[i.id,products.get(i.productId)]));
+ const rows=changed[0].display_type==='rocks'?[]:packShelves(state.order,itemCatalog,state.shelves.map(s=>s.settings.pieceIds)),placement=new Map();
  if(rows.length>state.shelves.length)throw new HttpError(400,'Missing shelves.');
  rows.forEach((row,index)=>row.items.forEach(item=>placement.set(item.id,state.shelves[index].id)));
  await sql`insert into shelf.placements(owner_id,layout_id,item_id,shelf_id,position)
