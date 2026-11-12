@@ -17,3 +17,14 @@
 @media(max-width:650px){.rock-sculpture .rock-piece-status{width:16px;height:16px;font-size:10px}.selected-piece-row{gap:8px}.rock-form-grid{gap:10px}}
 
 .rock-bob>.platform-status{z-index:5;bottom:30%;right:auto;width:20px;height:20px;font-size:13px}
+/* A native vertical scroll surface drives the open-ended helix. */
+#rockScene{height:min(76svh,760px);min-height:460px;overflow-y:auto;overflow-x:hidden;touch-action:pan-y;cursor:auto;scrollbar-width:thin;scrollbar-color:#9bbfc0 #233d51;scroll-behavior:auto;overflow-anchor:none}
+#rockScene:active{cursor:auto}#rockScene:before{display:none}#helixTrack{position:relative;min-height:100%}#helixViewport{position:sticky;top:0;overflow:hidden;isolation:isolate;background:radial-gradient(ellipse at 50% 60%,#91b7bb,#4c7988 45%,#233d51 85%)}
+.floating-slot{top:48%;cursor:pointer}.floating-slot:focus-visible{outline:2px solid #c7f5f1;outline-offset:0;border-radius:40%}.orbit-hint{z-index:200;background:#1d3a49bb;backdrop-filter:blur(5px);border-radius:20px;padding:8px 12px;left:50%;right:auto;transform:translateX(-50%);width:max-content;max-width:90%;box-sizing:border-box}
+.rock-edge-cluster{position:absolute;z-index:4;pointer-events:none;width:21%;height:10%;background-size:500% 100%;background-repeat:no-repeat;filter:drop-shadow(0 2px 1px #14271966);border-radius:35% 45% 28% 35%;}
+.rock-edge-cluster.left{left:4%;bottom:35.5%;background-position:left bottom;transform:rotate(13deg)}
+.rock-edge-cluster.centre{left:43%;bottom:30.5%;width:15%;height:5.5%;background-position:55% bottom;transform:rotate(-2deg)}
+.rock-edge-cluster.right{right:4%;bottom:35.5%;background-position:right bottom;transform:rotate(-13deg)}
+.rock-edge-cluster.ice{height:7%}.rock-edge-cluster.stones{height:6%}.rock-edge-cluster.centre.ice,.rock-edge-cluster.centre.stones{height:4%}
+.rock-form-grid{grid-template-columns:1fr}.rock-sculptures{height:62%}.rock-page .product-drawer{z-index:2000}
+@media(max-width:650px){#rockScene{height:72svh;min-height:430px}.orbit-hint{font-size:9px}.floating-slot{top:48%}}
