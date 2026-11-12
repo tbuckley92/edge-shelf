@@ -128,3 +128,9 @@
 .pillar-page #rockScene{scroll-margin-top:86px}
 .storm-cloud{filter:blur(5px);background:radial-gradient(ellipse at 12% 52%,#171b25 0 13%,#626a78 18%,transparent 28%),radial-gradient(ellipse at 35% 42%,#222632 0 16%,#777f8c 20%,transparent 29%),radial-gradient(ellipse at 62% 49%,#171d28 0 16%,#596370 22%,transparent 32%),radial-gradient(ellipse at 87% 35%,#202732 0 13%,#707987 19%,transparent 29%)}
 .cloud-two{filter:blur(8px);opacity:.75;top:21%;transform:scale(.9)}.cloud-three{filter:blur(12px);opacity:.45}
+/* Compact pillar toolbar and two-position sliding view switch. */
+.pillar-page .display-heading{padding:18px 24px 0;gap:0}.pillar-page .rock-toolbar{padding:16px 24px 8px;gap:12px}.pillar-page #rockStatus:empty{display:none}.pillar-page .status-key{flex-basis:100%;margin:0;font-size:10px}
+.pillar-page .rock-toolbar>.pillar-view-switch{position:relative;display:flex;align-items:center;width:158px;height:40px;padding:3px;border:1px solid #c5d1c9;border-radius:22px;background:#e8ede8;color:#50655b;margin-left:auto;isolation:isolate}
+.pillar-view-switch:before{content:'';position:absolute;left:3px;top:3px;bottom:3px;width:calc(50% - 3px);border-radius:18px;background:#284b40;box-shadow:0 2px 5px #19362b20;transition:transform .2s ease;z-index:-1}.pillar-view-switch[aria-checked=true]:before{transform:translateX(100%)}.pillar-view-switch span{width:50%;text-align:center;font-size:12px;font-weight:500;transition:color .2s}.pillar-view-switch[aria-checked=false] span:first-child,.pillar-view-switch[aria-checked=true] span:last-child{color:white}
+@media(max-width:650px){.pillar-page .rock-toolbar{padding-left:18px;padding-right:18px}.pillar-page .rock-grid{grid-template-columns:repeat(2,minmax(0,1fr));padding:16px;gap:12px}}
+@media(prefers-reduced-motion:reduce){.pillar-view-switch:before,.pillar-view-switch span{transition:none}}
