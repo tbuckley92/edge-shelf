@@ -1,3 +1,4 @@
+import {listDisplays,mutateDisplay} from '../../server/displays.mjs';
 import {readCollectionManager,manageCollection} from '../../server/collection-manager.mjs';
 import {background} from '../../server/background.mjs';
 import catalog from '../../dist/catalog.json' with {type:'json'};
@@ -18,18 +19,24 @@ async function handle(request){
   if(request.method==='GET'&&path==='/api/auth/login')return await login();
   if(request.method==='GET'&&path==='/api/auth/callback')return await callback(request);
   if(request.method==='GET'&&path==='/api/bootstrap')return json(await authenticated(request,async(sql,id)=>{
-   const profile=await readProfile(sql,id),state=await readState(sql,id);
+   const profile=await readProfile(sql,id),state=await readState(sql,id,new URL(request.url).searchParams.get('display'));
    return {profile:{...profile,accountUrl:'https://'+configuration().domain+'/account/profile'},state};
   }));
   if(request.method==='GET'&&path==='/api/avatar')return await authenticated(request,readAvatar);
   if(request.method==='GET'&&path.startsWith('/api/avatar/'))return await transaction(sql=>readPublicAvatar(sql,path.slice('/api/avatar/'.length)));
   if(request.method==='GET'&&path==='/api/profile')return json(await authenticated(request,async(sql,id)=>({...await readProfile(sql,id),accountUrl:'https://'+configuration().domain+'/account/profile'})));
   if(request.method==='GET'&&path.startsWith('/api/profiles/'))return json(await transaction(sql=>readPublicProfile(sql,path.slice('/api/profiles/'.length))));
+  if(request.method==='GET'&&path==='/api/displays')return json(await authenticated(request,listDisplays));
   if(request.method==='GET'&&path==='/api/admin')return json(await authenticated(request,adminOverview));
   if(request.method==='GET'&&path==='/api/collection/manage')return json(await authenticated(request,readCollectionManager));
-  if(request.method==='GET'&&path==='/api/collection')return json(await authenticated(request,(sql,id)=>readState(sql,id)));
+  if(request.method==='GET'&&path==='/api/collection')return json(await authenticated(request,(sql,id)=>readState(sql,id,new URL(request.url).searchParams.get('display'))));
   if(['POST','PUT','DELETE','PATCH'].includes(request.method))assertOrigin(request,process.env.APP_ORIGIN);
   if(path==='/api/background'&&['GET','POST','DELETE'].includes(request.method))return await background(request);
+  if(request.method==='POST'&&path==='/api/displays'){
+   const raw=await request.text();if(raw.length>150000)throw new HttpError(413,'Request too large.');
+   let body;try{body=JSON.parse(raw)}catch{throw new HttpError(400,'Invalid JSON.');}
+   return json(await authenticated(request,(sql,id)=>mutateDisplay(sql,id,body,products)));
+  }
   if(request.method==='POST'&&path==='/api/collection/manage'){
    const raw=await request.text();if(raw.length>20000)throw new HttpError(413,'Request too large.');
    let body;try{body=JSON.parse(raw)}catch{throw new HttpError(400,'Invalid JSON.');}
@@ -54,6 +61,7 @@ async function handle(request){
    if(!request.headers.get('content-type')?.startsWith('application/json'))throw new HttpError(415,'JSON required.');
    const raw=await request.text();if(Buffer.byteLength(raw)>1000000)throw new HttpError(413,'Collection is too large.');
    let body;try{body=JSON.parse(raw)}catch{throw new HttpError(400,'Invalid JSON.');}
+   if(body.version!==2)throw new HttpError(409,'Displays have been upgraded. Reload this page before saving.');
    const state=validateState(body,products);
    return json(await authenticated(request,(sql,id)=>writeState(sql,id,state,products,packShelves)));
   }

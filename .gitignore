@@ -9,3 +9,5 @@ dist/assets/*.webp
 !dist/assets/texture-*.webp
 
 supabase/.temp/
+
+!dist/assets/floating-rock-v1.webp
