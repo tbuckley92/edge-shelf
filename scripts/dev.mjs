@@ -2,7 +2,7 @@
 import http from 'node:http';import fs from 'node:fs/promises';import path from 'node:path';import {randomUUID} from 'node:crypto';import handler from '../netlify/functions/api.mjs';import {packShelves} from '../dist/packing.mjs';
 import {validateProfile,publicProjection} from '../server/profile.mjs';
 const mime={'.html':'text/html','.css':'text/css','.js':'text/javascript','.mjs':'text/javascript','.json':'application/json','.webp':'image/webp','.svg':'image/svg+xml'};
-const catalog=JSON.parse(await fs.readFile('dist/catalog.json'));const items=catalog.map(p=>({id:randomUUID(),productId:p.id}));
+const catalog=JSON.parse(await fs.readFile('dist/catalog.json'));const items=catalog.map(p=>({id:randomUUID(),productId:p.id,status:'current'}));
 const rows=packShelves(items.map(i=>i.id),new Map(items.map(i=>[i.id,catalog.find(p=>p.id===i.productId)])));
 let fixture={profile:{marketing_preference:null},layoutId:randomUUID(),revision:0,items,order:items.map(i=>i.id),shelves:rows.map((_,i)=>({id:randomUUID(),settings:{finish:['ice','jungle','oak','temple','magma'][i%5],weather:'none',fixture:'spot',colour:'warm',brightness:70,speed:15}}))};
 let profileFixture={id:randomUUID(),display_name:'The Bear Collector',first_name:'Alex',last_name:'Collector',email:'collector@example.com',phone:'',country:'GB',avatar:'forest',avatar_style:'bear',avatar_version:null,public_sharing:false,privacy:{nickname:true,country:false,collection:false,level:true,badges:true,firstName:false,lastName:false},profile_revision:0,created_at:new Date().toISOString(),badges:[],isAdmin:true,accountUrl:'https://example.com/account/profile'};
@@ -13,17 +13,29 @@ const server=http.createServer(async(req,res)=>{try{
  if(url.pathname.startsWith('/api/')){
   if(req.headers.cookie?.includes('edge_qa=1')){
    let result;
-   if(url.pathname==='/api/bootstrap')result={profile:{...profileFixture,level:fixture.items.length},state:fixture};
+   if(url.pathname==='/api/bootstrap')result={profile:{...profileFixture,level:fixture.items.filter(i=>(i.status||'current')==='current').length},state:fixture};
+   else if(url.pathname==='/api/collection/manage'){
+    if(req.method==='POST'){let raw='';for await(const chunk of req)raw+=chunk;const b=JSON.parse(raw),item=fixture.items.find(i=>i.id===b.itemId);
+     if(b.action==='add')fixture.items.push({id:randomUUID(),productId:b.productId,status:b.status});
+     if(b.action==='status'){item.status=b.status;if(b.status!=='current')fixture.order=fixture.order.filter(id=>id!==item.id)}
+     if(b.action==='removePlacement')fixture.order=fixture.order.filter(id=>id!==b.itemId);
+     if(b.action==='place'&&!fixture.order.includes(b.itemId))fixture.order.push(b.itemId);
+     fixture.revision++;
+    }
+    const packed=packShelves(fixture.order,new Map(fixture.items.map(i=>[i.id,catalog.find(p=>p.id===i.productId)])),fixture.shelves.map(s=>s.settings.pieceIds||[]));
+    while(fixture.shelves.length<packed.length)fixture.shelves.push({id:randomUUID(),settings:{finish:'ice'}});
+    result={versions:[{id:fixture.layoutId,revision:fixture.revision}],items:fixture.items.map(i=>({...i,status:i.status||'current',locations:fixture.order.includes(i.id)?[{layoutId:fixture.layoutId,shelfId:fixture.shelves[packed.findIndex(row=>row.items.some(p=>p.id===i.id))]?.id||null,name:'My shelves',row:packed.findIndex(row=>row.items.some(p=>p.id===i.id))+1}]:[]}))};
+   }
    else if(url.pathname==='/api/avatar'&&req.method==='POST'){const chunks=[];for await(const chunk of req)chunks.push(chunk);qaAvatar=Buffer.concat(chunks);profileFixture={...profileFixture,avatar_style:'photo',avatar_version:randomUUID(),profile_revision:profileFixture.profile_revision+1};result={avatar_style:'photo',avatar_version:profileFixture.avatar_version,profile_revision:profileFixture.profile_revision};}
    else if(url.pathname.startsWith('/api/avatar')&&qaAvatar){res.setHeader('Content-Type','image/jpeg');return res.end(qaAvatar);}
    else if(url.pathname==='/api/profile'){
-    if(req.method==='PUT'){let body='';for await(const chunk of req)body+=chunk;const p=validateProfile(JSON.parse(body));profileFixture={...profileFixture,display_name:p.nickname,first_name:p.firstName,last_name:p.lastName,phone:p.phone,country:p.country,avatar:p.avatar,avatar_style:p.avatarStyle,public_sharing:p.publicSharing,privacy:p.privacy,profile_revision:profileFixture.profile_revision+1};qaEvents.unshift({id:randomUUID(),owner_id:profileFixture.id,actor_id:profileFixture.id,action:'profiles.update',created_at:new Date().toISOString(),changes:{profile:'changed'}})}
-    result={...profileFixture,level:fixture.items.length};
+    if(req.method==='PUT'){let body='';for await(const chunk of req)body+=chunk;const p=validateProfile(JSON.parse(body));profileFixture={...profileFixture,display_name:p.nickname,first_name:p.firstName,last_name:p.lastName,phone:p.phone,country:p.country,avatar:p.avatar,avatar_style:p.avatarStyle,marketing_preference:p.marketingPreference,public_sharing:p.publicSharing,privacy:p.privacy,profile_revision:profileFixture.profile_revision+1};qaEvents.unshift({id:randomUUID(),owner_id:profileFixture.id,actor_id:profileFixture.id,action:'profiles.update',created_at:new Date().toISOString(),changes:{profile:'changed'}})}
+    result={...profileFixture,level:fixture.items.filter(i=>(i.status||'current')==='current').length};
    }else if(url.pathname.startsWith('/api/profiles/')){
     const counts=new Map();for(const i of fixture.items)counts.set(i.productId,(counts.get(i.productId)||0)+1);
     result=publicProjection(profileFixture,[...counts].map(([productId,quantity])=>({productId,quantity})),profileFixture.badges);
     if(!result){res.writeHead(404,{'Content-Type':'application/json'});return res.end(JSON.stringify({error:'This profile is private or unavailable.'}))}
-   }else if(url.pathname==='/api/admin')result={users:[{...profileFixture,level:fixture.items.length}],events:qaEvents};
+   }else if(url.pathname==='/api/admin')result={users:[{...profileFixture,level:fixture.items.filter(i=>(i.status||'current')==='current').length}],events:qaEvents};
    else if(url.pathname==='/api/admin/badge'){let body='';for await(const chunk of req)body+=chunk;const p=JSON.parse(body);profileFixture.badges=p.active?[{key:'official_employee',label:'Official Edge Employee',kind:'official'}]:[];qaEvents.unshift({id:randomUUID(),owner_id:profileFixture.id,actor_id:profileFixture.id,action:'user_badges.update',reason:p.reason,created_at:new Date().toISOString(),changes:{badge:'changed'}});result={ok:true}}
    if(result){res.setHeader('Content-Type','application/json');return res.end(JSON.stringify(result))}
   }

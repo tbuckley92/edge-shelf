@@ -6,7 +6,7 @@ export function validateState(body,products){
  const ids=new Set(),shelfIds=new Set();
  const items=body.items.map(item=>{
   if(!item||!uuid.test(item.id)||ids.has(item.id)||!products.has(item.productId))fail();ids.add(item.id);
-  return {id:item.id,productId:item.productId};
+  const status=item.status??'current';if(!['current','previous','wishlist'].includes(status))fail();return {id:item.id,productId:item.productId,status};
  });
  const shelves=body.shelves.map(shelf=>{
   if(!shelf||!uuid.test(shelf.id)||shelfIds.has(shelf.id))fail();shelfIds.add(shelf.id);
@@ -24,13 +24,14 @@ export function validateState(body,products){
  });
  if(!Array.isArray(body.order)||body.order.length>items.length||new Set(body.order).size!==body.order.length||body.order.some(id=>!ids.has(id)))fail();
  if(body.marketingPreference!==undefined&&body.marketingPreference!==null&&typeof body.marketingPreference!=='boolean')fail();
- return {layoutId:body.layoutId,revision:body.revision,items,shelves,order:body.order,marketingPreference:body.marketingPreference};
+ const frame=body.frame??'classic';if(!['classic','black','temple'].includes(frame)||body.order.some(id=>items.find(i=>i.id===id).status!=='current'))fail();
+ return {frame,layoutId:body.layoutId,revision:body.revision,items,shelves,order:body.order,marketingPreference:body.marketingPreference};
 }
 export async function readState(sql,owner){
  const [state]=await sql`select
   jsonb_build_object('display_name',p.display_name,'marketing_preference',p.marketing_preference) as profile,
-  l.id as "layoutId",coalesce(l.revision,0) as revision,
-  coalesce((select jsonb_agg(jsonb_build_object('id',i.id,'productId',i.product_id) order by i.id) from shelf.owned_items i where i.owner_id=p.id),'[]'::jsonb) as items,
+  coalesce(l.frame,'classic') as frame,l.id as "layoutId",coalesce(l.revision,0) as revision,
+  coalesce((select jsonb_agg(jsonb_build_object('id',i.id,'productId',i.product_id,'status',i.status) order by i.id) from shelf.owned_items i where i.owner_id=p.id),'[]'::jsonb) as items,
   coalesce((select jsonb_agg(x.item_id order by x.position) from shelf.placements x where x.owner_id=p.id and x.layout_id=l.id),'[]'::jsonb) as "order",
   coalesce((select jsonb_agg(jsonb_build_object('id',s.id,'settings',s.settings) order by s.position) from shelf.shelves s where s.owner_id=p.id and s.layout_id=l.id),'[]'::jsonb) as shelves
   from shelf.profiles p left join shelf.layouts l on l.owner_id=p.id and l.name='My shelves' where p.id=${owner}`;
@@ -39,13 +40,13 @@ export async function readState(sql,owner){
 export async function writeState(sql,owner,state,products,packShelves){
  // Atomic optimistic concurrency: stale devices never silently overwrite another device.
  await sql`insert into shelf.layouts(id,owner_id) values(${state.layoutId},${owner}) on conflict do nothing`;
- const changed=await sql`update shelf.layouts set revision=revision+1 where id=${state.layoutId} and owner_id=${owner} and revision=${state.revision} returning revision`;
+ const changed=await sql`update shelf.layouts set revision=revision+1,frame=${state.frame??'classic'} where id=${state.layoutId} and owner_id=${owner} and revision=${state.revision} returning revision`;
  if(!changed.length)throw new HttpError(409,'This collection changed on another device. Reload before saving.');
  await sql`delete from shelf.placements where layout_id=${state.layoutId} and owner_id=${owner}`;
  // Ownership checks also cover attempted reuse of another collector's IDs.
- const itemRows=await sql`insert into shelf.owned_items(id,owner_id,product_id)
- select x.id,${owner}::uuid,x.product_id from jsonb_to_recordset(${sql.json(state.items.map(i=>({id:i.id,product_id:i.productId})))}::jsonb) as x(id uuid,product_id text)
- on conflict(id) do update set product_id=excluded.product_id where shelf.owned_items.owner_id=${owner} returning id`;
+ const itemRows=await sql`insert into shelf.owned_items(id,owner_id,product_id,status)
+ select x.id,${owner}::uuid,x.product_id,x.status from jsonb_to_recordset(${sql.json(state.items.map(i=>({id:i.id,product_id:i.productId,status:i.status??'current'})))}::jsonb) as x(id uuid,product_id text,status text)
+ on conflict(id) do update set product_id=excluded.product_id,status=excluded.status where shelf.owned_items.owner_id=${owner} returning id`;
  if(itemRows.length!==state.items.length)throw new HttpError(403,'Item is unavailable.');
  const retained=state.items.map(i=>i.id);
  if(retained.length)await sql`delete from shelf.owned_items where owner_id=${owner} and id not in ${sql(retained)}`;
@@ -65,6 +66,6 @@ export async function writeState(sql,owner,state,products,packShelves){
  await sql`insert into shelf.placements(owner_id,layout_id,item_id,shelf_id,position)
  select ${owner}::uuid,${state.layoutId}::uuid,x.item_id,x.shelf_id,x.position
  from jsonb_to_recordset(${sql.json(state.order.map((id,position)=>({item_id:id,shelf_id:placement.get(id)||null,position})))}::jsonb) as x(item_id uuid,shelf_id uuid,position integer)`;
- if(state.marketingPreference!==undefined)await sql`update shelf.profiles set marketing_preference=${state.marketingPreference},marketing_updated_at=now() where id=${owner} and marketing_preference is distinct from ${state.marketingPreference}`;
+
  return {revision:changed[0].revision};
 }

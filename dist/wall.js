@@ -9,7 +9,7 @@ sizeObserver.observe(wall);
 function read(key,fallback){return fallback}
 function save(){queueSave()}
 let layouts=[], order=[], byId=new Map(), finishes={}, chosen=null;
-let catalog=new Map(), assets={}, ownedItems=[], shelfIds=[], layoutId=null, revision=0, signedIn=false, marketingPreference=null;
+let catalog=new Map(), assets={}, ownedItems=[], shelfIds=[], layoutId=null, revision=0, signedIn=false, frameStyle='classic';
 const defaultSettings={finish:'ice',weather:'none',fixture:'spot',colour:'warm',brightness:70,speed:15};
 if(!finishes||typeof finishes!=='object')finishes={};
 
@@ -353,24 +353,20 @@ async function api(path,options={}){
  let data;try{data=await response.json()}catch{throw new Error('The collection service is unavailable.')}
  if(!response.ok){const error=new Error(data.error||'Could not save.');error.status=response.status;throw error}return data;
 }
-function snapshot(includePreview=false){for(const s of Object.values(rowSettings))if(s.pieceIds)s.pieceIds=s.pieceIds.filter(id=>byId.has(id));return {layoutId,revision,items:ownedItems,order:[...order],shelves:shelfIds.map(id=>({id,settings:{...defaultSettings,...(!includePreview&&editingRow!==null&&id===shelfIds[editingRow]?originalSettings:rowSettings[id])}})),marketingPreference}}
+function snapshot(includePreview=false){for(const s of Object.values(rowSettings))if(s.pieceIds)s.pieceIds=s.pieceIds.filter(id=>byId.has(id));return {layoutId,revision,items:ownedItems,order:[...order],shelves:shelfIds.map(id=>({id,settings:{...defaultSettings,...(!includePreview&&editingRow!==null&&id===shelfIds[editingRow]?originalSettings:rowSettings[id])}})),frame:frameStyle}}
 let saveChain=Promise.resolve(),saveTimer=null,conflict=false,pendingSaves=0;
 function persist(includePreview=false){
  clearTimeout(saveTimer);saveTimer=null;const data=snapshot(includePreview);
  pendingSaves++;const work=saveChain.catch(()=>{}).then(async()=>{
   if(conflict)throw new Error('Collection changed elsewhere. Reload before saving.');
   data.revision=revision;report('Saving…');
-  try{const result=await api('collection',{method:'PUT',body:JSON.stringify(data)});revision=result.revision;document.querySelector('#collectorLevel').textContent='Level '+data.items.length;window.dispatchEvent(new CustomEvent('edge:level',{detail:data.items.length}));report(pendingSaves>1?'Saving…':'Saved');document.querySelector('#retrySave').hidden=true;}
+  try{const result=await api('collection',{method:'PUT',body:JSON.stringify(data)});revision=result.revision;document.querySelector('#collectorLevel').textContent='Level '+data.items.filter(i=>(i.status||'current')==='current').length;window.dispatchEvent(new CustomEvent('edge:level',{detail:data.items.filter(i=>(i.status||'current')==='current').length}));report(pendingSaves>1?'Saving…':'Saved');document.querySelector('#retrySave').hidden=true;}
   catch(error){if(error.status===409)conflict=true;report(error.message);document.querySelector('#retrySave').hidden=false;throw error}
  }).finally(()=>pendingSaves--);saveChain=work;return work;
 }
 function queueSave(){clearTimeout(saveTimer);saveTimer=setTimeout(()=>persist().catch(()=>{}),200)}
 document.querySelector('#retrySave').onclick=()=>persist().then(()=>document.querySelector('#retrySave').hidden=true).catch(()=>{});
-function rebuildItems(){byId=new Map(ownedItems.filter(i=>catalog.has(i.productId)).map(i=>[i.id,{...catalog.get(i.productId),id:i.id,productId:i.productId}]));order=order.filter(id=>byId.has(id));renderStored()}
-function renderStored(){
- const stored=ownedItems.filter(i=>!order.includes(i.id)),box=document.querySelector('#storedPieces');box.replaceChildren();document.querySelector('#storedCollection').hidden=!stored.length;
- for(const item of stored){const button=document.createElement('button');button.textContent=(catalog.get(item.productId)?.name||'Piece')+' · Place on shelf';button.onclick=async()=>{order.push(item.id);rebuildItems();renderInPlace();try{await persist();showAddedPiece(item.id)}catch(e){report(e.message)}};box.append(button)}
-}
+function rebuildItems(){byId=new Map(ownedItems.filter(i=>(i.status||'current')==='current'&&catalog.has(i.productId)).map(i=>[i.id,{...catalog.get(i.productId),id:i.id,productId:i.productId}]));order=order.filter(id=>byId.has(id))}
  document.querySelector('#storePiece').onclick=async()=>{order=order.filter(id=>id!==chosen);for(const s of Object.values(rowSettings))if(s.pieceIds)s.pieceIds=s.pieceIds.filter(id=>id!==chosen);dialog.close();rebuildItems();renderInPlace();try{await persist()}catch(e){report(e.message)}};
 let removedCopy=null;
 document.querySelector('#removePiece').onclick=async()=>{
@@ -423,7 +419,7 @@ function searchCatalog(){
   };row.append(button,errorMessage);results.append(row);
  }
 }
-document.querySelector('#marketingPreference').onchange=e=>{marketingPreference=e.target.checked;queueSave()};
+document.querySelector('#frameStyle').onchange=e=>{frameStyle=e.target.value;wall.dataset.frame=frameStyle;queueSave()};
 document.querySelector('#signOut').onclick=async()=>{try{await saveChain.catch(()=>{});await api('auth/logout',{method:'POST'});location.reload()}catch(error){report(error.message)}};
 window.addEventListener('beforeunload',event=>{if(saveTimer||pendingSaves){event.preventDefault();event.returnValue=''}});
 async function start(){
@@ -432,8 +428,8 @@ async function start(){
  catalog=new Map(pieces.map(p=>[p.id,p]));assets=prepared;
  try{
   const account=await accountRequest;if(account.error)throw account.error;const state=account.data.state;window.edgeProfile=account.data.profile;window.dispatchEvent(new CustomEvent('edge:profile',{detail:account.data.profile}));signedIn=true;layoutId=state.layoutId||crypto.randomUUID();revision=state.revision;ownedItems=state.items;order=state.order;
-  shelfIds=state.shelves.map(s=>s.id);rowSettings=Object.fromEntries(state.shelves.map(s=>[s.id,s.settings]));marketingPreference=state.profile.marketing_preference;
-  document.querySelector('#marketingPreference').checked=marketingPreference===true;document.querySelector('#collectorLevel').textContent='Level '+ownedItems.length;
+  shelfIds=state.shelves.map(s=>s.id);rowSettings=Object.fromEntries(state.shelves.map(s=>[s.id,s.settings]));frameStyle=state.frame||'classic';wall.dataset.frame=frameStyle;document.querySelector('#frameStyle').value=frameStyle;
+  document.querySelector('#collectorLevel').textContent='Level '+ownedItems.filter(i=>(i.status||'current')==='current').length;
   document.querySelector('#loginPanel').hidden=true;document.querySelector('#collectionTools').hidden=false;document.querySelector('#addPieceTools').hidden=false;document.querySelector('#signOut').hidden=false;rebuildItems();render();
  }catch(error){if(error.status!==401)report(error.message)}
 }
