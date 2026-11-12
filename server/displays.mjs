@@ -1,3 +1,4 @@
+import {validateAtmosphere} from '../dist/rock-atmosphere.mjs';
 import {validateRocks} from '../dist/rock-layout.mjs';
 import {randomUUID} from 'node:crypto';
 import {HttpError} from './security.mjs';
@@ -13,7 +14,7 @@ export async function listDisplays(sql,owner){
 }
 function name(value){if(typeof value!=='string'||!value.trim()||value.trim().length>60||/[\u0000-\u001f\u007f]/.test(value))throw new HttpError(400,'Use a display name between 1 and 60 characters.');return value.trim()}
 export async function mutateDisplay(sql,owner,body,products){
- if(!body||!['create','rename','addStatus','addItems','addProduct','remove','configureRocks'].includes(body.action))throw new HttpError(400,'Invalid display action.');
+ if(!body||!['create','rename','addStatus','addItems','addProduct','remove','configureRocks','configureAtmosphere'].includes(body.action))throw new HttpError(400,'Invalid display action.');
  // Serialize inventory additions with collection management, always owner then layout.
  await sql`select id from shelf.profiles where id=${owner} for update`;
  let id=body.displayId;
@@ -30,6 +31,14 @@ export async function mutateDisplay(sql,owner,body,products){
   const [current]=await sql`select revision from shelf.layouts where id=${id} and owner_id=${owner} for update`;
   if(!current)throw new HttpError(404,'Display unavailable.');
   if(current.revision!==body.revision)throw new HttpError(409,'This display changed elsewhere. Reload before editing.');
+ }
+ if(body.action==='configureAtmosphere'){
+  const state=await readState(sql,owner,id);
+  if(state.type!=='rocks')throw new HttpError(400,'Atmosphere settings require a rock display.');
+  let settings;try{settings=validateAtmosphere(body.atmosphere)}catch(e){throw new HttpError(400,e.message)}
+  await sql`update shelf.layouts set atmosphere=${sql.json(settings)},revision=revision+1 where id=${id} and owner_id=${owner}`;
+  await sql`insert into shelf.audit_events(actor_id,owner_id,action,changes) values(${owner},${owner},'display.configureAtmosphere',${sql.json({displayId:id,...settings})})`;
+  return readState(sql,owner,id);
  }
  if(body.action==='configureRocks'){
   const state=await readState(sql,owner,id);

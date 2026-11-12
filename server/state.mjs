@@ -31,7 +31,7 @@ export async function readState(sql,owner,selected=null){
  if(selected&&!uuid.test(selected))throw new HttpError(404,'Display unavailable.');
  const [state]=await sql`select
   jsonb_build_object('display_name',p.display_name,'marketing_preference',p.marketing_preference) as profile,
-  l.name,l.rock_config as "rockConfig",l.display_type as type,l.default_finish as "defaultFinish",coalesce(l.frame,'classic') as frame,l.id as "layoutId",coalesce(l.revision,0) as revision,
+  l.atmosphere,l.name,l.rock_config as "rockConfig",l.display_type as type,l.default_finish as "defaultFinish",coalesce(l.frame,'classic') as frame,l.id as "layoutId",coalesce(l.revision,0) as revision,
   coalesce((select jsonb_agg(jsonb_build_object('id',i.id,'productId',i.product_id,'status',i.status) order by i.id) from shelf.owned_items i where i.owner_id=p.id),'[]'::jsonb) as items,
   coalesce((select jsonb_agg(x.item_id order by x.position) from shelf.placements x where x.owner_id=p.id and x.layout_id=l.id),'[]'::jsonb) as "order",
   coalesce((select jsonb_agg(jsonb_build_object('id',s.id,'settings',s.settings) order by s.position) from shelf.shelves s where s.owner_id=p.id and s.layout_id=l.id),'[]'::jsonb) as shelves

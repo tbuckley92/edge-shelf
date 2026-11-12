@@ -26,6 +26,13 @@ test('named cabinets and rocks preserve inventory, statuses, independent placeme
  rocks=await as(a,()=>mutateDisplay(sql,a,{action:'rename',displayId:rocks.layoutId,revision:rocks.revision,name:'Dream Rocks'},products));assert.equal(rocks.name,'Dream Rocks');assert.equal((await as(a,()=>readState(sql,a,rocks.layoutId))).name,'Dream Rocks');
  const other=await as(b,()=>mutateDisplay(sql,b,{action:'create',name:'Other',type:'cabinet',frame:'black',defaultFinish:'ice'},products));await assert.rejects(as(b,()=>mutateDisplay(sql,b,{action:'addItems',displayId:other.layoutId,revision:other.revision,itemIds:[wish.id]},products)),e=>e.status===400);
  const config=[{id:'platform-one',style:'waterfall',size:'small',foreground:'shrubs',pieceIds:rocks.order.slice(0,1)}];
+ const atmosphere={fog:true,density:85,speed:20,colour:'#aaccdd',background:'mountains'};
+ const preAtmosphere=rocks;rocks=await as(a,()=>mutateDisplay(sql,a,{action:'configureAtmosphere',displayId:rocks.layoutId,revision:rocks.revision,atmosphere},products));
+ assert.deepEqual(rocks.atmosphere,atmosphere);assert.deepEqual(rocks.order,preAtmosphere.order);assert.deepEqual(rocks.items,preAtmosphere.items);
+ assert.deepEqual((await as(a,()=>readState(sql,a,rocks.layoutId))).atmosphere,atmosphere);
+ await assert.rejects(as(a,()=>mutateDisplay(sql,a,{action:'configureAtmosphere',displayId:rocks.layoutId,revision:preAtmosphere.revision,atmosphere},products)),e=>e.status===409);
+ await assert.rejects(as(b,()=>mutateDisplay(sql,b,{action:'configureAtmosphere',displayId:rocks.layoutId,revision:rocks.revision,atmosphere},products)),e=>e.status===404);
+ await assert.rejects(as(a,()=>mutateDisplay(sql,a,{action:'configureAtmosphere',displayId:rocks.layoutId,revision:rocks.revision,atmosphere:{...atmosphere,density:101}},products)),e=>e.status===400);
  const beforeConfig=rocks;rocks=await as(a,()=>mutateDisplay(sql,a,{action:'configureRocks',displayId:rocks.layoutId,revision:rocks.revision,rocks:config},products));
  assert.deepEqual(rocks.order,beforeConfig.order);assert.deepEqual(rocks.items,beforeConfig.items);assert.equal(rocks.rockConfig.length,4);assert.equal(rocks.rockConfig[0].pieceIds.length,1);
  assert.deepEqual((await as(a,()=>readState(sql,a,rocks.layoutId))).rockConfig,rocks.rockConfig);
