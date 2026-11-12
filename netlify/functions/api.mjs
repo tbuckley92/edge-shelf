@@ -5,6 +5,9 @@ import {login,callback,authenticated,logout} from '../../server/auth.mjs';
 import {assertOrigin,HttpError} from '../../server/security.mjs';
 import {validateState,readState,writeState} from '../../server/state.mjs';
 import {materialKeys} from '../../server/material-keys.mjs';
+import {transaction} from '../../server/db.mjs';
+import {configuration} from '../../server/auth.mjs';
+import {readProfile,updateProfile,validateProfile,readPublicProfile,adminOverview,setEmployeeBadge} from '../../server/profile.mjs';
 const products=new Map(catalog.map(p=>[p.id,p]));products.finishes=new Set(materialKeys);
 const json=(body,status=200)=>new Response(JSON.stringify(body),{status,headers:{'Content-Type':'application/json','Cache-Control':'no-store'}});
 export default async function handler(request){
@@ -12,10 +15,20 @@ export default async function handler(request){
   const path=new URL(request.url).pathname.replace(/^\/\.netlify\/functions\/api/,'/api');
   if(request.method==='GET'&&path==='/api/auth/login')return await login();
   if(request.method==='GET'&&path==='/api/auth/callback')return await callback(request);
+  if(request.method==='GET'&&path==='/api/profile')return json(await authenticated(request,async(sql,id)=>({...await readProfile(sql,id),accountUrl:'https://'+configuration().domain+'/account/profile'})));
+  if(request.method==='GET'&&path.startsWith('/api/profiles/'))return json(await transaction(sql=>readPublicProfile(sql,path.slice('/api/profiles/'.length))));
+  if(request.method==='GET'&&path==='/api/admin')return json(await authenticated(request,adminOverview));
   if(request.method==='GET'&&path==='/api/collection')return json(await authenticated(request,(sql,id)=>readState(sql,id)));
   if(['POST','PUT','DELETE','PATCH'].includes(request.method))assertOrigin(request,process.env.APP_ORIGIN);
   if(path==='/api/background'&&['GET','POST','DELETE'].includes(request.method))return await background(request);
   if(request.method==='POST'&&path==='/api/auth/logout')return await logout(request);
+  if((request.method==='PUT'&&path==='/api/profile')||(request.method==='POST'&&path==='/api/admin/badge')){
+   if(!request.headers.get('content-type')?.startsWith('application/json'))throw new HttpError(415,'JSON required.');
+   const raw=await request.text();if(Buffer.byteLength(raw)>10000)throw new HttpError(413,'Request is too large.');
+   let body;try{body=JSON.parse(raw)}catch{throw new HttpError(400,'Invalid JSON.');}
+   if(path==='/api/admin/badge')return json(await authenticated(request,(sql,id)=>setEmployeeBadge(sql,id,body)));
+   const profile=validateProfile(body);return json(await authenticated(request,(sql,id,customer)=>updateProfile(sql,id,profile,customer.updateName)));
+  }
   if(request.method==='PUT'&&path==='/api/collection'){
    if(!request.headers.get('content-type')?.startsWith('application/json'))throw new HttpError(415,'JSON required.');
    const raw=await request.text();if(Buffer.byteLength(raw)>1000000)throw new HttpError(413,'Collection is too large.');

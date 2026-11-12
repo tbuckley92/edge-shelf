@@ -25,3 +25,5 @@
 #loadStatus{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:25;margin:0;padding:8px 14px;background:#fffef8;box-shadow:0 2px 12px #0002;border-radius:4px;pointer-events:none}
 .wall .piece:focus,.wall .piece:focus-visible{outline:none;box-shadow:none}
 .wall .piece:focus-visible img{filter:drop-shadow(0 0 2px #ccefff)}
+
+.profile-link{font-size:12px;color:#35432e;text-decoration:none;padding:10px 14px;border:1px solid #d9dfd0;border-radius:6px}#storedCollection{margin:24px auto;padding:20px;max-width:950px;background:#f3f4ef;border-radius:10px}#storedCollection h2{font-size:17px}#storedCollection p{font-size:12px;color:#66705b}#storedPieces{display:flex;flex-wrap:wrap;gap:10px}#storedPieces button{font:inherit;font-size:12px;padding:12px;border:1px solid #d4d9cc;background:#fff;border-radius:6px;cursor:pointer}

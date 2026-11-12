@@ -7,3 +7,5 @@ node_modules/
 # Generated product cut-outs are created by the build, never while scrolling.
 dist/assets/*.webp
 !dist/assets/texture-*.webp
+
+supabase/.temp/
