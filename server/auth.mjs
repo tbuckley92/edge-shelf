@@ -1,6 +1,6 @@
 import {createRemoteJWKSet,jwtVerify} from 'jose';
 import {randomToken,hash,equal,cookie,sessionCookie,loginCookie,assertIdentity,HttpError} from './security.mjs';
-import {transaction,ownerContext} from './db.mjs';
+import {transaction} from './db.mjs';
 import {sealToken,openToken,identityQuery,updateCustomerName} from './customer.mjs';
 let discoveryCache;
 export function configuration(){
@@ -59,9 +59,9 @@ export async function callback(request){
 export async function authenticated(request,fn){
  const token=cookie(request,'__Host-edge_session');if(!token)throw new HttpError(401,'Sign in to continue.');
  return transaction(async sql=>{
-  const [session]=await sql`select owner_id,customer_token from shelf.sessions where token_hash=${hash(token)} and expires_at>now()`;
+  const [session]=await sql`select owner_id,customer_token,set_config('shelf.owner',owner_id::text,true) as context from shelf.sessions where token_hash=${hash(token)} and expires_at>now()`;
   if(!session)throw new HttpError(401,'Your session expired. Sign in again.');
-  await ownerContext(sql,session.owner_id);return fn(sql,session.owner_id,{updateName:async(first,last)=>{
+  return fn(sql,session.owner_id,{updateName:async(first,last)=>{
    if(!session.customer_token)throw new HttpError(401,'Sign in again to connect profile editing to Shopify.');
    const [p]=await sql`select shopify_customer_id from shelf.profiles where id=${session.owner_id}`;
    const d=await discovery(configuration());return updateCustomerName(d.api.graphql_api,openToken(session.customer_token,token),p.shopify_customer_id,first,last);

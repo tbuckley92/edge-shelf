@@ -27,13 +27,14 @@ export function validateState(body,products){
  return {layoutId:body.layoutId,revision:body.revision,items,shelves,order:body.order,marketingPreference:body.marketingPreference};
 }
 export async function readState(sql,owner){
- const [profile]=await sql`select display_name,marketing_preference from shelf.profiles where id=${owner}`;
- const [layout]=await sql`select id,revision from shelf.layouts where owner_id=${owner} and name='My shelves'`;
- if(!layout)return {profile,layoutId:null,revision:0,items:[],order:[],shelves:[]};
- const items=await sql`select id,product_id as "productId" from shelf.owned_items where owner_id=${owner}`;
- const placements=await sql`select item_id from shelf.placements where owner_id=${owner} and layout_id=${layout.id} order by position`;
- const shelves=await sql`select id,settings from shelf.shelves where owner_id=${owner} and layout_id=${layout.id} order by position`;
- return {profile,layoutId:layout.id,revision:layout.revision,items,order:placements.map(p=>p.item_id),shelves};
+ const [state]=await sql`select
+  jsonb_build_object('display_name',p.display_name,'marketing_preference',p.marketing_preference) as profile,
+  l.id as "layoutId",coalesce(l.revision,0) as revision,
+  coalesce((select jsonb_agg(jsonb_build_object('id',i.id,'productId',i.product_id) order by i.id) from shelf.owned_items i where i.owner_id=p.id),'[]'::jsonb) as items,
+  coalesce((select jsonb_agg(x.item_id order by x.position) from shelf.placements x where x.owner_id=p.id and x.layout_id=l.id),'[]'::jsonb) as "order",
+  coalesce((select jsonb_agg(jsonb_build_object('id',s.id,'settings',s.settings) order by s.position) from shelf.shelves s where s.owner_id=p.id and s.layout_id=l.id),'[]'::jsonb) as shelves
+  from shelf.profiles p left join shelf.layouts l on l.owner_id=p.id and l.name='My shelves' where p.id=${owner}`;
+ if(!state)throw new HttpError(404,'Collection not found.');return state;
 }
 export async function writeState(sql,owner,state,products,packShelves){
  // Atomic optimistic concurrency: stale devices never silently overwrite another device.
