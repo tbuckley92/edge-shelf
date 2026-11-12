@@ -95,3 +95,36 @@
 #pillarEffectsSettings{border:1px solid #d9dfda;border-radius:10px;margin:22px 0;padding:8px 18px}#pillarEffectsSettings legend{font-size:14px;font-weight:600}#pillarEffectsSettings input[type=checkbox]{display:inline-block;width:auto}#pillarEffectsSettings input[type=color]{height:42px;padding:4px}#pillarEffectsSettings output{float:right;font-weight:400}
 @media(prefers-reduced-motion:reduce){.pillar-effects *,.pillar-effects *:before,.pillar-effects *:after{animation-play-state:paused!important}}
 .weather-aurora,.weather-plasma{mask-image:radial-gradient(ellipse at 50% 45%,#000 25%,transparent 72%)}
+/* Depth: sky behind stone; droplets and low mist in front. */
+.pillar-page .rock-bob{z-index:2}.pillar-effects.effects-behind{z-index:1}.pillar-effects.effects-front{z-index:4}
+.storm-sky{position:absolute;left:-50%;right:-50%;top:-20%;height:57%;opacity:var(--pw-density);mask-image:radial-gradient(ellipse,#000 35%,transparent 72%)}
+.storm-cloud{position:absolute;inset:0;color:#535966;filter:blur(12px);background:radial-gradient(ellipse at 15% 55%,currentColor 4%,transparent 38%),radial-gradient(ellipse at 45% 35%,#8a909b 8%,transparent 35%),radial-gradient(ellipse at 75% 55%,currentColor 12%,transparent 42%);animation:storm-roll calc(17s*var(--pw-rate)) ease-in-out infinite alternate}
+.cloud-two{top:16%;left:-20%;opacity:.8;filter:blur(7px);animation-direction:alternate-reverse;animation-duration:calc(11s*var(--pw-rate))}.cloud-three{top:-22%;left:15%;opacity:.65;animation-duration:calc(23s*var(--pw-rate))}
+@keyframes storm-roll{from{transform:translateX(-15%) scale(1.1)}to{transform:translateX(15%) scale(1.3)}}
+.storm-flash{position:absolute;inset:0;background:radial-gradient(ellipse at 66% 35%,#eff5ff,transparent 65%);opacity:0;animation:storm-lightning 9s linear infinite}
+.storm-bolt{position:absolute;left:64%;top:20%;width:12%;height:65%;background:#e3edff;filter:drop-shadow(0 0 8px #bfd8ff);clip-path:polygon(60% 0,20% 43%,50% 43%,10% 100%,88% 33%,61% 33%,100% 0);opacity:0;animation:storm-lightning 9s linear infinite}
+@keyframes storm-lightning{0%,76%,81%,100%{opacity:0}77%{opacity:.95}78%{opacity:.2}79%{opacity:.7}}
+.pillar-rain-lane{position:absolute;top:-8%;bottom:var(--pillar-surface,65%);left:var(--x);width:1px;opacity:var(--pw-density);color:var(--pw-colour);--cycle:calc(var(--fall)*var(--pw-rate));}
+.pillar-raindrop{position:absolute;inset:0;width:1px;animation:pillar-impact-fall var(--cycle) linear infinite;animation-delay:var(--delay)}
+.pillar-raindrop:after{content:'';position:absolute;bottom:0;width:1px;height:23px;background:linear-gradient(transparent,currentColor)}
+@keyframes pillar-impact-fall{0%{transform:translateY(-100%);opacity:0}8%{opacity:.8}70%{transform:translateY(0);opacity:.8}71%,100%{transform:translateY(0);opacity:0}}
+.pillar-splash{position:absolute;bottom:-1px;left:-4px;width:8px;height:3px;border:1px solid currentColor;border-radius:50%;animation:pillar-impact-ring var(--cycle) linear infinite;animation-delay:var(--delay);opacity:0}
+.pillar-splash:before,.pillar-splash:after{content:'';position:absolute;width:2px;height:2px;background:currentColor;border-radius:50%;animation:pillar-impact-bounce var(--cycle) linear infinite;animation-delay:var(--delay);opacity:0}.pillar-splash:after{left:6px;--bounce:-1}
+@keyframes pillar-impact-ring{0%,69%{opacity:0;transform:scale(.3)}71%{opacity:.9}93%,100%{opacity:0;transform:scale(2)}}
+@keyframes pillar-impact-bounce{0%,69%{opacity:0;translate:0 0}72%{opacity:1}83%{translate:calc(5px*var(--bounce)) -8px;opacity:.8}98%,100%{translate:calc(10px*var(--bounce)) 0;opacity:0}}
+.is-sleet .pillar-raindrop:after{height:5px;width:3px;border-radius:50%;background:currentColor}
+.weather-static .storm-sky *,.weather-static .pillar-rain-lane *,.weather-static .pillar-rain-lane *:before,.weather-static .pillar-rain-lane *:after{animation-play-state:paused!important}
+.weather-static .storm-flash,.weather-static .storm-bolt{display:none}
+/* Compact right-side editor, independent scroll area, always-visible save. */
+.pillar-editor{margin:0 0 0 auto;inset:0 0 0 auto;width:min(390px,94vw);max-width:none;height:100dvh;max-height:100dvh;border:0;border-radius:18px 0 0 18px;padding:0;overflow:hidden;background:#fafbf9;box-shadow:-12px 0 50px #0005}
+.pillar-editor[open]{display:flex;flex-direction:column;animation:editor-enter .22s ease-out}.pillar-editor::backdrop{background:#07101440;backdrop-filter:none}
+@keyframes editor-enter{from{transform:translateX(100%)}to{transform:translateX(0)}}
+.pillar-editor-header{display:flex;justify-content:space-between;align-items:center;padding:22px 22px 12px;flex-shrink:0}.pillar-editor-header h2{font-size:21px;margin:5px 0}.pillar-editor .dialog-close{flex-shrink:0;float:none}
+.pillar-editor-tabs{display:flex;padding:4px 20px 14px;gap:6px;border-bottom:1px solid #dee3de}.pillar-editor-tabs button{flex:1;border:0;border-radius:8px;padding:11px 6px;background:#e8ede8;font-size:12px;color:#304b43}.pillar-editor-tabs button[aria-pressed=true]{background:#213f37;color:white}
+.pillar-editor #rockForm{overflow-y:auto;overscroll-behavior:contain;flex:1;min-height:0;padding:4px 24px 24px}.pillar-editor #pillarEffectsSettings{border:0;margin:0;padding:0}.pillar-editor label{margin:18px 0}.pillar-editor input[type=range]{padding:0;height:30px;accent-color:#315e50}.pillar-editor input[type=color]{width:100%;height:40px}.pillar-editor .hint{font-size:11px;line-height:1.6}.pillar-editor .effect-switch{display:flex;align-items:center;gap:10px}.pillar-editor .effect-switch input{margin:0}
+.pillar-editor-footer{flex-shrink:0;border-top:1px solid #dce2dc;padding:12px 22px max(18px,env(safe-area-inset-bottom));background:#fff;display:flex;flex-wrap:wrap;gap:10px;align-items:center}.pillar-editor-footer>span{flex:1}.pillar-editor-footer #saveRock{padding:13px 22px;border-radius:8px}.pillar-editor-footer #rockEditorStatus{width:100%;margin:0}.pillar-editor-footer #rockEditorStatus:empty{display:none}
+#editDetailPillar{display:block;width:100%;margin:14px 0;padding:14px;border-radius:8px}
+@media(prefers-reduced-motion:reduce){.storm-flash,.storm-bolt{display:none}.pillar-editor[open]{animation:none}}
+.pillar-page #rockScene{scroll-margin-top:86px}
+.storm-cloud{filter:blur(5px);background:radial-gradient(ellipse at 12% 52%,#171b25 0 13%,#626a78 18%,transparent 28%),radial-gradient(ellipse at 35% 42%,#222632 0 16%,#777f8c 20%,transparent 29%),radial-gradient(ellipse at 62% 49%,#171d28 0 16%,#596370 22%,transparent 32%),radial-gradient(ellipse at 87% 35%,#202732 0 13%,#707987 19%,transparent 29%)}
+.cloud-two{filter:blur(8px);opacity:.75;top:21%;transform:scale(.9)}.cloud-three{filter:blur(12px);opacity:.45}
