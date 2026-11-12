@@ -9,3 +9,11 @@ test('legacy groups split all 3000 copies with stable themes and unique platform
  const order=Array.from({length:3000},(_,i)=>'copy-'+i),config=Array.from({length:1000},(_,i)=>({id:'rock-'+i,style:'lava',size:'large',foreground:'stones',pieceIds:order.slice(i*3,i*3+3)}));
  const result=resolveRocks(config,order);assert.equal(result.length,3000);assert.deepEqual(result.flatMap(r=>r.pieceIds),order);assert.equal(new Set(result.map(r=>r.id)).size,3000);assert.ok(result.every(r=>r.style==='lava'&&r.size==='small'));assert.deepEqual(resolveRocks(result,order),result);
 });
+
+import {pillarStyles,pillarProjection} from '../dist/pillar-layout.mjs';
+test('pillar defaults and finite arc keep one piece per pedestal without a rear seam',()=>{
+ const order=['a','b','c'],result=resolveRocks([],order,'pillars');assert.ok(result.every(r=>r.style==='greek'&&r.pieceIds.length===1));assert.deepEqual(validateRocks(result,order,'pillars'),result);assert.equal(pillarStyles.length,10);
+ const centre=pillarProjection(0,1000);assert.equal(centre.scale,1);assert.equal(centre.x,0);assert.equal(centre.opacity,1);
+ for(let d=.1;d<=4;d+=.1){const left=pillarProjection(-d,1000),right=pillarProjection(d,1000);assert.ok(left.x<0&&right.x>0);assert.equal(left.y,right.y);assert.ok(right.scale<=1&&right.opacity>=0&&right.opacity<=1);}
+ assert.equal(pillarProjection(4,1000).opacity,0);assert.equal(pillarProjection(100,1000).opacity,0);
+});

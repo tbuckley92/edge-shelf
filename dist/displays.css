@@ -54,3 +54,19 @@
 
 /* Decorative overflow must not become a focus-scrollable inner viewport. */
 #helixViewport,.piece-strip{overflow:clip}
+
+/* Centre the thumb by giving the native vertical track the thumb's full width.
+   A narrow painted centre line supplies the visual rail without offsetting it. */
+.rock-depth-control input::-webkit-slider-runnable-track{width:28px;background:linear-gradient(90deg,transparent 10px,#e1f3ef77 10px,#e1f3ef77 18px,transparent 18px)}
+.rock-depth-control input::-webkit-slider-thumb{width:28px;box-sizing:border-box;margin:0}
+.rock-depth-control input::-moz-range-track{width:28px;background:linear-gradient(90deg,transparent 10px,#e1f3ef77 10px,#e1f3ef77 18px,transparent 18px)}
+.rock-depth-control input::-moz-range-thumb{width:28px;box-sizing:border-box;margin:0}
+.thumbnail-row{display:grid;grid-template-columns:44px minmax(0,1fr) 44px;gap:8px;align-items:center;padding:0 10px 12px}.strip-arrow{height:48px;width:44px;border:1px solid #638789;border-radius:10px;background:#203f48;color:#efffff;font-size:24px;cursor:pointer}.strip-arrow:disabled{opacity:.3;cursor:default}.piece-strip{min-width:0}.piece-navigator{padding-bottom:0}
+.pillar-page #helixViewport{background:radial-gradient(ellipse at 50% 30%,#dae8e4,#8daeb2 55%,#35535e)}
+.pillar-page .floating-slot{top:51%}.pillar-page .rock-bob{animation:none!important}.pillar-art,.pillar-grid-art,.cover-pillar{background-image:url('/assets/pillars-atlas-v1.webp');background-size:500% 200%;background-repeat:no-repeat;pointer-events:none}
+.pillar-art{position:absolute;left:0;bottom:0;width:100%;height:70%;filter:drop-shadow(0 12px 10px #122e3c55)}
+.pillar-page .rock-piece{bottom:63%;height:40%;width:72%;left:14%}.pillar-page .rock-contact{bottom:61%;left:23%;width:54%;height:3%}.pillar-page .platform-status{bottom:60%;left:auto!important;right:12%}
+.pillar-grid-art{display:block;width:105px;height:165px}.display-cover.pillars{border:0;border-radius:8px;background:linear-gradient(#c5dbd6,#78989b)}.pillars .cover-slot{align-items:flex-start}.cover-pillar{position:absolute;left:0;bottom:-10%;width:100%;height:70%;background-position:0 100%}.pillars .cover-piece{max-height:55%;margin-top:5%;align-self:flex-start}.pillar-page .orbit-hint{max-width:80%}
+@media(max-width:650px){.thumbnail-row{grid-template-columns:36px minmax(0,1fr) 36px;gap:4px;padding:0 5px 10px}.strip-arrow{width:36px;height:44px}.rock-depth-control input{width:28px}}
+
+.pillar-page .rock-sculptures{bottom:var(--pillar-surface,65%);height:calc(100% - var(--pillar-surface,65%));left:14%;right:14%}.pillar-page .rock-sculpture .rock-piece{bottom:0;left:0;width:100%;height:100%}.pillar-page .rock-sculpture .rock-contact{bottom:-1%;height:5%;left:12%;width:76%}.pillar-page .rock-bob>.platform-status{bottom:calc(var(--pillar-surface,65%) - 3%);left:auto!important;right:12%}

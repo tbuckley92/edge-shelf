@@ -56,7 +56,7 @@ export async function writeState(sql,owner,state,products,packShelves){
  if(shelfIds.length)await sql`delete from shelf.shelves where owner_id=${owner} and layout_id=${state.layoutId} and id not in ${sql(shelfIds)}`;
  else await sql`delete from shelf.shelves where owner_id=${owner} and layout_id=${state.layoutId}`;
  const itemCatalog=new Map(inventory.map(i=>[i.id,products.get(i.productId)]));
- const rows=changed[0].display_type==='rocks'?[]:packShelves(state.order,itemCatalog,state.shelves.map(s=>s.settings.pieceIds)),placement=new Map();
+ const rows=changed[0].display_type!=='cabinet'?[]:packShelves(state.order,itemCatalog,state.shelves.map(s=>s.settings.pieceIds)),placement=new Map();
  if(rows.length>state.shelves.length)throw new HttpError(400,'Missing shelves.');
  rows.forEach((row,index)=>row.items.forEach(item=>placement.set(item.id,state.shelves[index].id)));
  await sql`insert into shelf.placements(owner_id,layout_id,item_id,shelf_id,position)

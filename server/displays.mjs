@@ -20,7 +20,7 @@ export async function mutateDisplay(sql,owner,body,products){
  let id=body.displayId;
  if(body.action==='create'){
   const title=name(body.name),type=body.type,frame=body.frame??'classic',finish=body.defaultFinish??'ice';
-  if(!['cabinet','rocks'].includes(type)||!['classic','black','temple','rock','ice'].includes(frame)||!products.finishes.has(finish)||(!['none','all',...statuses].includes(body.populate??'none')))throw new HttpError(400,'Choose a display type, frame and shelf finish.');
+  if(!['cabinet','rocks','pillars'].includes(type)||!['classic','black','temple','rock','ice'].includes(frame)||!products.finishes.has(finish)||(!['none','all',...statuses].includes(body.populate??'none')))throw new HttpError(400,'Choose a display type, frame and shelf finish.');
   const [count]=await sql`select count(*)::int as n from shelf.layouts where owner_id=${owner}`;
   if(count.n>=50)throw new HttpError(400,'You can create up to 50 displays.');
   const existing=await sql`select id from shelf.layouts where owner_id=${owner} and name=${title}`;
@@ -34,7 +34,7 @@ export async function mutateDisplay(sql,owner,body,products){
  }
  if(body.action==='configureAtmosphere'){
   const state=await readState(sql,owner,id);
-  if(state.type!=='rocks')throw new HttpError(400,'Atmosphere settings require a rock display.');
+  if(!['rocks','pillars'].includes(state.type))throw new HttpError(400,'Atmosphere settings require rocks or pillars.');
   let settings;try{settings=validateAtmosphere(body.atmosphere)}catch(e){throw new HttpError(400,e.message)}
   await sql`update shelf.layouts set atmosphere=${sql.json(settings)},revision=revision+1 where id=${id} and owner_id=${owner}`;
   await sql`insert into shelf.audit_events(actor_id,owner_id,action,changes) values(${owner},${owner},'display.configureAtmosphere',${sql.json({displayId:id,...settings})})`;
@@ -42,8 +42,8 @@ export async function mutateDisplay(sql,owner,body,products){
  }
  if(body.action==='configureRocks'){
   const state=await readState(sql,owner,id);
-  if(state.type!=='rocks')throw new HttpError(400,'Rock settings require a rock display.');
-  let config;try{config=validateRocks(body.rocks,state.order)}catch(e){throw new HttpError(400,e.message)}
+  if(!['rocks','pillars'].includes(state.type))throw new HttpError(400,'Platform settings require rocks or pillars.');
+  let config;try{config=validateRocks(body.rocks,state.order,state.type)}catch(e){throw new HttpError(400,e.message)}
   await sql`update shelf.layouts set rock_config=${sql.json(config)},revision=revision+1 where id=${id} and owner_id=${owner}`;
   await sql`insert into shelf.audit_events(actor_id,owner_id,action,changes) values(${owner},${owner},'display.configureRocks',${sql.json({displayId:id,platformCount:config.length})})`;
   return readState(sql,owner,id);
@@ -81,7 +81,7 @@ export async function mutateDisplay(sql,owner,body,products){
   state.order=[...new Set([...state.order,...add])];
  }
  const byId=new Map(state.items.map(i=>[i.id,products.get(i.productId)]));
- const rows=state.type==='rocks'?[]:packShelves(state.order,byId,state.shelves.map(s=>s.settings.pieceIds||[]));
+ const rows=state.type!=='cabinet'?[]:packShelves(state.order,byId,state.shelves.map(s=>s.settings.pieceIds||[]));
  while(state.shelves.length<rows.length)state.shelves.push({id:randomUUID(),settings:{finish:state.defaultFinish,weather:'none',fixture:'spot',colour:'warm',brightness:70,speed:15}});
  const saved=await writeState(sql,owner,state,products,packShelves);
  await sql`insert into shelf.audit_events(actor_id,owner_id,action,changes) values(${owner},${owner},${'display.'+body.action},${sql.json({displayId:id,count:state.order.length})})`;

@@ -25,6 +25,16 @@ test('named cabinets and rocks preserve inventory, statuses, independent placeme
  await assert.rejects(as(a,()=>mutateDisplay(sql,a,{action:'create',name:'Ice Cabinet',type:'rocks',frame:'rock',defaultFinish:'rock'},products)),e=>e.status===400);
  rocks=await as(a,()=>mutateDisplay(sql,a,{action:'rename',displayId:rocks.layoutId,revision:rocks.revision,name:'Dream Rocks'},products));assert.equal(rocks.name,'Dream Rocks');assert.equal((await as(a,()=>readState(sql,a,rocks.layoutId))).name,'Dream Rocks');
  const other=await as(b,()=>mutateDisplay(sql,b,{action:'create',name:'Other',type:'cabinet',frame:'black',defaultFinish:'ice'},products));await assert.rejects(as(b,()=>mutateDisplay(sql,b,{action:'addItems',displayId:other.layoutId,revision:other.revision,itemIds:[wish.id]},products)),e=>e.status===400);
+ const pillarStyles=['egyptian','aztec','ice','lava','jungle','greek','tree','gothic','crystal','coral'];
+ let pillars=await as(a,()=>mutateDisplay(sql,a,{action:'create',name:'Ancient Gallery',type:'pillars',frame:'classic',defaultFinish:'ice',populate:'all'},products));
+ assert.equal(pillars.type,'pillars');assert.equal(pillars.shelves.length,0);assert.deepEqual(pillars.items,rocks.items);assert.deepEqual(pillars.order.slice().sort(),rocks.order.slice().sort());
+ const pillarConfig=pillarStyles.map((style,i)=>({id:'column-'+i,style,size:'small',foreground:'none',pieceIds:pillars.order[i]?[pillars.order[i]]:[]}));
+ pillars=await as(a,()=>mutateDisplay(sql,a,{action:'configureRocks',displayId:pillars.layoutId,revision:pillars.revision,rocks:pillarConfig},products));
+ assert.deepEqual(pillars.rockConfig.map(r=>r.style),pillarStyles);assert.deepEqual((await as(a,()=>readState(sql,a,pillars.layoutId))).rockConfig,pillars.rockConfig);
+ await assert.rejects(as(b,()=>mutateDisplay(sql,b,{action:'configureRocks',displayId:pillars.layoutId,revision:pillars.revision,rocks:pillarConfig},products)),e=>e.status===404);
+ await assert.rejects(as(a,()=>mutateDisplay(sql,a,{action:'configureRocks',displayId:pillars.layoutId,revision:pillars.revision,rocks:[{...pillarConfig[0],style:'waterfall'}]},products)),e=>e.status===400);
+ pillars=await as(a,()=>mutateDisplay(sql,a,{action:'configureAtmosphere',displayId:pillars.layoutId,revision:pillars.revision,atmosphere:{fog:false,density:20,speed:10,colour:'#aabbcc',background:'sky'}},products));assert.equal(pillars.atmosphere.fog,false);
+ const pillarPiece=pillars.order[0];pillars=await as(a,()=>mutateDisplay(sql,a,{action:'remove',displayId:pillars.layoutId,revision:pillars.revision,itemId:pillarPiece},products));assert.equal(pillars.order.includes(pillarPiece),false);assert.deepEqual(pillars.items,rocks.items);assert.equal(pillars.shelves.length,0);
  const config=[{id:'platform-one',style:'waterfall',size:'small',foreground:'shrubs',pieceIds:rocks.order.slice(0,1)}];
  const atmosphere={fog:true,density:85,speed:20,colour:'#aaccdd',background:'mountains'};
  const preAtmosphere=rocks;rocks=await as(a,()=>mutateDisplay(sql,a,{action:'configureAtmosphere',displayId:rocks.layoutId,revision:rocks.revision,atmosphere},products));

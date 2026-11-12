@@ -41,3 +41,10 @@ Background asset: dist/assets/floating-mountains-v1.webp, generated with the bui
 
 ### Piece navigation
 A bottom thumbnail strip follows helix progress; tapping selects a platform and horizontal pointer dragging scrubs the vertical scene. A large vertical range slider offers the same navigation with keyboard support. Both retain one authoritative scene position. The thumbnail window renders at most 18 entries for large collections. Desktop platform width grows up to 370px, bounded by scene height; the mobile width formula remains unchanged. Decorative viewport overflow uses clipping so focusing the slider cannot pan the scenery sideways.
+
+### Pillar displays
+Pillars are a third persisted display type, using the existing owner-scoped platform configuration and placement membership. Ten styles: Egyptian, Aztec, Ice, Lava, Jungle, Greek, Tree Stump, Gothic, Crystal and Coral. Default new platforms use Greek. One collection copy per pillar; all statuses supported. Any saved display can combine pillar styles. Settings, atmosphere, product details, collection management, revision conflicts and auditing follow rock displays.
+
+Navigation follows a finite front arc with no wrap-around seam or helical rise. Vertical scrolling, the centred vertical slider, thumbnail dragging and left/right row-end buttons share one position. The redundant visible counter has been removed from rocks and pillars.
+
+Art: dist/assets/pillars-atlas-v1.webp, a transparent 5×2 atlas generated using the built-in image tool. Prompt: ten isolated detailed flat-topped pedestal pillars, Egyptian/Aztec/Ice/Lava/Jungle then Greek/Tree/Gothic/Crystal/Coral, equal grid cells and perspective, no sculptures or text.
