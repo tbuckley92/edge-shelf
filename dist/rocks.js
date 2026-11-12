@@ -27,10 +27,11 @@ function drawRock(r){
  return node;
 }
 function render(){
- if(!state)return;const n=rocks.length;$('#rockEmpty').hidden=n>0;$('#rockSelected').hidden=!n;$('.orbit-controls').hidden=!n||grid;$('#prevRock').disabled=n<2||position<.01;$('#nextRock').disabled=n<2||position>=n-1-.01;
+ if(!state)return;const n=rocks.length;$('#rockEmpty').hidden=n>0;$('#rockSelected').hidden=!n;$('#pieceNavigator').hidden=!n||grid;$('#rockDepth').disabled=n<2;$('#prevRock').disabled=n<2||position<.01;$('#nextRock').disabled=n<2||position>=n-1-.01;
  if(!n){orbit.replaceChildren();$('#rockCounter').textContent='';return}
  scene.style.setProperty('--world-progress',reduced.matches?'0.5':String(position/Math.max(1,n-1)));
  const selected=mod(Math.round(position),n),r=rocks[selected];$('#rockCounter').textContent=(selected+1)+' / '+n+' rocks';
+ renderNavigator(selected);
  if(selectedKey!==r.id){selectedKey=r.id;renderSelected(r)}
  const base=Math.round(position),radius=Math.min(scene.clientWidth*.29,270),spacing=scene.clientWidth<650?125:145;
  const keys=new Set();for(let index=Math.max(0,base-4);index<=Math.min(n-1,base+4);index++){
@@ -39,7 +40,7 @@ function render(){
   // Keep the helix path, but pull non-active platforms sharply into the distance.
   // Unlike cyclic cosine depth, focus never brightens distant turns again.
   const distance=index-position,angle=distance*1.15,focus=Math.exp(-2.4*distance*distance),scale=.34+.66*focus,x=Math.sin(angle)*radius,y=distance*spacing;
-  const width=Math.min(220,scene.clientWidth*.53);
+  const width=scene.clientWidth<650?Math.min(220,scene.clientWidth*.53):Math.min(370,scene.clientWidth*.36,scene.clientHeight*.65);
   node.style.width=width+'px';node.style.height=width*1.48+'px';node.style.transform=`translate(-50%,-50%) translate(${x}px,${y}px) scale(${scale})`;// Continuous atmospheric absorption avoids crossing a hard fog z-index boundary.
   node.style.opacity=.025+.975*Math.pow(focus,1.15);node.style.zIndex=String(10+Math.round(focus*90));node.style.filter='saturate('+(.35+.65*focus)+') blur('+((1-focus)*1.8)+'px)';node.setAttribute('aria-current',index===selected?'true':'false');
  }for(const node of [...orbit.children])if(!keys.has(node.dataset.id))node.remove();
@@ -55,8 +56,34 @@ function rotate(value){if(!rocks.length)return;target=clamp(value);scene.scrollT
 function sizeTrack(){const height=scene.clientHeight;$('#helixViewport').style.height=height+'px';$('#helixTrack').style.height=(height+Math.max(0,rocks.length-1)*scrollStep)+'px';render()}
 scene.addEventListener('scroll',()=>{if(!frame)frame=requestAnimationFrame(()=>{frame=0;syncScroll()})},{passive:true});
 $('#prevRock').onclick=()=>rotate(Math.round(position)-1);$('#nextRock').onclick=()=>rotate(Math.round(position)+1);
-scene.addEventListener('keydown',e=>{const moves={ArrowUp:-1,ArrowDown:1,PageUp:-4,PageDown:4};if(e.key in moves){e.preventDefault();rotate(Math.round(position)+moves[e.key])}else if(e.key==='Home'||e.key==='End'){e.preventDefault();rotate(e.key==='Home'?0:rocks.length-1)}});
+scene.addEventListener('keydown',e=>{if(e.target.closest('input,button'))return;const moves={ArrowUp:-1,ArrowDown:1,PageUp:-4,PageDown:4};if(e.key in moves){e.preventDefault();rotate(Math.round(position)+moves[e.key])}else if(e.key==='Home'||e.key==='End'){e.preventDefault();rotate(e.key==='Home'?0:rocks.length-1)}});
 new ResizeObserver(sizeTrack).observe(scene);
+const strip=$('#pieceStrip'),stripTrack=$('#pieceStripTrack'),depthSlider=$('#rockDepth'),thumbnailStep=76;
+let stripDrag=null,suppressStripClick=false;
+function scrub(value){position=target=clamp(value);scene.scrollTo({top:position*scrollStep,behavior:'instant'});render()}
+function renderNavigator(selected){
+ depthSlider.max=Math.max(0,rocks.length-1);depthSlider.value=position;
+ const title=rocks[selected].pieceIds.map(name).join(', ')||'Empty rock';
+ depthSlider.setAttribute('aria-valuetext',(selected+1)+' of '+rocks.length+': '+title);$('#navigatorName').textContent=title;
+ const first=Math.max(0,Math.floor(position)-8),last=Math.min(rocks.length-1,Math.ceil(position)+8),keep=new Set();
+ for(let i=first;i<=last;i++){
+  keep.add(String(i));let button=stripTrack.querySelector('[data-index="'+i+'"]');
+  if(!button){const r=rocks[i],id=r.pieceIds[0];button=el('button',undefined,'piece-thumb');button.type='button';button.dataset.index=i;button.style.left=i*thumbnailStep+'px';const img=picture(id?art(items.get(id)):'/assets/floating-rock-v1.webp','');button.append(img,el('span',String(i+1)));button.setAttribute('aria-label','Go to '+(id?name(id):'empty rock')+', '+(i+1)+' of '+rocks.length);stripTrack.append(button)}
+  button.setAttribute('aria-current',String(i===selected));button.tabIndex=i===selected?0:-1;
+ }
+ for(const child of [...stripTrack.children])if(!keep.has(child.dataset.index))child.remove();
+ stripTrack.style.transform='translateX('+(-position*thumbnailStep-thumbnailStep/2)+'px)';
+}
+depthSlider.addEventListener('input',()=>scrub(Number(depthSlider.value)));
+depthSlider.addEventListener('keydown',e=>{const moves={ArrowUp:-1,ArrowLeft:-1,ArrowDown:1,ArrowRight:1,PageUp:-5,PageDown:5};if(e.key in moves){e.preventDefault();scrub(Math.round(position)+moves[e.key])}else if(e.key==='Home'||e.key==='End'){e.preventDefault();scrub(e.key==='Home'?0:rocks.length-1)}});
+depthSlider.addEventListener('change',()=>rotate(Math.round(position)));
+strip.addEventListener('pointerdown',e=>{if(e.button!==0)return;suppressStripClick=false;stripDrag={id:e.pointerId,x:e.clientX,y:e.clientY,start:position,moved:false};});
+strip.addEventListener('pointermove',e=>{if(!stripDrag||stripDrag.id!==e.pointerId)return;const dx=e.clientX-stripDrag.x,dy=e.clientY-stripDrag.y;if(!stripDrag.moved){if(Math.abs(dx)<6)return;if(Math.abs(dy)>Math.abs(dx)){stripDrag=null;return}stripDrag.moved=true;strip.setPointerCapture(e.pointerId)}e.preventDefault();scrub(stripDrag.start-dx/thumbnailStep);});
+function endStripDrag(e){if(!stripDrag||e.pointerId!==stripDrag.id)return;const moved=stripDrag.moved;stripDrag=null;if(strip.hasPointerCapture(e.pointerId))strip.releasePointerCapture(e.pointerId);if(moved){suppressStripClick=true;rotate(Math.round(position))}}
+strip.addEventListener('pointerup',endStripDrag);strip.addEventListener('pointercancel',endStripDrag);
+strip.addEventListener('click',e=>{if(suppressStripClick){suppressStripClick=false;return}const button=e.target.closest('[data-index]');if(button)rotate(Number(button.dataset.index))});
+strip.addEventListener('keydown',e=>{const delta={ArrowLeft:-1,ArrowRight:1};if(e.key in delta){e.preventDefault();strip.focus();rotate(Math.round(position)+delta[e.key])}else if(e.key==='Home'||e.key==='End'){e.preventDefault();strip.focus();rotate(e.key==='Home'?0:rocks.length-1)}});
+
 
 function motion(){scene.classList.toggle('motion-paused',paused||document.hidden||!visible||grid);if(document.hidden||!visible){cancelAnimationFrame(frame);frame=0}}
 new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;motion()}).observe(scene);document.addEventListener('visibilitychange',motion);
@@ -64,7 +91,7 @@ $('#pauseMotion').onclick=()=>{paused=!paused;$('#pauseMotion').textContent=paus
 function renderGrid(){const root=$('#rockGrid');root.replaceChildren();rocks.forEach((r,index)=>{const card=el('button',undefined,'rock-grid-card');card.append(picture('/assets/'+(r.style==='moss'?'floating-rock-v1.webp':'floating-rock-'+r.style+'-v1.webp'),''),el('strong',labels[r.style]+' rock'),el('span',r.pieceIds.map(name).join(' · ')||'Empty platform'));card.onclick=()=>{grid=false;position=target=index;toggleView();scene.scrollTop=index*scrollStep;scene.focus()};root.append(card)})}
 function toggleView(){$('#toggleGrid').textContent=grid?'Orbit view':'Grid view';$('#toggleGrid').setAttribute('aria-pressed',String(grid));scene.hidden=grid;$('#rockGrid').hidden=!grid;if(grid)renderGrid();else sizeTrack();render();motion()}
 $('#toggleGrid').onclick=()=>{grid=!grid;toggleView()};
-function applyState(next,focusId){state=next;atmosphere={...defaultAtmosphere,...state.atmosphere};paintAtmosphere();items=new Map(state.items.map(i=>[i.id,i]));rocks=resolveRocks(state.rockConfig,state.order);selectedKey='';orbit.replaceChildren();$('#displayTitle').textContent=state.name;document.title=state.name+' · Edge Shelf';const index=focusId?rocks.findIndex(r=>r.id===focusId):-1;position=target=index>=0?index:clamp(Math.round(position));sizeTrack();scene.scrollTop=position*scrollStep;render();if(grid)renderGrid()}
+function applyState(next,focusId){state=next;atmosphere={...defaultAtmosphere,...state.atmosphere};paintAtmosphere();items=new Map(state.items.map(i=>[i.id,i]));rocks=resolveRocks(state.rockConfig,state.order);selectedKey='';orbit.replaceChildren();stripTrack.replaceChildren();$('#displayTitle').textContent=state.name;document.title=state.name+' · Edge Shelf';const index=focusId?rocks.findIndex(r=>r.id===focusId):-1;position=target=index>=0?index:clamp(Math.round(position));sizeTrack();scene.scrollTop=position*scrollStep;render();if(grid)renderGrid()}
 const context={getState:()=>state,beforeMutate:async()=>{if(busy)throw Error('Please wait for this change to save.');},applyState,focusPiece:id=>{rotate(rocks.findIndex(r=>r.pieceIds.includes(id)))}};
 async function removePiece(id){if(busy)return;busy=true;try{applyState(await api('displays',{method:'POST',body:JSON.stringify({action:'remove',displayId:state.layoutId,revision:state.revision,itemId:id})}));$('#rockStatus').textContent='Removed from this display. Your collection is unchanged.';return true}catch(e){$('#rockStatus').textContent=e.message;$('#pieceDetailStatus').textContent=e.message;return false}finally{busy=false}}
 const details=$('#rockDetails');let detailItem=null,detailCloseTimer=null;
