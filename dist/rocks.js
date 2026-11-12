@@ -40,7 +40,8 @@ function render(){
   // Unlike cyclic cosine depth, focus never brightens distant turns again.
   const distance=index-position,angle=distance*1.15,focus=Math.exp(-2.4*distance*distance),scale=.34+.66*focus,x=Math.sin(angle)*radius,y=distance*spacing;
   const width=Math.min(220,scene.clientWidth*.53);
-  node.style.width=width+'px';node.style.height=width*1.48+'px';node.style.transform=`translate(-50%,-50%) translate(${x}px,${y}px) scale(${scale})`;node.style.opacity=.12+.88*focus;node.style.zIndex=String(Math.round(focus*100));node.style.filter='saturate('+(.35+.65*focus)+')';node.setAttribute('aria-current',index===selected?'true':'false');
+  node.style.width=width+'px';node.style.height=width*1.48+'px';node.style.transform=`translate(-50%,-50%) translate(${x}px,${y}px) scale(${scale})`;// Continuous atmospheric absorption avoids crossing a hard fog z-index boundary.
+  node.style.opacity=.025+.975*Math.pow(focus,1.15);node.style.zIndex=String(10+Math.round(focus*90));node.style.filter='saturate('+(.35+.65*focus)+') blur('+((1-focus)*1.8)+'px)';node.setAttribute('aria-current',index===selected?'true':'false');
  }for(const node of [...orbit.children])if(!keys.has(node.dataset.id))node.remove();
 }
 function renderSelected(r){

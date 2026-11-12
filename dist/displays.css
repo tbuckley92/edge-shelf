@@ -29,15 +29,21 @@
 .rock-form-grid{grid-template-columns:1fr}.rock-sculptures{height:62%}.rock-page .product-drawer{z-index:2000}
 @media(max-width:650px){#rockScene{height:72svh;min-height:430px}.orbit-hint{font-size:9px}.floating-slot{top:48%}}
 
-/* Shared viewport stacking: background 0, distant platforms 0–54, fog 55,
-   emerging/active platforms 56–100 and navigation hint 200. No orbit stacking context. */
+/* Background 0, depth haze 5, continuously dissolving rocks 10–100,
+   translucent travelling foreground mist 150 and hint 200. */
 .mountain-world{position:absolute;inset:-25% 0;transform:translate3d(0,calc((.5 - var(--world-progress,.5))*24%),0);pointer-events:none;z-index:0;opacity:0;background-image:linear-gradient(#163d4c22,#163d4c44),url('/assets/floating-mountains-v1.webp');background-size:cover;background-position:50% 50%;transition:opacity .3s}
 .world-mountains .mountain-world{opacity:1}.sky-haze{z-index:1}.world-mountains .sky-haze{opacity:.35}
 .world-fog{position:absolute;inset:-18% -35%;pointer-events:none;color:var(--fog-colour,#b9d6dc);opacity:var(--fog-density,.7);will-change:transform;animation:fog-drift var(--fog-duration,78s) ease-in-out infinite alternate;background:radial-gradient(ellipse at 25% 35%,currentColor 0%,transparent 55%),radial-gradient(ellipse at 70% 68%,currentColor 0%,transparent 50%),linear-gradient(12deg,transparent 5%,currentColor 42%,transparent 75%);}
 .fog-rear{z-index:2;opacity:calc(var(--fog-density,.7)*.3);animation-direction:alternate-reverse;animation-delay:-19s}
-.fog-depth{z-index:55;mask-image:linear-gradient(transparent,#000 12%,#000 90%,transparent)}
+.fog-depth{z-index:5;mask-image:linear-gradient(transparent,#000 12%,#000 90%,transparent)}
 .fog-depth:after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 68% 27%,currentColor,transparent 60%);opacity:.55}
 @keyframes fog-drift{from{transform:translate3d(-7%,-3%,0) scale(1)}to{transform:translate3d(7%,4%,0) scale(1.08)}}
 .motion-paused .world-fog,.fog-still .world-fog{animation-play-state:paused}
 #atmosphereEditor .fog-toggle{display:flex;align-items:center;gap:12px}#atmosphereEditor input[type=checkbox]{width:20px;margin:0}#atmosphereEditor input[type=color]{height:46px;padding:4px}#atmosphereEditor input[type=range]{padding:0;accent-color:#39787d}#atmosphereEditor output{float:right;font-weight:400}
 @media(prefers-reduced-motion:reduce){.world-fog{animation:none}.mountain-world{transition:none}}
+
+/* Broad, soft foreground wisps drift across both the active rock and the world. */
+.fog-front{z-index:150;inset:-12% -45%;opacity:calc(var(--fog-density,.7)*.32);background:radial-gradient(ellipse at 20% 66%,currentColor 0%,transparent 32%),radial-gradient(ellipse at 58% 38%,currentColor 0%,transparent 25%),radial-gradient(ellipse at 88% 78%,currentColor 0%,transparent 32%);animation-name:fog-front-drift;animation-duration:calc(var(--fog-duration,78s)*.65);animation-delay:-12s;mask-image:linear-gradient(transparent,#000 18%,#000 88%,transparent)}
+@keyframes fog-front-drift{from{transform:translate3d(-22%,2%,0) scale(1.05)}to{transform:translate3d(22%,-2%,0) scale(1.12)}}
+
+@media(prefers-reduced-motion:reduce){.fog-front{animation:none}}
