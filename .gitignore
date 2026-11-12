@@ -11,3 +11,5 @@ dist/assets/*.webp
 supabase/.temp/
 
 !dist/assets/floating-rock-v1.webp
+
+!dist/assets/floating-rock-*-v1.webp

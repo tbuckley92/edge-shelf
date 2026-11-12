@@ -38,6 +38,7 @@ test('profile migration preserves collections, isolates users, projects public f
  await db.exec(await fs.readFile('supabase/migrations/20261112075814_profile_avatars_privacy.sql','utf8'));
  await db.exec(await fs.readFile('supabase/migrations/20261112083300_collection_status_frames.sql','utf8'));
  await db.exec(await fs.readFile('supabase/migrations/20261112091800_named_displays.sql','utf8'));
+ await db.exec(await fs.readFile('supabase/migrations/20261112095223_rock_platforms.sql','utf8'));
  await db.exec('update shelf.profiles set profile_revision=0');
  const baseline=await db.query('select count(*)::int as n from shelf.owned_items');assert.equal(baseline.rows[0].n,2);
  await db.query("update shelf.profiles set email='private@example.com' where id=$1",[a]);

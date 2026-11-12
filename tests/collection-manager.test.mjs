@@ -25,6 +25,14 @@ test('named cabinets and rocks preserve inventory, statuses, independent placeme
  await assert.rejects(as(a,()=>mutateDisplay(sql,a,{action:'create',name:'Ice Cabinet',type:'rocks',frame:'rock',defaultFinish:'rock'},products)),e=>e.status===400);
  rocks=await as(a,()=>mutateDisplay(sql,a,{action:'rename',displayId:rocks.layoutId,revision:rocks.revision,name:'Dream Rocks'},products));assert.equal(rocks.name,'Dream Rocks');assert.equal((await as(a,()=>readState(sql,a,rocks.layoutId))).name,'Dream Rocks');
  const other=await as(b,()=>mutateDisplay(sql,b,{action:'create',name:'Other',type:'cabinet',frame:'black',defaultFinish:'ice'},products));await assert.rejects(as(b,()=>mutateDisplay(sql,b,{action:'addItems',displayId:other.layoutId,revision:other.revision,itemIds:[wish.id]},products)),e=>e.status===400);
+ const config=[{id:'platform-one',style:'waterfall',size:'large',foreground:'shrubs',pieceIds:rocks.order.slice(0,3)}];
+ const beforeConfig=rocks;rocks=await as(a,()=>mutateDisplay(sql,a,{action:'configureRocks',displayId:rocks.layoutId,revision:rocks.revision,rocks:config},products));
+ assert.deepEqual(rocks.order,beforeConfig.order);assert.deepEqual(rocks.items,beforeConfig.items);assert.equal(rocks.rockConfig.length,2);assert.equal(rocks.rockConfig[0].pieceIds.length,3);
+ assert.deepEqual((await as(a,()=>readState(sql,a,rocks.layoutId))).rockConfig,rocks.rockConfig);
+ await assert.rejects(as(a,()=>mutateDisplay(sql,a,{action:'configureRocks',displayId:rocks.layoutId,revision:beforeConfig.revision,rocks:[]},products)),e=>e.status===409);
+ await assert.rejects(as(b,()=>mutateDisplay(sql,b,{action:'configureRocks',displayId:rocks.layoutId,revision:rocks.revision,rocks:[]},products)),e=>e.status===404);
+ for(const invalid of [[{...config[0],size:'small'}],[{...config[0],pieceIds:[randomUUID()]}],[config[0],{...config[0],id:'duplicate-copy'}]])await assert.rejects(as(a,()=>mutateDisplay(sql,a,{action:'configureRocks',displayId:rocks.layoutId,revision:rocks.revision,rocks:invalid},products)),e=>e.status===400);
+ assert.equal((await as(a,()=>readProfile(sql,a))).level,1);
  const old=data;data=await as(a,()=>readCollectionManager(sql,a));await assert.rejects(as(a,()=>manageCollection(sql,a,{action:'status',versions:old.versions,collectionRevision:old.collectionRevision,itemId:wish.id,status:'current'},products)),e=>e.status===409);
  }finally{await db.close()}
 });
