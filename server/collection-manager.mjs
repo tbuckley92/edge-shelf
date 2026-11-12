@@ -31,7 +31,7 @@ export async function manageCollection(sql,owner,body,products){
    const state=await readState(sql,owner,body.displayId);
    if(!state.order.includes(body.itemId))state.order.push(body.itemId);
    const byId=new Map(state.items.map(i=>[i.id,products.get(i.productId)]));
-   const rows=state.type==='rocks'?[]:packShelves(state.order,byId,state.shelves.map(s=>s.settings.pieceIds||[]));
+   const rows=state.type!=='cabinet'?[]:packShelves(state.order,byId,state.shelves.map(s=>s.settings.pieceIds||[]));
    while(state.shelves.length<rows.length)state.shelves.push({id:randomUUID(),settings:{finish:'ice',weather:'none',fixture:'spot',colour:'warm',brightness:70,speed:15}});
    await writeState(sql,owner,state,products,packShelves);
   }else if(body.action==='status'){
