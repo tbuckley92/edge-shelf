@@ -51,3 +51,6 @@ Art: dist/assets/pillars-atlas-v1.webp, a transparent 5×2 atlas generated using
 
 ### Pillar close-up presentation
 The active sculpture and capital are enlarged, with the pedestal base intentionally cropped below the scene. Upcoming pieces form a smaller queue on the left, enlarge into the centre, then travel horizontally out to the right as scrolling advances. Reverse scrolling reverses that path. No circular wrap or helical rise. Navigation and saved display data are unchanged.
+
+### Per-pillar effects
+Pillars use a black stage with a subtle grey radial glow. Optional `rock_config[].effects` stores independent low fog (enabled, colour, speed, density) and weather (none, rain, snow, sleet, storm, aurora, sandstorm, plasma; colour, speed, density). Existing records inherit defaults without a migration. The existing owner/revision-checked configureRocks endpoint validates and persists effects. Cancel restores the saved preview; demo changes remain session-only. Animations pause offscreen, with Pause motion, or reduced-motion preferences. Storm uses a slow glow rather than flashing lightning.

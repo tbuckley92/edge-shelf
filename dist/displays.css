@@ -70,3 +70,28 @@
 @media(max-width:650px){.thumbnail-row{grid-template-columns:36px minmax(0,1fr) 36px;gap:4px;padding:0 5px 10px}.strip-arrow{width:36px;height:44px}.rock-depth-control input{width:28px}}
 
 .pillar-page .rock-sculptures{bottom:var(--pillar-surface,65%);height:calc(100% - var(--pillar-surface,65%));left:14%;right:14%}.pillar-page .rock-sculpture .rock-piece{bottom:0;left:0;width:100%;height:100%}.pillar-page .rock-sculpture .rock-contact{bottom:-1%;height:5%;left:12%;width:76%}.pillar-page .rock-bob>.platform-status{bottom:calc(var(--pillar-surface,65%) - 3%);left:auto!important;right:12%}
+/* Pillar stage: quiet charcoal glow, with effects carried by each platform. */
+.pillar-page #rockScene,.pillar-page #helixViewport{background:radial-gradient(ellipse at 50% 40%,#303033 0%,#171719 38%,#050506 78%)}
+.pillar-page #rockScene:before,.pillar-page .sky-haze{display:none}
+.pillar-effects{position:absolute;inset:0;pointer-events:none;z-index:6;overflow:visible}
+.pillar-low-fog{position:absolute;left:-55%;width:210%;top:48%;height:26%;opacity:var(--pf-density);color:var(--pf-colour);filter:blur(13px);background:radial-gradient(ellipse at 20% 65%,currentColor,transparent 48%),radial-gradient(ellipse at 70% 40%,currentColor,transparent 51%);animation:pillar-mist var(--pf-duration) ease-in-out infinite alternate}
+.pillar-low-fog:after{content:'';position:absolute;inset:-15% -20%;background:radial-gradient(ellipse at 55% 55%,currentColor,transparent 58%);animation:pillar-mist calc(var(--pf-duration)*.73) ease-in-out infinite alternate-reverse}
+@keyframes pillar-mist{from{transform:translateX(-15%) scaleY(.8)}to{transform:translateX(15%) scaleY(1.2)}}
+.pillar-weather{position:absolute;left:-20%;right:-20%;top:-5%;height:80%;overflow:hidden;color:var(--pw-colour);opacity:var(--pw-density);mask-image:linear-gradient(transparent,#000 12%,#000 75%,transparent)}
+.weather-none{display:none}.pillar-weather i{position:absolute;left:var(--x);top:-12%;width:2px;height:27px;background:linear-gradient(transparent,currentColor);animation:pillar-fall calc(var(--fall)*var(--pw-rate)) linear infinite;animation-delay:var(--delay)}
+@keyframes pillar-fall{from{transform:translate(20px,-30px)}to{transform:translate(-55px,800px)}}
+.weather-snow i{width:var(--size);height:var(--size);border-radius:50%;background:currentColor;animation-duration:calc(var(--fall)*var(--pw-rate)*6);filter:blur(.4px)}
+.weather-sleet i:nth-child(even){width:3px;height:5px;border-radius:50%;background:currentColor;animation-duration:calc(var(--fall)*var(--pw-rate)*2)}
+.weather-storm:before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 20%,currentColor,transparent 65%);opacity:.18;animation:pillar-storm 12s ease-in-out infinite}
+@keyframes pillar-storm{0%,70%,100%{opacity:.06}80%{opacity:.34}90%{opacity:.12}}
+.weather-sandstorm{color:#d8af74;background:repeating-linear-gradient(165deg,transparent 0 22px,#b9925720 24px 27px,transparent 30px 50px)}
+.weather-sandstorm i{background:var(--pw-colour);width:var(--size);height:2px;top:var(--x);left:-8%;animation-name:pillar-sand;animation-duration:calc(var(--fall)*var(--pw-rate)*2)}
+@keyframes pillar-sand{to{transform:translate(700px,-65px)}}
+.weather-aurora:before,.weather-plasma:before,.weather-plasma:after{content:'';position:absolute;inset:0 -25%;background:repeating-linear-gradient(103deg,transparent 0 12%,var(--pw-colour) 18%,#70ffc970 22%,transparent 32%);filter:blur(20px);transform:skewY(-12deg);animation:pillar-aurora calc(10s*var(--pw-rate)) ease-in-out infinite alternate}
+@keyframes pillar-aurora{from{transform:translateX(-12%) skewY(-16deg) scaleY(.8)}to{transform:translateX(12%) skewY(12deg) scaleY(1.15)}}
+.weather-plasma:before,.weather-plasma:after{inset:10% 0;background:radial-gradient(ellipse at 30% 60%,transparent 30%,var(--pw-colour) 35%,transparent 43%),radial-gradient(ellipse at 70% 40%,transparent 27%,#b76dff 33%,transparent 42%);filter:blur(9px);mix-blend-mode:screen;animation-duration:calc(5s*var(--pw-rate))}
+.weather-plasma:after{animation-direction:alternate-reverse;transform:rotate(40deg)}
+.fog-static .pillar-low-fog,.fog-static .pillar-low-fog:after,.weather-static .pillar-weather *,.weather-static .pillar-weather:before,.weather-static .pillar-weather:after,.motion-paused .pillar-effects *,.motion-paused .pillar-effects *:before,.motion-paused .pillar-effects *:after{animation-play-state:paused!important}
+#pillarEffectsSettings{border:1px solid #d9dfda;border-radius:10px;margin:22px 0;padding:8px 18px}#pillarEffectsSettings legend{font-size:14px;font-weight:600}#pillarEffectsSettings input[type=checkbox]{display:inline-block;width:auto}#pillarEffectsSettings input[type=color]{height:42px;padding:4px}#pillarEffectsSettings output{float:right;font-weight:400}
+@media(prefers-reduced-motion:reduce){.pillar-effects *,.pillar-effects *:before,.pillar-effects *:after{animation-play-state:paused!important}}
+.weather-aurora,.weather-plasma{mask-image:radial-gradient(ellipse at 50% 45%,#000 25%,transparent 72%)}

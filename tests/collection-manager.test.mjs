@@ -1,3 +1,4 @@
+import {defaultPillarEffects} from '../dist/pillar-effects.mjs';
 import test from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs/promises';import {randomUUID} from 'node:crypto';import {PGlite} from '@electric-sql/pglite';
 import {readCollectionManager,manageCollection} from '../server/collection-manager.mjs';import {readProfile} from '../server/profile.mjs';import {readState,validateState,writeState} from '../server/state.mjs';import {packShelves} from '../dist/packing.mjs';import {listDisplays,mutateDisplay} from '../server/displays.mjs';
 function adapter(db){const tag=(strings,...values)=>{if(!strings.raw)return {list:strings};let query='',params=[];for(let i=0;i<strings.length;i++){query+=strings[i];if(i<values.length){const value=values[i];if(value?.list)query+='('+value.list.map(v=>{params.push(v);return '$'+params.length}).join(',')+')';else{params.push(value?.json?JSON.stringify(value.json):value);query+='$'+params.length}}}return db.query(query,params).then(r=>r.rows)};tag.json=json=>({json});return tag;}
@@ -28,9 +29,9 @@ test('named cabinets and rocks preserve inventory, statuses, independent placeme
  const pillarStyles=['egyptian','aztec','ice','lava','jungle','greek','tree','gothic','crystal','coral'];
  let pillars=await as(a,()=>mutateDisplay(sql,a,{action:'create',name:'Ancient Gallery',type:'pillars',frame:'classic',defaultFinish:'ice',populate:'all'},products));
  assert.equal(pillars.type,'pillars');assert.equal(pillars.shelves.length,0);assert.deepEqual(pillars.items,rocks.items);assert.deepEqual(pillars.order.slice().sort(),rocks.order.slice().sort());
- const pillarConfig=pillarStyles.map((style,i)=>({id:'column-'+i,style,size:'small',foreground:'none',pieceIds:pillars.order[i]?[pillars.order[i]]:[]}));
+ const pillarConfig=pillarStyles.map((style,i)=>({id:'column-'+i,style,size:'small',foreground:'none',effects:{...defaultPillarEffects,weather:i%2?'snow':'plasma',fogSpeed:i*10},pieceIds:pillars.order[i]?[pillars.order[i]]:[]}));
  pillars=await as(a,()=>mutateDisplay(sql,a,{action:'configureRocks',displayId:pillars.layoutId,revision:pillars.revision,rocks:pillarConfig},products));
- assert.deepEqual(pillars.rockConfig.map(r=>r.style),pillarStyles);assert.deepEqual((await as(a,()=>readState(sql,a,pillars.layoutId))).rockConfig,pillars.rockConfig);
+ assert.deepEqual(pillars.rockConfig.map(r=>r.style),pillarStyles);assert.deepEqual(pillars.rockConfig.map(r=>r.effects),pillarConfig.map(r=>r.effects));assert.deepEqual((await as(a,()=>readState(sql,a,pillars.layoutId))).rockConfig,pillars.rockConfig);
  await assert.rejects(as(b,()=>mutateDisplay(sql,b,{action:'configureRocks',displayId:pillars.layoutId,revision:pillars.revision,rocks:pillarConfig},products)),e=>e.status===404);
  await assert.rejects(as(a,()=>mutateDisplay(sql,a,{action:'configureRocks',displayId:pillars.layoutId,revision:pillars.revision,rocks:[{...pillarConfig[0],style:'waterfall'}]},products)),e=>e.status===400);
  pillars=await as(a,()=>mutateDisplay(sql,a,{action:'configureAtmosphere',displayId:pillars.layoutId,revision:pillars.revision,atmosphere:{fog:false,density:20,speed:10,colour:'#aabbcc',background:'sky'}},products));assert.equal(pillars.atmosphere.fog,false);
