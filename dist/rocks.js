@@ -33,9 +33,11 @@ function render(){
  const keys=new Set();for(let index=Math.max(0,base-4);index<=Math.min(n-1,base+4);index++){
   const rock=rocks[index],key=rock.id;keys.add(key);let node=[...orbit.children].find(n=>n.dataset.id===key);
   if(!node){node=drawRock(rock);orbit.append(node)}
-  const distance=index-position,angle=distance*1.15,depth=(Math.cos(angle)+1)/2,scale=.48+.52*depth,x=Math.sin(angle)*radius,y=distance*spacing;
+  // Keep the helix path, but pull non-active platforms sharply into the distance.
+  // Unlike cyclic cosine depth, focus never brightens distant turns again.
+  const distance=index-position,angle=distance*1.15,focus=Math.exp(-2.4*distance*distance),scale=.34+.66*focus,x=Math.sin(angle)*radius,y=distance*spacing;
   const width=Math.min(220,scene.clientWidth*.53);
-  node.style.width=width+'px';node.style.height=width*1.48+'px';node.style.transform=`translate(-50%,-50%) translate(${x}px,${y}px) scale(${scale})`;node.style.opacity=.3+.7*depth;node.style.zIndex=String(Math.round(depth*100));node.style.filter='saturate('+(.5+.5*depth)+')';
+  node.style.width=width+'px';node.style.height=width*1.48+'px';node.style.transform=`translate(-50%,-50%) translate(${x}px,${y}px) scale(${scale})`;node.style.opacity=.12+.88*focus;node.style.zIndex=String(Math.round(focus*100));node.style.filter='saturate('+(.35+.65*focus)+')';node.setAttribute('aria-current',index===selected?'true':'false');
  }for(const node of [...orbit.children])if(!keys.has(node.dataset.id))node.remove();
 }
 function renderSelected(r){
