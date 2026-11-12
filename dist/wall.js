@@ -360,7 +360,7 @@ function persist(includePreview=false){
  pendingSaves++;const work=saveChain.catch(()=>{}).then(async()=>{
   if(conflict)throw new Error('Collection changed elsewhere. Reload before saving.');
   data.revision=revision;report('Saving…');
-  try{const result=await api('collection',{method:'PUT',body:JSON.stringify(data)});revision=result.revision;document.querySelector('#collectorLevel').textContent='Level '+data.items.length;report(pendingSaves>1?'Saving…':'Saved');document.querySelector('#retrySave').hidden=true;}
+  try{const result=await api('collection',{method:'PUT',body:JSON.stringify(data)});revision=result.revision;document.querySelector('#collectorLevel').textContent='Level '+data.items.length;window.dispatchEvent(new CustomEvent('edge:level',{detail:data.items.length}));report(pendingSaves>1?'Saving…':'Saved');document.querySelector('#retrySave').hidden=true;}
   catch(error){if(error.status===409)conflict=true;report(error.message);document.querySelector('#retrySave').hidden=false;throw error}
  }).finally(()=>pendingSaves--);saveChain=work;return work;
 }
@@ -427,13 +427,14 @@ document.querySelector('#marketingPreference').onchange=e=>{marketingPreference=
 document.querySelector('#signOut').onclick=async()=>{try{await saveChain.catch(()=>{});await api('auth/logout',{method:'POST'});location.reload()}catch(error){report(error.message)}};
 window.addEventListener('beforeunload',event=>{if(saveTimer||pendingSaves){event.preventDefault();event.returnValue=''}});
 async function start(){
+ const accountRequest=api('bootstrap').then(data=>({data})).catch(error=>({error}));
  const [pieces,prepared]=await Promise.all([fetch('catalog.json').then(r=>{if(!r.ok)throw Error();return r.json()}),fetch('assets.json').then(r=>{if(!r.ok)throw Error();return r.json()})]);
  catalog=new Map(pieces.map(p=>[p.id,p]));assets=prepared;
  try{
-  const state=await api('collection');signedIn=true;layoutId=state.layoutId||crypto.randomUUID();revision=state.revision;ownedItems=state.items;order=state.order;
+  const account=await accountRequest;if(account.error)throw account.error;const state=account.data.state;window.edgeProfile=account.data.profile;window.dispatchEvent(new CustomEvent('edge:profile',{detail:account.data.profile}));signedIn=true;layoutId=state.layoutId||crypto.randomUUID();revision=state.revision;ownedItems=state.items;order=state.order;
   shelfIds=state.shelves.map(s=>s.id);rowSettings=Object.fromEntries(state.shelves.map(s=>[s.id,s.settings]));marketingPreference=state.profile.marketing_preference;
   document.querySelector('#marketingPreference').checked=marketingPreference===true;document.querySelector('#collectorLevel').textContent='Level '+ownedItems.length;
-  document.querySelector('#loginPanel').hidden=true;document.querySelector('#collectionTools').hidden=false;rebuildItems();render();
+  document.querySelector('#loginPanel').hidden=true;document.querySelector('#collectionTools').hidden=false;document.querySelector('#addPieceTools').hidden=false;document.querySelector('#signOut').hidden=false;rebuildItems();render();
  }catch(error){if(error.status!==401)report(error.message)}
 }
 start().catch(()=>report('Could not load the catalogue. Reload to try again.'));

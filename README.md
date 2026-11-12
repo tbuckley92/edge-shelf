@@ -45,3 +45,10 @@ Admin privileges are explicitly provisioned in `shelf.admin_roles` by the databa
 Versioned `plan_versions` and `plan_benefits` are present with Free only. Subscription billing, paid-item fulfilment, three-day grace periods and premium expiry conversion remain later work; this release does not charge or lock existing effects.
 
 Automated tests cover identity verification, PostgreSQL isolation, persistence, packing, private/public profile projection, forged privilege rejection, badge grants/revocation, audit immutability, session-bound encryption and off-shelf ownership. Local UI fixture checks do not prove Shopify mutations or Klaviyo propagation; live name/email changes and real mobile interaction need separate acceptance checks.
+
+## Profile pictures and navigation
+Apply `supabase/migrations/20261112075814_profile_avatars_privacy.sql` before this release. Existing profiles keep first/last names hidden. Switching public sharing on in the editor selects every visibility option; collectors can deselect individual fields before saving. Colour and picture accompany public profiles; email and phone remain private.
+
+Profile pictures use locally hosted Twemoji animal presets (CC BY 4.0, attribution included) or uploaded JPG/PNG/WebP. The browser resizes uploads; the server independently validates and re-encodes to 384px WebP with a 150KB storage cap. One image per owner is held in an RLS-protected table, and public access follows profile visibility. Originals and image bytes are excluded from audit logs.
+
+The shelf header has a left logo, navigation menu, centred avatar/level/badges and plus-button catalogue entry. `/api/bootstrap` combines account and collection loading. Profile and collection reads each use one aggregate query; catalogue loading is deferred on the profile page, static catalogue data has short caching, and image processing imports only for uploads. Server-Timing measures application request duration. These reduce repeated work; hosting cold starts and database/network latency may still affect first loads.

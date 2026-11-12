@@ -1,4 +1,3 @@
-import sharp from 'sharp';
 import {cookie,HttpError} from './security.mjs';
 const endpoint='https://jlbdhvcqsrhbmycahdwc.supabase.co/functions/v1/shelf-background';
 export async function background(request){
@@ -6,6 +5,7 @@ export async function background(request){
  const url=new URL(request.url),upstream=new URL(endpoint);upstream.search=url.search;
  let body;
  if(request.method==='POST'){
+  const {default:sharp}=await import('sharp');
   if(Number(request.headers.get('content-length'))>1000000)throw new HttpError(413,'Photo is too large.');
   const bytes=Buffer.from(await request.arrayBuffer());if(bytes.length>1000000)throw new HttpError(413,'Photo is too large.');
   try{body=await sharp(bytes,{limitInputPixels:20000000}).rotate().resize({width:1600,height:1200,fit:'inside',withoutEnlargement:true}).webp({quality:78}).toBuffer()}catch{throw new HttpError(400,'Please choose a JPG, PNG or WebP photo.');}

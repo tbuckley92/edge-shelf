@@ -1,0 +1,2 @@
+Animal preset artwork: Twemoji by Twitter, Inc. and contributors, maintained by jdecked. Version 17.0.3. Licensed CC-BY 4.0. https://github.com/jdecked/twemoji https://creativecommons.org/licenses/by/4.0/
+Artwork is unmodified.
