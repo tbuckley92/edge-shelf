@@ -18,14 +18,14 @@ const art=item=>assets[item.productId]?.src||catalog.get(item.productId)?.img||'
 const name=id=>catalog.get(items.get(id)?.productId)?.name||'Edge Sculpture';
 function picture(src,cls){const img=new Image();img.src=src;img.alt='';img.draggable=false;img.className=cls;return img}
 function drawRock(r){
- const node=el('button',undefined,'floating-slot');node.type='button';node.dataset.id=r.id;node.tabIndex=0;node.dataset.size=r.size;
- const bob=el('span',undefined,'rock-bob');bob.style.animationDelay=-(rocks.indexOf(r)*1.47)+'s';bob.style.animationDuration=(5.8+(rocks.indexOf(r)%4)*.7)+'s';
+ const node=el(isPillars?'div':'button',undefined,'floating-slot');if(isPillars)node.setAttribute('role','group');node.type='button';node.dataset.id=r.id;node.tabIndex=0;node.dataset.size=r.size;
+ const bob=el(isPillars?'button':'span',undefined,'rock-bob');if(isPillars){bob.type='button';bob.setAttribute('aria-label',labels[r.style]+' pillar: '+(r.pieceIds.map(name).join(', ')||'empty'))}bob.style.animationDelay=-(rocks.indexOf(r)*1.47)+'s';bob.style.animationDuration=(5.8+(rocks.indexOf(r)%4)*.7)+'s';
  if(isPillars){const pedestal=el('span',undefined,'pillar-art');const i=pillarStyles.indexOf(r.style);pedestal.style.backgroundPosition=(i%5*25)+'% '+(i<5?0:100)+'%';bob.style.setProperty('--pillar-surface',i<5?'63.5%':'66.5%');node.style.setProperty('--pillar-surface',i<5?'63.5%':'66.5%');bob.append(pedestal)}else bob.append(picture('/assets/'+(r.style==='moss'?'floating-rock-v1.webp':'floating-rock-'+r.style+'-v1.webp'),'rock-art'));
  const count=r.pieceIds.length,zone=el('span',undefined,'rock-sculptures');
  for(const id of r.pieceIds){const item=items.get(id),slot=el('span',undefined,'rock-sculpture');slot.append(el('span',undefined,'rock-contact'),picture(art(item),'rock-piece'));const badge=el('span',statusIcons[item.status],'rock-piece-status '+item.status);badge.title=statusLabels[item.status];badge.classList.add('platform-status');badge.style.left=(9+(r.pieceIds.indexOf(id)+.82)*82/Math.max(1,count))+'%';bob.append(badge);zone.append(slot)}
  zone.style.setProperty('--pieces',Math.max(1,count));bob.append(zone);
  if(!isPillars&&r.foreground!=='none')for(const place of ['left','centre','right']){const cluster=el('span',undefined,'rock-edge-cluster '+place+' '+r.foreground);cluster.style.backgroundImage='url(/assets/'+fronts[r.foreground]+')';bob.append(cluster);}
- node.append(bob);if(isPillars)paintPillarEffects(node,r.effects);node.setAttribute('aria-label',labels[r.style]+' '+unit+': '+(r.pieceIds.map(name).join(', ')||'empty'));
+ node.append(bob);if(isPillars&&demo&&r.id==='pillar-0'){const gift=el('button',undefined,'pillar-gift-rose');gift.type='button';gift.setAttribute('aria-label','Rose gift — tap to see who sent it');gift.append(picture('/assets/gift-rose-v1.webp',''),el('span','Gift','gift-tag'));gift.onclick=e=>{e.stopPropagation();$('#roseGiftCard').showModal()};node.append(gift)}if(isPillars)paintPillarEffects(node,r.effects);node.setAttribute('aria-label',labels[r.style]+' '+unit+': '+(r.pieceIds.map(name).join(', ')||'empty'));
  node.onclick=()=>{const id=r.pieceIds[0];if(id)openDetails(id);else{position=target=rocks.indexOf(r);render();openEditor()}};
  return node;
 }
@@ -46,7 +46,7 @@ function render(){
   const width=isPillars?Math.min(480,scene.clientWidth*.78,scene.clientHeight*.65):(scene.clientWidth<650?Math.min(220,scene.clientWidth*.53):Math.min(370,scene.clientWidth*.36,scene.clientHeight*.65));
   const arc=isPillars?pillarProjection(distance,scene.clientWidth):null;
   node.style.width=width+'px';node.style.height=width*(isPillars?2.15:1.48)+'px';node.style.transform=`translate(-50%,-50%) translate(${arc?arc.x:x}px,${arc?arc.y:y}px) scale(${arc?arc.scale:scale})`;// Continuous atmospheric absorption avoids crossing a hard fog z-index boundary.
-  node.style.opacity=arc?arc.opacity:.025+.975*Math.pow(focus,1.15);node.style.zIndex=String(10+Math.round((arc?arc.depth:focus)*90));node.style.filter='saturate('+(.35+.65*(arc?arc.depth:focus))+') blur('+((1-(arc?arc.depth:focus))*1.8)+'px)';node.setAttribute('aria-current',index===selected?'true':'false');node.style.pointerEvents=arc&&arc.opacity<.03?'none':'';node.tabIndex=arc&&arc.opacity<.03?-1:0;
+  node.style.opacity=arc?arc.opacity:.025+.975*Math.pow(focus,1.15);node.style.zIndex=String(10+Math.round((arc?arc.depth:focus)*90));node.style.filter='saturate('+(.35+.65*(arc?arc.depth:focus))+') blur('+((1-(arc?arc.depth:focus))*1.8)+'px)';node.setAttribute('aria-current',index===selected?'true':'false');node.style.pointerEvents=arc&&arc.opacity<.03?'none':'';node.tabIndex=isPillars||arc&&arc.opacity<.03?-1:0;if(isPillars)for(const button of node.querySelectorAll('button'))button.tabIndex=arc&&arc.opacity<.03?-1:0;
  }for(const node of [...orbit.children])if(!keys.has(node.dataset.id))node.remove();
 }
 function renderSelected(r){
@@ -133,6 +133,7 @@ async function saveConfig(config,focusId){if(busy)return;busy=true;$('#saveRock'
 form.onsubmit=e=>{e.preventDefault();const pieceIds=[$('#rockPiece0').value].filter(Boolean);if(new Set(pieceIds).size!==pieceIds.length){$('#rockEditorStatus').textContent='Choose each copy only once.';return}const updated={...editing,style:$('#rockStyle').value,size:'small',foreground:$('#rockForeground').value,pieceIds,...(isPillars?{effects:readPillarEffects()}: {})},selected=new Set(pieceIds);let found=false;
  const config=rocks.flatMap(r=>{if(r.id===updated.id){found=true;return [updated]}const ids=r.pieceIds.filter(id=>!selected.has(id));return r.pieceIds.length&&!ids.length?[]:[{...r,pieceIds:ids}]});if(!found)config.push(updated);saveConfig(resolveRocks(config,state.order,displayType),updated.id)};
 $('#removeEmptyRock').onclick=()=>saveConfig(rocks.filter(r=>r.id!==editing.id));
+if(isPillars)$('#closeRoseGift').onclick=()=>$('#roseGiftCard').close();
 async function start(){
  if(isPillars){$('#rockStyle').replaceChildren(...pillarStyles.map(style=>{const o=el('option',pillarLabels[style]);o.value=style;return o}));$('#rockForeground').closest('label').hidden=true;}
  ({catalog,assets}=await loadAssets());
