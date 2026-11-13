@@ -21,7 +21,32 @@ export function initSettings(room,renderPieces){
  function apply(){const lighting={sunrise:['brightness(1.05) saturate(.88)',1.03,'#f3b0a540'],day:['brightness(1.13) saturate(.88)',1.1,'#dce9ff20'],sunset:['none',1,'transparent'],night:['brightness(.56) saturate(.7)',.66,'#2d457875']}[config.time]||['none',1,'transparent'];room.style.setProperty('--room-filter',lighting[0]);room.style.setProperty('--piece-light',lighting[1]);room.style.setProperty('--room-tint',lighting[2]);room.dataset.mantel=config.mantel;$('#mantelReading').textContent=(config.mantel/100).toFixed(1)+' m';room.classList.toggle('still',!config.fire);glow.hidden=!config.fire;flames.style.display=config.fire?'block':'none';paintRug();paintShields();renderPieces();save()}
  dialog.querySelectorAll('[data-setting]').forEach(el=>{const k=el.dataset.setting;if(el.type==='checkbox')el.checked=config[k];else el.value=config[k];el.oninput=()=>{config[k]=el.type==='checkbox'?el.checked:k==='mantel'?Number(el.value):el.value;apply()}});
  function selectShield(){const s=config.shields[Number($('#shieldIndex').value)];$('#shieldPattern').value=s.pattern;$('#shieldColor').value=s.color}$('#shieldIndex').onchange=selectShield;for(const [selector,prop] of [['#shieldPattern','pattern'],['#shieldColor','color']])$(selector).oninput=()=>{config.shields[Number($('#shieldIndex').value)][prop]=$(selector).value;apply()};selectShield();
- document.querySelector('#settings').onclick=()=>dialog.showModal();$('.close').onclick=()=>dialog.close();$('#settingsDone').onclick=()=>dialog.close();
+ // Reuse the existing inputs in focused editors, avoiding duplicated settings state.
+ const mainGrid=dialog.querySelector('.settings-grid');
+ const scaleHeading=dialog.querySelector('h3');
+ const scaleLabel=dialog.querySelector('[data-setting="mantel"]').closest('label');
+ const scaleHint=scaleLabel.nextElementSibling;
+ const shieldFields=dialog.querySelector('.shield-fields');
+ const title=dialog.querySelector('h2'),intro=title.nextElementSibling;
+ const bottomHint=shieldFields.nextElementSibling;
+ function openSection(section='all',index=0){
+   title.textContent={all:'Make it your room',window:'Outside & lighting',rug:'Choose your rug',shield:'Heraldic shield '+(index+1),fire:'Firelight'}[section];
+   intro.textContent={all:'You can also tap the objects directly in your room.',window:'Set the time, season and weather outside.',rug:'Choose a rug or leave the stone floor bare.',shield:'Customise this shield’s design and colour.',fire:'Set the movement and glow of the fire.'}[section];
+   mainGrid.hidden=section==='shield';
+   mainGrid.querySelectorAll('label').forEach(label=>{const k=label.querySelector('[data-setting]')?.dataset.setting;label.hidden=section!=='all'&&!(section==='window'&&['time','season','weather'].includes(k))&&!(section==='rug'&&k==='rug')&&!(section==='fire'&&k==='fire')});
+   for(const e of [scaleHeading,scaleLabel,scaleHint])e.hidden=section!=='all';
+   shieldFields.hidden=!['all','shield'].includes(section);
+   $('#shieldIndex').closest('label').hidden=section==='shield';
+   bottomHint.hidden=section!=='all';
+   if(section==='shield'){$('#shieldIndex').value=String(index);selectShield()}
+   dialog.showModal();
+ }
+ function hotspot(label,box,section,index){const b=document.createElement('button');b.className='room-hotspot';b.setAttribute('aria-label',label);b.title=label;b.style.cssText=`left:${box[0]}%;top:${box[1]}%;width:${box[2]}%;height:${box[3]}%`;b.onclick=()=>openSection(section,index);room.append(b)}
+ hotspot('Change window weather, season and lighting',[0,23,9,38],'window');
+ hotspot('Change rug',[11,81,76,16],'rug');
+ [[7,11.7,7.5,7],[23.5,16.1,7.5,6.5],[55.4,17.5,7,6.5],[75.3,14,7.5,7]].forEach((box,i)=>hotspot('Customise shield '+(i+1),box,'shield',i));
+ hotspot('Change fire flicker',[31,66,17,8],'fire');
+ document.querySelector('#settings').onclick=()=>openSection('all');$('.close').onclick=()=>dialog.close();$('#settingsDone').onclick=()=>dialog.close();
  const reduce=matchMedia('(prefers-reduced-motion: reduce)');let last=0;
  function draw(t){requestAnimationFrame(draw);if(document.hidden||t-last<50)return;last=t;ctx.clearRect(0,0,640,954);ctx.save();ctx.beginPath();ctx.moveTo(0,252);ctx.lineTo(41,229);ctx.lineTo(58,303);ctx.lineTo(59,589);ctx.lineTo(0,599);ctx.closePath();ctx.clip();const seasonColors={spring:'#9bbd6355',summer:'#d3b85b22',autumn:'#be681e66',winter:'#d5e7f277'};ctx.globalAlpha=.3;ctx.fillStyle=seasonColors[config.season]||'#0000';ctx.fillRect(0,220,65,390);if(config.time==='night'){ctx.fillStyle='#071b4ba0';ctx.fillRect(0,220,65,390)}else if(config.time==='sunrise'){ctx.fillStyle='#ffb5a866';ctx.fillRect(0,220,65,390)}else if(config.time==='day'){ctx.fillStyle='#bde3ff44';ctx.fillRect(0,220,65,390)}ctx.globalAlpha=1;if(!reduce.matches){const sec=t/1000;if(config.weather==='snow'){ctx.fillStyle='#fff';for(let i=0;i<42;i++){const x=(i*17+Math.sin(sec+i)*4)%65,y=225+(i*29+sec*(9+i%5))%380;ctx.globalAlpha=.45+i%4*.15;ctx.beginPath();ctx.arc(x,y,1+i%3*.4,0,Math.PI*2);ctx.fill()}}if(config.weather==='rain'){ctx.strokeStyle='#b7dbef99';ctx.lineWidth=.6;for(let i=0;i<32;i++){const x=(i*13-sec*10)%75,y=220+(i*31+sec*160)%400;ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(x-3,y+14);ctx.stroke()}}if(config.season==='autumn'&&config.weather==='clear'){ctx.fillStyle='#d38e2daa';for(let i=0;i<8;i++){const x=(i*19+Math.sin(sec*.6+i)*8)%65,y=300+(i*39+sec*8)%290;ctx.fillRect(x,y,2,3)}}}ctx.restore()}
  apply();requestAnimationFrame(draw);
