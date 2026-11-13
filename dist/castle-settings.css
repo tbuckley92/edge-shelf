@@ -5,3 +5,13 @@
 [hidden]{display:none!important}.room-hotspot{position:absolute;z-index:5;background:transparent;border:0;padding:0;cursor:pointer;min-width:32px;min-height:32px;border-radius:6px}.room-hotspot:focus-visible{outline:2px solid #ead1a1;background:#ead1a115}.room:not(.editing) .room-hotspot{pointer-events:none}.banner-colour{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;mix-blend-mode:color}#bannerColor{height:48px;padding:3px}#bannerOriginal{margin-bottom:16px}.banner-hit{z-index:5}.settings-grid label[hidden]{display:none!important}
 
 .banner-hit{left:76.4%;top:26.8%;width:14.6%;height:34.5%;clip-path:polygon(0 13%,100% 0,100% 85%,48% 100%,0 85%);transform:none;padding:0 8px}.banner-hit .crest,.banner-hit .banner-name{transform:skewY(-12deg)}
+
+/* Tall room geometry and dimension-based surface layout. */
+.placed-piece{position:absolute;transform:translate(-50%,-100%);object-fit:contain;pointer-events:none;z-index:3;filter:brightness(var(--piece-light,1)) drop-shadow(0 1px 1px #25150890)}
+.spot{z-index:4}.spot.filled:before{display:none}.room.editing .spot:focus-visible{outline:1px dashed #ead1a1}
+.banner-hit{left:84.7%;top:27.2%;width:10.5%;height:38.2%;clip-path:polygon(0 3%,100% 0,100% 88%,46% 100%,0 87%)}
+.banner-hit .crest,.banner-hit .banner-name{transform:skewY(-8deg)}
+.bare-floor{mask-image:linear-gradient(transparent 79%,#000 82%)}
+.rug-art{left:15%;top:82.5%;width:70%;height:15.5%;object-fit:fill;transform:none}
+.fire-glow{left:27%;top:67%;width:39%;height:17%}.flame-layer{left:39%;top:70%;width:15%;height:6%}
+#placed>div{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:8px 0}#placed button{flex-shrink:0}#fitWarning{color:#f1ba88}.choices button:disabled{opacity:.48;cursor:not-allowed}#surfaceInfo{font-size:13px}.choices{max-height:38dvh}
